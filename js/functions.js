@@ -9,7 +9,7 @@ function isPalindrome(string) {
   return normalizedString === reversedString;
 }
 
-function getNumsgitFromStr(text) {
+function getNumFromStr(text) {
   const result = typeof(text) === 'number' ? String(text) : text.replaceAll(' ', '');
 
   return result.replace(/\D/g, '') || NaN;
