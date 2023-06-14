@@ -16,6 +16,10 @@ const NAMES = [
   'Mitrandir'
 ];
 
+function log(...variables) {
+  console.log(...variables);
+}
+
 function getRandomInt(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
@@ -53,11 +57,13 @@ function uniqueIdGenerator(min, max){
   };
 }
 
-function getLoremDescription(length = 250) {
-  /*
-    TODO: Можно добавить проверку на целое слово, чтобы не делить текст
-    посреди слова, а брать последнее слово целиком.
-  */
+/*
+  @param {int} length - длина получаемого текста в символах
+  @param {bool} cutByWord - если true - фрагмент вырезается
+  не строго посимвольно, а по последнему целому слову, входящему
+  в установленную длину, с усечением в меньшую сторону.
+*/
+function getLoremDescription(length = 250, cutByWord = false) {
   const loremText = `Lorem ipsum, dolor sit amet consectetur adipisicing elit.
   Dignissimos vero explicabo voluptatibus voluptas quos impedit quas, ex
   sint blanditiis inventore excepturi consectetur pariatur rerum sunt quae
@@ -65,7 +71,15 @@ function getLoremDescription(length = 250) {
   debitis. Culpa repellendus voluptatum earum molestias dolore, explicabo quae
   sequi inventore minus nobis. Cumque, minima!`;
 
-  return `${loremText.slice(0, length)} ...`;
+  let sliceOfText = loremText.slice(0, Math.round(length));
+
+  if (cutByWord) {
+    const lastWordInSlicedText = sliceOfText.split(' ').at(-1);
+
+    sliceOfText = sliceOfText.slice(0, sliceOfText.lastIndexOf(lastWordInSlicedText));
+  }
+
+  return sliceOfText;
 }
 
 const getUniquePhotoId = uniqueIdGenerator(1, 25);
