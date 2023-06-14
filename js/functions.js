@@ -7,6 +7,8 @@ function isPalindrome(string) {
   const reversedString = normalizedString.split('').reverse().join(''); // v. 2
   // const reversedString = [...normalizedString].reverse().join(''); // v. 1 -slowerпше
 
+  // Специально не буду менять данную функцию, чтобы проверить разрешение конфликтов в гите
+
   return normalizedString === reversedString;
 }
 
