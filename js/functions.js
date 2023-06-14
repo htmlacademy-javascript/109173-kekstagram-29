@@ -10,7 +10,7 @@ function isPalindrome(string) {
 }
 
 function getNumFromStr(text) {
-  const result = typeof(text) === 'number' ? String(text) : text.replaceAll(' ', '');
+  const result = text.toString().replaceAll(' ', '');
 
   return result.replace(/\D/g, '') || NaN;
 }
