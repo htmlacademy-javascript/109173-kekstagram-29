@@ -6,16 +6,18 @@ function isPalindrome(string) {
   const normalizedString = string.toLowerCase().replaceAll(' ', '');
 
   // Быстрее с точки зрения алгоритмической сложности
-  for (let i = 0; i < normalizedString.length; i++) {
-    let lastIndex = normalizedString.length - 1 - i;
+  for (const i = 0; i < normalizedString.length; i++) {
+    const lastIndex = normalizedString.length - 1 - i;
 
-    if (normalizedString[i] !== normalizedString[lastIndex]) return false;
+    if (normalizedString[i] !== normalizedString[lastIndex]) {
+      return false;
+    }
   }
 
   return true;
 }
 function getNumFromStr(text) {
-  const result = text.toString().replaceAll(' ', '');
+  const result = text.toString().replace(/\D/g, '');
 
-  return result.replace(/\D/g, '') || NaN;
+  return parseInt(result, 10) || NaN;
 }

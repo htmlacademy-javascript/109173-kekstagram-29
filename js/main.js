@@ -87,9 +87,6 @@ function getLoremDescription(length = 250, cutByWord = false) {
   return sliceOfText;
 }
 
-getLoremDescription(80, true);
-getLoremDescription(86, true);
-
 const getUniquePhotoId = uniqueIdGenerator(1, 25);
 const getUniqueCommentId = uniqueIdGenerator(1, 1000);
 
