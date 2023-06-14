@@ -4,7 +4,8 @@ function checkStringLength(string, length) {
 
 function isPalindrome(string) {
   const normalizedString = string.toLowerCase().replaceAll(' ', '');
-  const reversedString = [...normalizedString].reverse().join('');
+  const reversedString = normalizedString.split('').reverse().join(''); // v. 2
+  // const reversedString = [...normalizedString].reverse().join(''); // v. 1 -slowerпше
 
   return normalizedString === reversedString;
 }
