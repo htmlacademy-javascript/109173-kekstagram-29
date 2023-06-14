@@ -24,13 +24,12 @@ function getRandomInt(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
-function getRandomElemsFromArr(arr, count = 1) {
+function getRandomElemsFromArr(arr, elemsCount = 1) {
   let message = arr[getRandomInt(0, arr.length - 1)];
 
-  if (count > 1) {
-    for (let i = 1; i <= count; i++) {
-      message += ' ';
-      message += arr[getRandomInt(0, arr.length - 1)];
+  if (elemsCount > 1) {
+    for (let i = 1; i <= elemsCount; i++) {
+      message += ` ${arr[getRandomInt(0, arr.length - 1)]}`;
     }
   }
 
@@ -85,10 +84,11 @@ function getLoremDescription(length = 250, cutByWord = false) {
     sliceOfText = sliceOfText.slice(0, sliceOfText.lastIndexOf(lastWordInSlicedText)).trimEnd();
   }
 
-  log(length, cutByWord, sliceOfText);
-
   return sliceOfText;
 }
+
+getLoremDescription(80, true);
+getLoremDescription(86, true);
 
 const getUniquePhotoId = uniqueIdGenerator(1, 25);
 const getUniqueCommentId = uniqueIdGenerator(1, 1000);
