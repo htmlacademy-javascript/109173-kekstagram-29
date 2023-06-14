@@ -73,11 +73,19 @@ function getLoremDescription(length = 250, cutByWord = false) {
 
   let sliceOfText = loremText.slice(0, Math.round(length));
 
-  if (cutByWord) {
+  /*
+    loremText[sliceOfText.length] - если за местом, в котором мы обрезали
+    текст идет пробел, значит можно считать, что мы итак обрезали текст
+    не где-то посреди слова, а указанный размер попал четко на окончание
+    слова, в таком случае - дополнительных преобразований не требуется
+  */
+  if (cutByWord && loremText[sliceOfText.length] !== ' ') {
     const lastWordInSlicedText = sliceOfText.split(' ').at(-1);
 
-    sliceOfText = sliceOfText.slice(0, sliceOfText.lastIndexOf(lastWordInSlicedText));
+    sliceOfText = sliceOfText.slice(0, sliceOfText.lastIndexOf(lastWordInSlicedText)).trimEnd();
   }
+
+  log(length, cutByWord, sliceOfText);
 
   return sliceOfText;
 }
