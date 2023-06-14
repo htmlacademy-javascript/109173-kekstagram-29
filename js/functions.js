@@ -6,6 +6,8 @@ function isPalindrome(string) {
   const normalizedString = string.toLowerCase().replaceAll(' ', '');
   const reversedString = [...normalizedString].reverse().join('');
 
+  // Специально не буду менять данную функцию, чтобы проверить разрешение конфликтов в гите
+
   return normalizedString === reversedString;
 }
 
