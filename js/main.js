@@ -13,12 +13,25 @@ const NAMES = [
   'Ben Kenobi',
   'Elesar',
   'Frodo Baggins',
-  'Mitrandir'
+  'Mitrandir',
+  'Ken Block',
+  'Mr. Black',
+  'White Russian'
 ];
 
-function log(...variables) {
+// Настройки
+const PHOTOS_COUNT = 25;
+const Likes = {
+  MIN: 15,
+  MAX: 200
+};
+const MAX_DESCRIPTION_LENGTH = 80;
+const MAX_COMMENTS_COUNT = 30;
+
+// Функции
+/* function log(...variables) {
   console.log(...variables);
-}
+} */
 
 function getRandomInt(min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -87,17 +100,17 @@ function getLoremDescription(length = 250, cutByWord = false) {
   return sliceOfText;
 }
 
-const getUniquePhotoId = uniqueIdGenerator(1, 25);
-const getUniqueCommentId = uniqueIdGenerator(1, 1000);
+const getUniquePhotoId = uniqueIdGenerator(1, PHOTOS_COUNT);
+const getUniqueCommentId = uniqueIdGenerator(1, PHOTOS_COUNT * MAX_COMMENTS_COUNT);
 
 function createPhoto() {
   const photoId = getUniquePhotoId();
   return {
     id: photoId, // Случайное уникальное число (1-25)
     url: `/photos/${photoId}.jpg`, // i - случайное уникальное число (1-25)
-    description: getLoremDescription(80),
-    likes: getRandomInt(15, 200), // Случайное число от 15 до 200
-    comments: Array.from({length: getRandomInt(0, 30)}, getComment),
+    description: getLoremDescription(MAX_DESCRIPTION_LENGTH),
+    likes: getRandomInt(Likes.MIN, Likes.MAX), // Случайное число от 15 до 200
+    comments: Array.from({length: getRandomInt(0, MAX_COMMENTS_COUNT)}, getComment),
   };
 }
 
@@ -110,4 +123,4 @@ function getComment(){
   };
 }
 
-// const photos = Array.from({length: 25}, createPhoto);
+// const photos = Array.from({length: PHOTOS_COUNT}, createPhoto);
