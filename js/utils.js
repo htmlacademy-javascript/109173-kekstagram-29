@@ -1,8 +1,3 @@
-// Функции
-/* function log(...variables) {
-  console.log(...variables);
-} */
-
 function getRandomInt(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }

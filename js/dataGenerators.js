@@ -30,8 +30,7 @@ const Likes = {
 const MAX_DESCRIPTION_LENGTH = 80;
 const MAX_COMMENTS_COUNT = 30;
 
-
-// Функции
+// Функции генерации данных
 const getUniquePhotoId = uniqueIdGenerator(1, PHOTOS_COUNT);
 const getUniqueCommentId = uniqueIdGenerator(1, PHOTOS_COUNT * MAX_COMMENTS_COUNT);
 
