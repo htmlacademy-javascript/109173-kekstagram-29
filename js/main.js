@@ -38,15 +38,15 @@ function getRandomInt(min, max) {
 }
 
 function getRandomElemsFromArr(arr, elemsCount = 1) {
-  let message = arr[getRandomInt(0, arr.length - 1)];
+  let elem = arr[getRandomInt(0, arr.length - 1)];
 
   if (elemsCount > 1) {
     for (let i = 1; i <= elemsCount; i++) {
-      message += ` ${arr[getRandomInt(0, arr.length - 1)]}`;
+      elem += ` ${arr[getRandomInt(0, arr.length - 1)]}`;
     }
   }
 
-  return message;
+  return elem;
 }
 
 function uniqueIdGenerator(min, max){
@@ -85,16 +85,11 @@ function getLoremDescription(length = 250, cutByWord = false) {
 
   let sliceOfText = loremText.slice(0, Math.round(length));
 
-  /*
-    loremText[sliceOfText.length] - если за местом, в котором мы обрезали
-    текст идет пробел, значит можно считать, что мы итак обрезали текст
-    не где-то посреди слова, а указанный размер попал четко на окончание
-    слова, в таком случае - дополнительных преобразований не требуется
-  */
   if (cutByWord && loremText[sliceOfText.length] !== ' ') {
     const lastWordInSlicedText = sliceOfText.split(' ').at(-1);
+    const lastWordIndex = sliceOfText.lastIndexOf(lastWordInSlicedText);
 
-    sliceOfText = sliceOfText.slice(0, sliceOfText.lastIndexOf(lastWordInSlicedText)).trimEnd();
+    sliceOfText = sliceOfText.slice(0, lastWordIndex).trimEnd();
   }
 
   return sliceOfText;
@@ -118,7 +113,7 @@ function getComment(){
   return {
     id: getUniqueCommentId(), // Случайное уникальное число
     avatar: `/img/avatar-${getRandomInt(1, 6)}.svg`, // Цифра - случайное число от 1 до 6.
-    message: getRandomElemsFromArr(MESSAGES, getRandomInt(1, 2)),
+    message: getRandomElemsFromArr(MESSAGES, getRandomInt(1, 2)), // Комментарий из 1-2 случайных предложений
     name: getRandomElemsFromArr(NAMES), // Имя автора также должно генерироваться случайно
   };
 }
