@@ -4,14 +4,21 @@ function checkStringLength(string, length) {
 
 function isPalindrome(string) {
   const normalizedString = string.toLowerCase().replaceAll(' ', '');
-  const reversedString = normalizedString.split('').reverse().join(''); // v. 2
-  // const reversedString = [...normalizedString].reverse().join(''); // v. 1 -slowerпше
 
-  return normalizedString === reversedString;
+  // Быстрее с точки зрения алгоритмической сложности
+  for (let i = 0; i < normalizedString.length; i++) {
+    const lastIndex = normalizedString.length - 1 - i;
+
+    if (normalizedString[i] !== normalizedString[lastIndex]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
-function getNumsgitFromStr(text) {
-  const result = typeof(text) === 'number' ? String(text) : text.replaceAll(' ', '');
+function getNumFromStr(text) {
+  const result = text.toString().replace(/\D/g, '');
 
-  return result.replace(/\D/g, '') || NaN;
+  return parseInt(result, 10) || NaN;
 }
