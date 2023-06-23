@@ -55,5 +55,6 @@ function checkMeetTimeInBounds(workDayStartTime, workDayEndTime, meetingStartTim
   meetingDuration = getMinutesFromTime(meetingStartTime) + meetingDuration;
   workDayStartTime = getMinutesFromTime(workDayStartTime);
   workDayEndTime = getMinutesFromTime(workDayEndTime);
+
   return meetingDuration >= workDayStartTime && meetingDuration <= workDayEndTime;
 }
