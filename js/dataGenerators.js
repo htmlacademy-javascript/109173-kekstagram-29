@@ -1,4 +1,9 @@
 import {getRandomInt, getRandomElemsFromArr, uniqueIdGenerator, getLoremDescription} from './utils.js';
+// Настройки
+const PHOTOS_COUNT = 25;
+const Likes = {MIN: 15, MAX: 200};
+const MAX_DESCRIPTION_LENGTH = 80;
+const MAX_COMMENTS_COUNT = 30;
 
 const MESSAGES = [
   'Всё отлично!',
@@ -21,12 +26,6 @@ const NAMES = [
   'White Russian'
 ];
 
-// Настройки
-const PHOTOS_COUNT = 25;
-const Likes = {MIN: 15, MAX: 200};
-const MAX_DESCRIPTION_LENGTH = 80;
-const MAX_COMMENTS_COUNT = 30;
-
 // Функции генерации данных
 const getUniquePhotoId = uniqueIdGenerator(1, PHOTOS_COUNT);
 const getUniqueCommentId = uniqueIdGenerator(1, PHOTOS_COUNT * MAX_COMMENTS_COUNT);
@@ -42,6 +41,10 @@ function createPhoto() {
   };
 }
 
+function createPhotos() {
+  return Array.from({length: PHOTOS_COUNT}, createPhoto);
+}
+
 function getComment(){
   return {
     id: getUniqueCommentId(), // Случайное уникальное число
@@ -51,4 +54,4 @@ function getComment(){
   };
 }
 
-export {createPhoto};
+export {createPhotos};
