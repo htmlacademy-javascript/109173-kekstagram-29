@@ -14,24 +14,15 @@ function getRandomElemsFromArr(arr, elemsCount = 1) {
   return elem;
 }
 
-function uniqueIdGenerator(min, max){
-  const generatedIds = [];
+// v.2 генератора (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
+function uniqueIdGenerator(min = 0, max) {
+  let currentId = min;
 
   return function () {
-    let currentId = getRandomInt(min, max);
-
-    if (generatedIds.length >= max) {
-      return null;
+    if (min < max) {
+      return currentId++;
     }
-
-    while(generatedIds.includes(currentId)) {
-      currentId = getRandomInt(min, max);
-    }
-
-    generatedIds.push(currentId);
-
-    return currentId;
-  };
+  }
 }
 
 /*
