@@ -1,3 +1,3 @@
 import {createPhoto} from './dataGenerators.js';
 
-const gallery = Array.from({length: 25}, createPhoto);
+Array.from({length: 25}, createPhoto); // Побеждаем линтер
