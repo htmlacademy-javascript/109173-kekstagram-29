@@ -32,7 +32,7 @@ function minutesToHours(minutes) {
   const hoursMinutes = {h: 0, m: minutes};
 
   if (minutes >= 60) {
-    let hours = minutes / 60;
+    const hours = minutes / 60;
 
     hoursMinutes.h = parseInt(hours, 10);
     hoursMinutes.m = hours % 1 * 60;
