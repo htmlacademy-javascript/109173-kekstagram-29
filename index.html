@@ -11,6 +11,7 @@
   <!-- Scripts -->
   <script async src="/js/functions.js"></script>
   <script async src="/js/main.js" type="module"></script>
+  <script async src="/js/photosModal.js" type="module"></script>
 </head>
 
 <body>
@@ -231,5 +232,16 @@
     </section>
   </template>
 
+  <!-- Шаблон комментариев -->
+  <template id="comment">
+    <li class="social__comment">
+        <img
+            class="social__picture"
+            src="{{аватар}}"
+            alt="{{имя комментатора}}"
+            width="35" height="35">
+        <p class="social__text">{{текст комментария}}</p>
+    </li>
+  </template>
 </body>
 </html>
