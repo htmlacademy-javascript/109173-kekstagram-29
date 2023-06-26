@@ -7,8 +7,6 @@ function drawThumbnail({url, description, likes, comments}) {
   }
 
   const thumbnailElem = thumbnailTemplate.cloneNode(true);
-  const thumbnail = document.createDocumentFragment();
-
   const imageLink = thumbnailElem.querySelector('a.picture');
   imageLink.href = url;
 
@@ -22,6 +20,7 @@ function drawThumbnail({url, description, likes, comments}) {
   const likesContainer = thumbnailElem.querySelector('.picture__likes');
   likesContainer.textContent = likes.length || 0;
 
+  const thumbnail = document.createDocumentFragment();
   thumbnail.append(thumbnailElem);
   picturesContainer.append(thumbnail);
 }
