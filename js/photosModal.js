@@ -2,7 +2,6 @@ import {isEscapeKey} from './utils.js';
 
 const fullScreenContainer = document.querySelector('.big-picture');
 const closeFullScreenBtn = document.querySelector('.big-picture__cancel');
-const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 function onKeyDownHandler(evt) {
   if(isEscapeKey(evt)) {
@@ -14,10 +13,8 @@ function onKeyDownHandler(evt) {
 function openFullPhoto(evt) {
   evt.preventDefault();
 
-  // Запрещаем прокрутку body
-  document.body.classList.add('modal-open');
-
-  fullScreenContainer.classList.remove('hidden');
+  document.body.classList.add('modal-open'); // Запрещаем прокрутку body
+  fullScreenContainer.classList.remove('hidden'); // Открываем попап с фото
 
   document.addEventListener('keydown', onKeyDownHandler);
   closeFullScreenBtn.addEventListener('click', closeFullPhotto);
@@ -25,7 +22,6 @@ function openFullPhoto(evt) {
 
 function closeFullPhotto() {
   fullScreenContainer.classList.add('hidden');
-
   document.body.classList.remove('modal-open');
 
   document.removeEventListener('keydown', onKeyDownHandler);

@@ -2,6 +2,7 @@ const Avatar = {WIDTH: 35, HEIGHT: 35};
 const commentsTemplate = document.querySelector('#comment').content;
 const showedComments = document.querySelector('.social__comments').children;
 const commentsCounter = document.querySelector('.social__comment-count');
+const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 function drawComment(container, {avatar, name, message}) {
   const commentElem = commentsTemplate.cloneNode(true);
@@ -36,6 +37,11 @@ function getCommentsRenderer(comments, container, commentsCount = comments.lengt
       drawComment(container, commentsArr[i]);
     }
 
+    // Если все комментарии загружены - скрыть кнопку загрузки
+    if (isAllCommentsLoaded(comments.length)) {
+      loadMoreCommentsBtn.classList.add('hidden');
+    }
+
     startIndex += commentsCount;
     updateCommentsCounter();
   };
@@ -49,4 +55,8 @@ function updateCommentsCounter() {
   commentsCounter.firstChild.textContent = `${getShowedCommentsCount()} из `;
 }
 
-export {getCommentsRenderer, updateCommentsCounter};
+function isAllCommentsLoaded(commentsCount) {
+  return getShowedCommentsCount() === commentsCount;
+}
+
+export {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded};

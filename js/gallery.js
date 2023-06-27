@@ -1,7 +1,14 @@
+/*
+  TODO:
+  1) Не удаляется обработчик собитый клика на кнопку "загрузить еще" в блоке комментариев.
+  Из за этого часто можно загрузить больше комментариев, чем есть, т.к. срабатывает
+  больше 1 обработчика событий за раз.
+*/
+
 import {createPhotos} from './dataGenerators.js';
 import {drawThumbnail} from './drawThumbnails.js';
 import {openFullPhoto} from './photosModal.js';
-import {getCommentsRenderer, updateCommentsCounter} from './drawComments.js';
+import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './drawComments.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, отображающихся за 1 раз
 
@@ -36,7 +43,14 @@ function addThumnailClickHandler(thumbnail, {url, likes, comments}) {
       drawComments();
 
       loadMoreCommentsBtn.classList.remove('hidden'); // Перенести в showComments
-      loadMoreCommentsBtn.addEventListener('click', drawComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
+      // loadMoreCommentsBtn.addEventListener('click', drawComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
+      loadMoreCommentsBtn.onclick = drawComments; // Временное решение, т.к. непонятно пока, как удалять обработчик в другом модуле
+
+    }
+
+    // Если все комментарии загружены - скрыть кнопку загрузки
+    if (isAllCommentsLoaded(comments.length)) {
+      loadMoreCommentsBtn.classList.add('hidden');
     }
 
     updateCommentsCounter(); // Обновляем счетчик комментариев
