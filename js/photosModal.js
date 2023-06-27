@@ -1,7 +1,9 @@
 import {isEscapeKey} from './utils.js';
+import {showMoreComments} from './drawComments.js';
 
 const fullScreenContainer = document.querySelector('.big-picture');
 const closeFullScreenBtn = document.querySelector('.big-picture__cancel');
+const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 function onKeyDownHandler(evt) {
   if(isEscapeKey(evt)) {
@@ -29,6 +31,7 @@ function closeFullPhotto() {
 
   document.removeEventListener('keydown', onKeyDownHandler);
   closeFullScreenBtn.removeEventListener('click', closeFullPhotto);
+  loadMoreCommentsBtn.removeEventListener('click', showMoreComments); // При закрытии попапа - удаляем обработчик, установленный в ./gallery.js
 }
 
 export {openFullPhoto};

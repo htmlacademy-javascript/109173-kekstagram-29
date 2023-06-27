@@ -1,7 +1,7 @@
 import {createPhotos} from './dataGenerators.js';
 import {drawThumbnail} from './drawThumbnails.js';
 import {openFullPhoto} from './photosModal.js';
-import {getCommentsRenderer} from './drawComments.js';
+import {getCommentsRenderer, showMoreComments} from './drawComments.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, отображающихся за 1 раз
 const photosData = createPhotos(); // Генерируем рандомные данные о фотографиях
@@ -15,28 +15,32 @@ for (const photoDataElem of photosData) {
   addThumnailClickHandler(thumbnail, photoDataElem);
 }
 
-function addThumnailClickHandler(thumbnail, data) {
-  thumbnail.addEventListener('click', (evt) => {
-    loadDataToModal(data); // Загружаем данные фото, по которому кликнули
-    openFullPhoto(evt); // Открываем модальное окно
-  });
-}
-
-// Функция загрузки данных о фотографии в модальное окно
 const fullPhotoContainer = document.querySelector('.big-picture__img > img');
 const likesCountContainer = document.querySelector('.likes-count');
 const commentsCountContainer = document.querySelector('.comments-count');
 const commentsContainer = document.querySelector('.social__comments');
 
-function loadDataToModal(data) {
-  fullPhotoContainer.src = data.url;
-  likesCountContainer.textContent = data.likes || 0;
-  commentsCountContainer.textContent = data.comments.length || 0;
+function addThumnailClickHandler(thumbnail, {url, likes, comments}) {
+  thumbnail.addEventListener('click', (evt) => {
+    // Загружаем данные фото, по которому кликнули
+    fullPhotoContainer.src = url;
+    likesCountContainer.textContent = likes || 0;
+    commentsCountContainer.textContent = comments.length || 0;
 
-  if (data.comments.length > 0) {
-    commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
+    if (comments.length > 0) {
+      commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
 
-    const drawComments = getCommentsRenderer(data.comments, commentsContainer, COMMENTS_PER_PAGE);
-    drawComments();
-  }
+      const drawComments = getCommentsRenderer();
+      drawComments(comments, commentsContainer, 0, COMMENTS_PER_PAGE);
+    }
+
+    openFullPhoto(evt); // Открываем модальное окно
+    addShowMoreCommentsHandler(); // Добавляем обработчик на кнопку загрузки доп. комментариев
+  });
+}
+
+const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
+
+function addShowMoreCommentsHandler() {
+  loadMoreCommentsBtn.addEventListener('click', showMoreComments);
 }

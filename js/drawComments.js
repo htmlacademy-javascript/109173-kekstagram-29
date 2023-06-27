@@ -20,23 +20,29 @@ function drawComment(container, {avatar, name, message}) {
 }
 
 // Функция для отрисовки определенного количества комментариев
-function getCommentsRenderer(comments, container, commentsCount) {
-  let startIndex = 0;
+function getCommentsRenderer() {
+  return function (comments, container, startIndex, commentsCount) {
+    if (comments.length <= 0) {
+      return;
+    }
 
-  // Проверяем выход за пределы массива
-  if (comments[startIndex + commentsCount] === 'undefined') {
-    commentsCount = comments.slice(startIndex - 1).length;
-  }
+    commentsCount = (commentsCount > comments.length) ? comments.length : commentsCount;
 
-  return function () {
+    // Проверяем выход за пределы массива
+    if (comments[startIndex + commentsCount] === 'undefined') {
+      commentsCount = comments.slice(startIndex - 1).length;
+    }
+
     for (let i = 0; i < commentsCount; i++) {
       const currentCommentIndex = startIndex + i;
 
       drawComment(container, comments[currentCommentIndex]);
     }
-
-    startIndex += commentsCount
   };
 }
 
-export {drawComment, getCommentsRenderer};
+function showMoreComments() {
+  console.log('Show more comments');
+}
+
+export {drawComment, getCommentsRenderer, showMoreComments};
