@@ -1,7 +1,7 @@
 import {createPhotos} from './dataGenerators.js';
 import {drawThumbnail} from './drawThumbnails.js';
 import {openFullPhoto} from './photosModal.js';
-import {getCommentsRenderer, showMoreComments} from './drawComments.js';
+import {getCommentsRenderer, updateCommentsCounter} from './drawComments.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, отображающихся за 1 раз
 
@@ -9,7 +9,7 @@ const photosData = createPhotos(); // Генерируем рандомные д
 
 const fullPhotoContainer = document.querySelector('.big-picture__img > img');
 const likesCountContainer = document.querySelector('.likes-count');
-const commentsCountContainer = document.querySelector('.comments-count');
+const commentsCounter = document.querySelector('.comments-count');
 const commentsContainer = document.querySelector('.social__comments');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
@@ -28,17 +28,18 @@ function addThumnailClickHandler(thumbnail, {url, likes, comments}) {
     // Загружаем данные фото, по которому кликнули
     fullPhotoContainer.src = url;
     likesCountContainer.textContent = likes || 0;
-    commentsCountContainer.textContent = comments.length || 0;
+    commentsCounter.textContent = comments.length || 0;
+    commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
 
     if (comments.length > 0) {
-      commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
+      const drawComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
+      drawComments();
 
-      const drawComments = getCommentsRenderer();
-      drawComments(comments, commentsContainer, 0, COMMENTS_PER_PAGE);
-
-      loadMoreCommentsBtn.addEventListener('click', showMoreComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
+      loadMoreCommentsBtn.classList.remove('hidden'); // Перенести в showComments
+      loadMoreCommentsBtn.addEventListener('click', drawComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
     }
 
+    updateCommentsCounter(); // Обновляем счетчик комментариев
     openFullPhoto(evt); // Открываем модальное окно
   });
 }
