@@ -17,6 +17,8 @@ function drawComment(container, {avatar, name, message}) {
   comment.append(commentElem);
 
   container.append(comment);
+
+  updateCommentsCounter();
 }
 
 // Функция для отрисовки определенного количества комментариев
@@ -42,7 +44,18 @@ function getCommentsRenderer() {
 }
 
 function showMoreComments() {
-  console.log('Show more comments');
+  console.log(arguments);
+  // Получаем массив комментарией
+  // Индекс, с которого необходимо начать
+  // Выводим (не забыть про проверку выхода за пределы массива)
+}
+
+function getShowedCommentsCount() {
+  return document.querySelectorAll('.social__comment').length;
+}
+
+function updateCommentsCounter() {
+  document.querySelector('.social__comment-count').firstChild.textContent = `${getShowedCommentsCount()} из `;
 }
 
 export {drawComment, getCommentsRenderer, showMoreComments};

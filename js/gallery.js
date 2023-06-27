@@ -4,7 +4,14 @@ import {openFullPhoto} from './photosModal.js';
 import {getCommentsRenderer, showMoreComments} from './drawComments.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, отображающихся за 1 раз
+
 const photosData = createPhotos(); // Генерируем рандомные данные о фотографиях
+
+const fullPhotoContainer = document.querySelector('.big-picture__img > img');
+const likesCountContainer = document.querySelector('.likes-count');
+const commentsCountContainer = document.querySelector('.comments-count');
+const commentsContainer = document.querySelector('.social__comments');
+const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 // Отрисовываем фотографии на странице
 for (const photoDataElem of photosData) {
@@ -15,11 +22,7 @@ for (const photoDataElem of photosData) {
   addThumnailClickHandler(thumbnail, photoDataElem);
 }
 
-const fullPhotoContainer = document.querySelector('.big-picture__img > img');
-const likesCountContainer = document.querySelector('.likes-count');
-const commentsCountContainer = document.querySelector('.comments-count');
-const commentsContainer = document.querySelector('.social__comments');
-
+// Обработчик событий клика по миниатюре
 function addThumnailClickHandler(thumbnail, {url, likes, comments}) {
   thumbnail.addEventListener('click', (evt) => {
     // Загружаем данные фото, по которому кликнули
@@ -32,15 +35,10 @@ function addThumnailClickHandler(thumbnail, {url, likes, comments}) {
 
       const drawComments = getCommentsRenderer();
       drawComments(comments, commentsContainer, 0, COMMENTS_PER_PAGE);
+
+      loadMoreCommentsBtn.addEventListener('click', showMoreComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
     }
 
     openFullPhoto(evt); // Открываем модальное окно
-    addShowMoreCommentsHandler(); // Добавляем обработчик на кнопку загрузки доп. комментариев
   });
-}
-
-const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
-
-function addShowMoreCommentsHandler() {
-  loadMoreCommentsBtn.addEventListener('click', showMoreComments);
 }
