@@ -1,5 +1,7 @@
 const Avatar = {WIDTH: 35, HEIGHT: 35};
 const commentsTemplate = document.querySelector('#comment').content;
+const showedComments = document.querySelector('.social__comments').children;
+const commentsCounter = document.querySelector('.social__comment-count');
 
 function drawComment(container, {avatar, name, message}) {
   const commentElem = commentsTemplate.cloneNode(true);
@@ -51,11 +53,11 @@ function showMoreComments() {
 }
 
 function getShowedCommentsCount() {
-  return document.querySelectorAll('.social__comment').length;
+  return showedComments.length;
 }
 
 function updateCommentsCounter() {
-  document.querySelector('.social__comment-count').firstChild.textContent = `${getShowedCommentsCount()} из `;
+  commentsCounter.firstChild.textContent = `${getShowedCommentsCount()} из `;
 }
 
-export {drawComment, getCommentsRenderer, showMoreComments};
+export {getCommentsRenderer, showMoreComments};
