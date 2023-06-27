@@ -17,7 +17,7 @@ for (const photoDataElem of photosData) {
 function addThumnailClickHandler(thumbnail, data) {
   thumbnail.addEventListener('click', (evt) => {
     loadDataToModal(data); // Загружаем данные фото, по которому кликнули
-    openFullPhoto(evt);
+    openFullPhoto(evt); // Открываем модальное окно
   });
 }
 
@@ -25,7 +25,6 @@ function addThumnailClickHandler(thumbnail, data) {
 const fullPhotoContainer = document.querySelector('.big-picture__img > img');
 const likesCountContainer = document.querySelector('.likes-count');
 const commentsCountContainer = document.querySelector('.comments-count');
-
 const commentsContainer = document.querySelector('.social__comments');
 
 function loadDataToModal(data) {
@@ -34,6 +33,8 @@ function loadDataToModal(data) {
   commentsCountContainer.textContent = data.comments.length || 0;
 
   if (data.comments.length > 0) {
+    commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
+
     for (const comment of data.comments) {
       drawComment(commentsContainer, comment);
     }
