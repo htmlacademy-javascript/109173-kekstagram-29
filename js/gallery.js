@@ -1,8 +1,9 @@
 import {createPhotos} from './dataGenerators.js';
 import {drawThumbnail} from './drawThumbnails.js';
 import {openFullPhoto} from './photosModal.js';
-import {drawComment} from './drawComments.js';
+import {getCommentsRenderer} from './drawComments.js';
 
+const COMMENTS_PER_PAGE = 5; // Количество комментариев, отображающихся за 1 раз
 const photosData = createPhotos(); // Генерируем рандомные данные о фотографиях
 
 // Отрисовываем фотографии на странице
@@ -35,8 +36,7 @@ function loadDataToModal(data) {
   if (data.comments.length > 0) {
     commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
 
-    for (const comment of data.comments) {
-      drawComment(commentsContainer, comment);
-    }
+    const drawComments = getCommentsRenderer(data.comments, commentsContainer, COMMENTS_PER_PAGE);
+    drawComments();
   }
 }

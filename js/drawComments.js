@@ -1,7 +1,7 @@
 const Avatar = {WIDTH: 35, HEIGHT: 35};
 const commentsTemplate = document.querySelector('#comment').content;
 
-function drawComment(commentContainer, {avatar, name, message}) {
+function drawComment(container, {avatar, name, message}) {
   const commentElem = commentsTemplate.cloneNode(true);
 
   const commentAvatar = commentElem.querySelector('.social__picture');
@@ -16,7 +16,27 @@ function drawComment(commentContainer, {avatar, name, message}) {
   const comment = document.createDocumentFragment();
   comment.append(commentElem);
 
-  commentContainer.append(comment);
+  container.append(comment);
 }
 
-export {drawComment};
+// Функция для отрисовки определенного количества комментариев
+function getCommentsRenderer(comments, container, commentsCount) {
+  let startIndex = 0;
+
+  // Проверяем выход за пределы массива
+  if (comments[startIndex + commentsCount] === 'undefined') {
+    commentsCount = comments.slice(startIndex - 1).length;
+  }
+
+  return function () {
+    for (let i = 0; i < commentsCount; i++) {
+      const currentCommentIndex = startIndex + i;
+
+      drawComment(container, comments[currentCommentIndex]);
+    }
+
+    startIndex += commentsCount
+  };
+}
+
+export {drawComment, getCommentsRenderer};

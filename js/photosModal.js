@@ -13,9 +13,7 @@ function onKeyDownHandler(evt) {
 function openFullPhoto(evt) {
   evt.preventDefault();
 
-  // Прячем счетчик и блок загрузки комментариев. Запрещаем прокрутку body
-  document.querySelector('.social__comment-count').classList.add('hidden');
-  document.querySelector('.comments-loader').classList.add('hidden');
+  // Запрещаем прокрутку body
   document.body.classList.add('modal-open');
 
   fullScreenContainer.classList.remove('hidden');
