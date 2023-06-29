@@ -56,4 +56,11 @@ function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
+// Validators
+function isValidHashTag(hashTagStr) {
+  const regex = /^#[\w\dа-яА-Я]{1,19}$/gmi;
+
+  return regex.test(hashTagStr);
+}
+
 export {getRandomInt, getRandomElemsFromArr, uniqueIdGenerator, getLoremDescription, isEscapeKey};
