@@ -1,5 +1,5 @@
 const thumbnailTemplate = document.querySelector('#picture').content;
-// const picturesContainer = document.querySelector('.pictures.container');
+const picturesContainer = document.querySelector('.pictures.container');
 
 function drawThumbnail({url, description, likes, comments}) {
   if (arguments.length <= 0) {
