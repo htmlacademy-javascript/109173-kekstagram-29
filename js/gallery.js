@@ -4,13 +4,12 @@
   Из за этого часто можно загрузить больше комментариев, чем есть, т.к. срабатывает
   больше 1 обработчика событий за раз.
 */
-
 import {createPhotos} from './dataGenerators.js';
 import {drawThumbnail} from './drawThumbnails.js';
 import {openFullPhoto} from './photosModal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './drawComments.js';
 
-const COMMENTS_PER_PAGE = 5; // Количество комментариев, отображающихся за 1 раз
+const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
 
 const photosData = createPhotos(); // Генерируем рандомные данные о фотографиях
 
@@ -42,10 +41,9 @@ function addThumnailClickHandler(thumbnail, {url, likes, comments}) {
       const drawComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
       drawComments();
 
-      loadMoreCommentsBtn.classList.remove('hidden'); // Перенести в showComments
+      loadMoreCommentsBtn.classList.remove('hidden');
       // loadMoreCommentsBtn.addEventListener('click', drawComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
-      loadMoreCommentsBtn.onclick = drawComments; // Временное решение, т.к. непонятно пока, как удалять обработчик в другом модуле
-
+      loadMoreCommentsBtn.onclick = drawComments; // Временное решение, т.к. непонятно пока, как удалять обработчик при закрытии окна в ./photosModal.js
     }
 
     // Если все комментарии загружены - скрыть кнопку загрузки
