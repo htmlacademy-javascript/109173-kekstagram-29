@@ -63,4 +63,4 @@ function isValidHashTag(hashTagStr) {
   return regex.test(hashTagStr);
 }
 
-export {getRandomInt, getRandomElemsFromArr, uniqueIdGenerator, getLoremDescription, isEscapeKey};
+export {getRandomInt, getRandomElemsFromArr, uniqueIdGenerator, getLoremDescription, isEscapeKey, isValidHashTag};
