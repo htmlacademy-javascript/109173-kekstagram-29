@@ -23,10 +23,7 @@ const NAMES = [
 
 // Настройки
 const PHOTOS_COUNT = 25;
-const Likes = {
-  MIN: 15,
-  MAX: 200
-};
+const Likes = {MIN: 15, MAX: 200};
 const MAX_DESCRIPTION_LENGTH = 80;
 const MAX_COMMENTS_COUNT = 30;
 

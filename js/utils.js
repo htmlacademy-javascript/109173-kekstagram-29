@@ -22,7 +22,7 @@ function uniqueIdGenerator(min = 0, max) {
     if (min < max) {
       return currentId++;
     }
-  }
+  };
 }
 
 /*
