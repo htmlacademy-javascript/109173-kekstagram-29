@@ -1,9 +1,3 @@
-/*
-  TODO:
-  1) Не удаляется обработчик собитый клика на кнопку "загрузить еще" в блоке комментариев.
-  Из за этого часто можно загрузить больше комментариев, чем есть, т.к. срабатывает
-  больше 1 обработчика событий за раз.
-*/
 import {createPhotos} from './dataGenerators.js';
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photosModal.js';
@@ -26,6 +20,7 @@ drawThumbnails(pictData);
 // Добавляем обработчик событий клика по миниатюре через делегирование
 picturesContainer.addEventListener('click', (evt) => {
   evt.preventDefault();
+
   const target = evt.target;
 
   if (target.className !== 'picture__img') {
@@ -40,7 +35,7 @@ picturesContainer.addEventListener('click', (evt) => {
   commentsCounter.textContent = comments.length || 0;
   commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
 
-  if (comments.length > 0) {
+  if (comments.length > 0) { // Отрисовываем комментарии
     const drawComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
     drawComments();
 
