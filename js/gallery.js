@@ -19,13 +19,13 @@ drawThumbnails(pictData);
 
 // Добавляем обработчик событий клика по миниатюре через делегирование
 picturesContainer.addEventListener('click', (evt) => {
-  evt.preventDefault();
-
   const target = evt.target;
 
   if (target.className !== 'picture__img') {
     return;
   }
+
+  evt.preventDefault();
 
   const curPictId = target.dataset.imgId;
   const {url, likes, comments} = pictData[curPictId - 1];
