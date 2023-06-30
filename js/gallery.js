@@ -1,7 +1,7 @@
 import {createPhotos} from './dataGenerators.js';
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photosModal.js';
-import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './drawComments.js';
+import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
 

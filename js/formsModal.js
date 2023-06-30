@@ -14,6 +14,16 @@ function onKeyDownHandler(evt) {
   }
 }
 
+function onDescriptionFocus() {
+  document.removeEventListener('keydown', onKeyDownHandler);
+}
+
+function onDescriptionBlur() {
+  document.addEventListener('keydown', onKeyDownHandler);
+  imgDescription.removeEventListener('focus', onDescriptionFocus);
+  imgDescription.removeEventListener('blur', onDescriptionBlur);
+}
+
 // Функции работы с модальными окнами
 function openImgEditor(evt) {
   evt.preventDefault();
@@ -24,6 +34,10 @@ function openImgEditor(evt) {
 
   document.addEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.addEventListener('click', closeImgEditor);
+
+  // Запрещаем закрывать редактор при фокусе на описании
+  imgDescription.addEventListener('focus', onDescriptionFocus);
+  imgDescription.addEventListener('blur', onDescriptionBlur);
 }
 
 function closeImgEditor() {
