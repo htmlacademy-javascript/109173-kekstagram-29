@@ -1,6 +1,11 @@
 import {isEscapeKey} from './utils.js';
 import {makeScaleBigger, makeScaleSmaller, changeEffectHandler} from './imgEditor.js';
 
+// При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
+const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
+
+const imgParamsContainer = document.querySelector('.img-upload__text');
+
 const uploadedImgEditor = document.querySelector('.img-upload__overlay');
 const closeImgEditorBtn = document.querySelector('.img-upload__cancel');
 
@@ -25,14 +30,24 @@ function onKeyDownHandler(evt) {
   }
 }
 
-function onDescriptionFocus() {
-  document.removeEventListener('keydown', onKeyDownHandler);
+// Запрещаем закрытие редактора изображений при фокусе на определенных элементах
+function onFocusHandler(evt) {
+  const target = evt.target;
+
+  if (PREVENT_ESC_ON_ELEMS.includes(target.className)) {
+    document.removeEventListener('keydown', onKeyDownHandler);
+  }
 }
 
-function onDescriptionBlur() {
+function onBlurHandler(evt) {
+  const target = evt.target;
+
   document.addEventListener('keydown', onKeyDownHandler);
-  imgDescription.removeEventListener('focus', onDescriptionFocus);
-  imgDescription.removeEventListener('blur', onDescriptionBlur);
+
+  if (!PREVENT_ESC_ON_ELEMS.includes(target.className)) {
+    imgParamsContainer.removeEventListener('focusin', onFocusHandler);
+    imgParamsContainer.removeEventListener('focusout', onBlurHandler);
+  }
 }
 
 // Функции работы с модальными окнами
@@ -43,9 +58,9 @@ function openImgEditor(evt) {
   document.addEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.addEventListener('click', closeImgEditor);
 
-  // Запрещаем закрывать редактор при фокусе на описании
-  imgDescription.addEventListener('focus', onDescriptionFocus);
-  imgDescription.addEventListener('blur', onDescriptionBlur);
+  // Запрещаем закрывать редактор при фокусе на определенных элементах
+  imgParamsContainer.addEventListener('focusin', onFocusHandler);
+  imgParamsContainer.addEventListener('focusout', onBlurHandler);
 
   // Работа с размером изображения
   scaleBigger.addEventListener('click', makeScaleBigger);
