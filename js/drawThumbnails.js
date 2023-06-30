@@ -16,7 +16,6 @@ function drawThumbnail({url, description, likes, comments}) {
 
   const commentsContainer = thumbnailElem.querySelector('.picture__comments');
   commentsContainer.textContent = comments.length || 0;
-  commentsContainer.textContent = comments.length || 0;
 
   const likesContainer = thumbnailElem.querySelector('.picture__likes');
   likesContainer.textContent = likes.length || 0;

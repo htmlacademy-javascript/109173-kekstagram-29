@@ -58,7 +58,7 @@ function isEscapeKey(evt) {
 
 // Validators
 function isValidHashTag(hashTagStr) {
-  const regex = /^#[\w\dа-яА-Я]{1,19}$/gmi;
+  const regex = /^#[\w\dа-яА-Я]{1,19}$/gi;
 
   return regex.test(hashTagStr);
 }
