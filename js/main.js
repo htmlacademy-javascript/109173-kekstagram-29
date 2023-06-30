@@ -1,3 +1,9 @@
-import {createPhoto} from './dataGenerators.js';
+import {createPhotos} from './dataGenerators.js';
+import {drawThumbnail} from './drawThumbnails.js';
 
-Array.from({length: 25}, createPhoto); // Побеждаем линтер
+const photosData = createPhotos(); // Генерируем рандомные данные о фотографиях
+
+// Отрисовываем фотографии на странице
+for (const photoDataElem of photosData) {
+  drawThumbnail(photoDataElem);
+}
