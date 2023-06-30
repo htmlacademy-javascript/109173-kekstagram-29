@@ -5,34 +5,41 @@ const FILTERS = {
   chrome: { // Хром
     cssName: 'grayscale',
     initValue: 1,
+    max: 1,
     step: 0.1,
   },
   sepia: { // Сепия
     cssName: 'sepia',
     initValue: 1,
+    max: 1,
     step: 0.1,
   },
   marvin: { // Марвин
     cssName: 'invert',
     initValue: 100,
+    max: 100,
     step: 1,
     units: '%',
   },
   phobos: { // Фобос
     cssName: 'blur',
     initValue: 1,
+    max: 3,
     step: 0.1,
     units: 'px'
   },
   heat: { // Зной
     cssName: 'brightness',
     initValue: 1.5,
+    max: 3,
     step: 0.1,
   },
 };
 
 const editingImage = document.querySelector('.img-upload__preview > img');
 const currentScale = document.querySelector('.scale__control--value');
+const sliderElement = document.querySelector('.effect-level__slider');
+const effectLvl = document.querySelector('.effect-level__value');
 
 // Работа с размерами изображения
 function makeScaleBigger() {
@@ -80,8 +87,34 @@ function setFilter(image, filterName) {
   let currentFilter = '';
 
   if (filterName !== 'none') {
-    const {cssName = '', initValue, step, units = ''} = FILTERS[filterName];
+    const {cssName = '', initValue, max, step, units = ''} = FILTERS[filterName];
+    const sliderOptions = {
+      range: {
+        min: 0,
+        max: max,
+      },
+      start: initValue,
+      step: step,
+      connect: 'lower',
+    };
+
     currentFilter = `${cssName}(${initValue}${units})`;
+
+    // Слайдер изменения величины накладываемого эффекта
+    if (!sliderElement.noUiSlider) {
+      noUiSlider.create(sliderElement, sliderOptions);
+    } else {
+      sliderElement.noUiSlider.updateOptions(sliderOptions);
+    }
+
+    // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
+    sliderElement.noUiSlider.on('update', () => {
+      effectLvl.value = sliderElement.noUiSlider.get();
+
+      image.style.filter = `${cssName}(${effectLvl.value}${units})`;
+    });
+  } else {
+    sliderElement.noUiSlider.destroy();
   }
 
   image.style.filter = currentFilter;
