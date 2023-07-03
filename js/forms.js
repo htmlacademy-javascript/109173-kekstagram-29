@@ -1,5 +1,5 @@
 import {openImgEditor} from './formsModal.js';
-import {hashTags, comment} from './validators.js';
+import {MAX_TAGS_COUNT, MAX_COMMENT_LENGTH, checkTagsSemantics, checkTagsCount, checkTagsUniq, checkComment} from './validators.js';
 
 const imgUploadForm = document.querySelector('.img-upload__form');
 const uploadImgInput = document.querySelector('.img-upload__input');
@@ -13,18 +13,30 @@ uploadImgInput.addEventListener('change', (evt) => {
     errorTextClass: 'img-upload__error'
   });
 
-  // Валидатор хэш-тегов
+  // Валидация хэш-тегов
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
-    hashTags,
-    'Неверно заполнено поле хэш-тегов'
+    checkTagsSemantics,
+    'Хэш-теги должны начинаться с символа # и содержать только буквы/цифры'
+  );
+
+  pristine.addValidator(
+    imgUploadForm.querySelector('.text__hashtags'),
+    checkTagsCount,
+    `К одной фотографии можно добавить не более ${MAX_TAGS_COUNT} хэш-тегов`
+  );
+
+  pristine.addValidator(
+    imgUploadForm.querySelector('.text__hashtags'),
+    checkTagsUniq,
+    'Хэш-теги не могут повторяться'
   );
 
   // Валидатор комментария
   pristine.addValidator(
     imgUploadForm.querySelector('.text__description'),
-    comment,
-    'Слишком длинный комментарий'
+    checkComment,
+    `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов.`
   );
 
   imgUploadForm.addEventListener('submit', (evt) => {
