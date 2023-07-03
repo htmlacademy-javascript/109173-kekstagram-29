@@ -1,5 +1,8 @@
 import {isEscapeKey} from './utils.js';
-import {makeScaleBigger, makeScaleSmaller, changeEffectHandler} from './imgEditor.js';
+import {
+  changeScale,
+  changeEffectHandler
+} from './imgEditor.js';
 
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
 const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
@@ -63,8 +66,8 @@ function openImgEditor(evt) {
   imgParamsContainer.addEventListener('focusout', onBlurHandler);
 
   // Работа с размером изображения
-  scaleBigger.addEventListener('click', makeScaleBigger);
-  scaleSmaller.addEventListener('click', makeScaleSmaller);
+  scaleBigger.addEventListener('click', changeScale);
+  scaleSmaller.addEventListener('click', changeScale);
 
   // Наложение фильтров
   imgEffectsContainer.addEventListener('click', changeEffectHandler);

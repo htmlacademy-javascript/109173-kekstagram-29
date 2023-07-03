@@ -51,6 +51,13 @@ function getLoremDescription(length = 250, cutByWord = false) {
   return sliceOfText;
 }
 
+// Проверка наличия класса в класс-листе
+function hasClass(className, classList) {
+  const classes = Array.from(classList);
+
+  return classes.includes(className);
+}
+
 // Удаление лишних пробелов из строки
 function removeExtraSpaces(str) {
   return str.replace(/\s{2,}/gm, ' ').trim();
@@ -73,6 +80,7 @@ export {
   getRandomElemsFromArr,
   uniqueIdGenerator,
   getLoremDescription,
+  hasClass,
   isEscapeKey,
   isValidHashTag
 };

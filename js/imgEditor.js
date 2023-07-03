@@ -1,3 +1,5 @@
+import {hasClass} from './utils.js';
+
 const Scalable = {MIN: 25, MAX: 100};
 const SCALE_STEP = 25;
 const FILTERS = {
@@ -42,21 +44,19 @@ const sliderElement = document.querySelector('.effect-level__slider');
 const effectLvl = document.querySelector('.effect-level__value');
 
 // Работа с размерами изображения
-function makeScaleBigger() {
+function changeScale(evt) {
+  const target = evt.target;
   let scaleAmount = parseInt(currentScale.value, 10);
-  scaleAmount += SCALE_STEP;
+
+  if (hasClass('scale__control--bigger', target.classList)) {
+    scaleAmount += SCALE_STEP;
+  } else {
+    scaleAmount -= SCALE_STEP;
+  }
 
   if (scaleAmount > Scalable.MAX) {
     scaleAmount = Scalable.MAX;
   }
-
-  currentScale.value = `${scaleAmount}%`;
-  changeImageScale(editingImage, scaleAmount);
-}
-
-function makeScaleSmaller() {
-  let scaleAmount = parseInt(currentScale.value, 10);
-  scaleAmount -= SCALE_STEP;
 
   if (scaleAmount < Scalable.MIN) {
     scaleAmount = Scalable.MIN;
@@ -67,7 +67,7 @@ function makeScaleSmaller() {
 }
 
 function changeImageScale(image, amount) {
-  image.style.scale = amount / 100;
+  image.style.transform = `scale(${amount / 100})`;
 }
 
 // Наложение фильтров
@@ -121,7 +121,6 @@ function setFilter(image, filterName) {
 }
 
 export {
-  makeScaleBigger,
-  makeScaleSmaller,
+  changeScale,
   changeEffectHandler
 };
