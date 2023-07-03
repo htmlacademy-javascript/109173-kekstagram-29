@@ -1,5 +1,19 @@
 import {openImgEditor} from './formsModal.js';
-import {MAX_TAGS_COUNT, MAX_COMMENT_LENGTH, checkTagsSemantics, checkTagsCount, checkTagsUniq, checkComment} from './validators.js';
+import {
+  MAX_TAGS_COUNT,
+  MAX_COMMENT_LENGTH,
+  checkTagsSemantics,
+  checkTagsCount,
+  checkTagsUniq,
+  checkComment
+} from './validators.js';
+
+const ValidatorMessages = {
+  HT_SEMANTICS: 'Хэш-теги должны начинаться с символа # и содержать только буквы/цифры',
+  HT_COUNT: `К одной фотографии можно добавить не более ${MAX_TAGS_COUNT} хэш-тегов`,
+  HT_UNIQ: 'Хэш-теги не могут повторяться',
+  COMM_LENGTH: `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов.`,
+};
 
 const imgUploadForm = document.querySelector('.img-upload__form');
 const uploadImgInput = document.querySelector('.img-upload__input');
@@ -17,26 +31,26 @@ uploadImgInput.addEventListener('change', (evt) => {
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsSemantics,
-    'Хэш-теги должны начинаться с символа # и содержать только буквы/цифры'
+    ValidatorMessages.HT_SEMANTICS
   );
 
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsCount,
-    `К одной фотографии можно добавить не более ${MAX_TAGS_COUNT} хэш-тегов`
+    ValidatorMessages.HT_COUNT
   );
 
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsUniq,
-    'Хэш-теги не могут повторяться'
+    ValidatorMessages.HT_UNIQ
   );
 
   // Валидатор комментария
   pristine.addValidator(
     imgUploadForm.querySelector('.text__description'),
     checkComment,
-    `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов.`
+    ValidatorMessages.COMM_LENGTH
   );
 
   imgUploadForm.addEventListener('submit', (evt) => {
