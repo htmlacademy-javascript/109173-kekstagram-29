@@ -55,8 +55,8 @@ uploadImgInput.addEventListener('change', (evt) => {
     ValidatorMessages.COMM_LENGTH
   );
 
-  imgUploadForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  imgUploadForm.addEventListener('submit', (event) => {
+    event.preventDefault();
 
     // Если форма валидна - отправляем
     if (pristine.validate()) {
