@@ -10,9 +10,7 @@ function onKeyDownHandler(evt) {
 }
 
 // Функции работы с модальными окнами
-function openFullPhoto(evt) {
-  evt.preventDefault();
-
+function openFullPhoto() {
   document.body.classList.add('modal-open'); // Запрещаем прокрутку body
   fullScreenContainer.classList.remove('hidden'); // Открываем попап с фото
 
