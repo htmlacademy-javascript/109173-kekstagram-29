@@ -54,7 +54,7 @@ function onBlurHandler(evt) {
 }
 
 // Функции работы с модальными окнами
-function openImgEditor(evt) {
+function openImgEditor() {
   uploadedImgEditor.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
