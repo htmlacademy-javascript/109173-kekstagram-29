@@ -9,9 +9,11 @@ import {
 } from './validators.js';
 
 const ValidatorMessages = {
+  // Хеш-теги
   HT_SEMANTICS: 'Хэш-теги должны начинаться с символа # и содержать только буквы/цифры',
   HT_COUNT: `К одной фотографии можно добавить не более ${MAX_TAGS_COUNT} хэш-тегов`,
   HT_UNIQ: 'Хэш-теги не могут повторяться',
+  // Комментарии
   COMM_LENGTH: `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов.`,
 };
 
@@ -30,19 +32,19 @@ uploadImgInput.addEventListener('change', (evt) => {
   // Валидация хэш-тегов
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
-    checkTagsSemantics,
+    checkTagsSemantics, // Проверка общей сементики
     ValidatorMessages.HT_SEMANTICS
   );
 
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
-    checkTagsCount,
+    checkTagsCount, // Проверка количества тегов
     ValidatorMessages.HT_COUNT
   );
 
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
-    checkTagsUniq,
+    checkTagsUniq, // Проверка на уникальность
     ValidatorMessages.HT_UNIQ
   );
 

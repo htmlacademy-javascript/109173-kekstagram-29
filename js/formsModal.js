@@ -74,15 +74,18 @@ function openImgEditor(evt) {
 }
 
 function closeImgEditor() {
+  // Закрываем модалку
   uploadedImgEditor.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
+  // Удаляем все подвешенные обработчики
   document.removeEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.removeEventListener('click', closeImgEditor);
 
-  scaleBigger.removeEventListener('click', makeScaleBigger);
-  scaleSmaller.removeEventListener('click', makeScaleSmaller);
+  scaleBigger.removeEventListener('click', changeScale);
+  scaleSmaller.removeEventListener('click', changeScale);
 
+  imgEffectsContainer.removeEventListener('click', changeEffectHandler);
   resetImgEditor();
 }
 
