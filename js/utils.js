@@ -51,4 +51,9 @@ function getLoremDescription(length = 250, cutByWord = false) {
   return sliceOfText;
 }
 
-export {getRandomInt, getRandomElemsFromArr, uniqueIdGenerator, getLoremDescription};
+// Keys
+function isEscapeKey(evt) {
+  return evt.key === 'Escape';
+}
+
+export {getRandomInt, getRandomElemsFromArr, uniqueIdGenerator, getLoremDescription, isEscapeKey};
