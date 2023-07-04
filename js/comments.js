@@ -4,7 +4,7 @@ const showedComments = document.querySelector('.social__comments').children;
 const commentsCounter = document.querySelector('.social__comment-count');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
-function drawComment(container, {avatar, name, message}) {
+function getComment({avatar, name, message}) {
   const commentElem = commentsTemplate.cloneNode(true);
 
   const commentAvatar = commentElem.querySelector('.social__picture');
@@ -19,7 +19,7 @@ function drawComment(container, {avatar, name, message}) {
   const comment = document.createDocumentFragment();
   comment.append(commentElem);
 
-  container.append(comment);
+  return comment;
 }
 
 // Функция для отрисовки определенного количества комментариев
@@ -32,10 +32,13 @@ function getCommentsRenderer(comments, container, commentsCount = comments.lengt
     commentsCount = (commentsCount > comments.length) ? comments.length : commentsCount;
 
     const commentsArr = comments.slice(startIndex, startIndex + commentsCount);
+    const commentsList = document.createDocumentFragment();
 
-    for (let i = 0; i < commentsArr.length; i++) {
-      drawComment(container, commentsArr[i]);
+    for (let i = 0; i < commentsArr.length; i++) { // Собираем нужное кол.-во комментариев в коллекцию
+      commentsList.append(getComment(commentsArr[i]));
     }
+
+    container.append(commentsList); // Добавляем собранные комментарии в DOM
 
     // Если все комментарии загружены - скрыть кнопку загрузки
     if (isAllCommentsLoaded(comments.length)) {

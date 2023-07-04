@@ -26,7 +26,6 @@ function closeFullPhotto() {
 
   document.removeEventListener('keydown', onKeyDownHandler);
   closeFullScreenBtn.removeEventListener('click', closeFullPhotto);
-  // TODO: <------- При закрытии попапа - тут нужно удалять обработчик на "Загрузить еще", установленный в ./gallery.js
 }
 
 export {openFullPhoto};

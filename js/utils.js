@@ -51,9 +51,28 @@ function getLoremDescription(length = 250, cutByWord = false) {
   return sliceOfText;
 }
 
-// Keys
+// Удаление лишних пробелов из строки
+function removeExtraSpaces(str) {
+  return str.replace(/\s{2,}/gm, ' ').trim();
+}
+
+// Проверка клавишь
 function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-export {getRandomInt, getRandomElemsFromArr, uniqueIdGenerator, getLoremDescription, isEscapeKey};
+// Валидаторы
+function isValidHashTag(hashTagStr) {
+  const regex = /^#[\w\dа-яА-Я]{1,19}$/gi;
+
+  return regex.test(hashTagStr);
+}
+
+export {
+  getRandomInt,
+  getRandomElemsFromArr,
+  uniqueIdGenerator,
+  getLoremDescription,
+  isEscapeKey,
+  isValidHashTag
+};
