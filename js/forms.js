@@ -1,4 +1,4 @@
-import {openImgEditor} from './formsModal.js';
+import {openImgEditor, closeImgEditor} from './formsModal.js';
 import {
   MAX_TAGS_COUNT,
   MAX_COMMENT_LENGTH,
@@ -7,6 +7,8 @@ import {
   checkTagsUniq,
   checkComment
 } from './validators.js';
+import {sendData} from './serverApi.js';
+import {showError, showSuccess} from './utils.js';
 
 const ValidatorMessages = {
   // Хеш-теги
@@ -17,8 +19,14 @@ const ValidatorMessages = {
   COMM_LENGTH: `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов.`,
 };
 
+const SubmitBtnText = {
+  BASE: 'Опубликовать',
+  PUBLISHING: 'Публикуем'
+};
+
 const imgUploadForm = document.querySelector('.img-upload__form');
 const uploadImgInput = document.querySelector('.img-upload__input');
+const submitBtn = document.querySelector('.img-upload__submit');
 
 uploadImgInput.addEventListener('change', (evt) => {
   const pristine = new Pristine(imgUploadForm, {
@@ -58,12 +66,32 @@ uploadImgInput.addEventListener('change', (evt) => {
   imgUploadForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
+    const targetForm = event.target;
+
     // Если форма валидна - отправляем
     if (pristine.validate()) {
-      imgUploadForm.submit();
+      blockSendBtn();
+      sendData(new FormData(targetForm))
+        .then(() => showSuccess('Данные успешно отправлены'))
+        .catch(() => showError('Ошибка отправки данных'))
+        .finally(() => {
+          unblockSendBtn();
+          closeImgEditor();
+          pristine.reset();
+        });
     }
   });
 
   // Открываем редактор изображения
   openImgEditor(evt);
 });
+
+function blockSendBtn() {
+  submitBtn.disabled = true;
+  submitBtn.textContent = SubmitBtnText.PUBLISHING;
+}
+
+function unblockSendBtn() {
+  submitBtn.disabled = false;
+  submitBtn.textContent = SubmitBtnText.BASE;
+}

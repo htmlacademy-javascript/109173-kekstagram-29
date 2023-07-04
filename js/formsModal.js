@@ -1,7 +1,8 @@
 import {isEscapeKey} from './utils.js';
 import {
   changeScale,
-  changeEffectHandler
+  changeEffectHandler,
+  destroySlider
 } from './imgEditor.js';
 
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
@@ -91,7 +92,7 @@ function closeImgEditor() {
 
 function resetImgEditor() {
   // Сбрасываем размер изображения
-  editingImage.style.scale = '';
+  editingImage.style.transform = '';
   currentScale.value = '100%';
 
   // Сбрасываем значения полей
@@ -105,7 +106,11 @@ function resetImgEditor() {
   }
 
   imgEffectsBtns[0].checked = true;
+  destroySlider();
 }
 
-export {openImgEditor};
+export {
+  openImgEditor,
+  closeImgEditor
+};
 

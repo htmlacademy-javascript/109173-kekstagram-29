@@ -3,6 +3,7 @@ import {getData} from './serverApi.js';
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photosModal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
+import {showError} from './utils.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
 
@@ -28,7 +29,7 @@ getData()
         return;
       }
 
-      evt.preventDefault();
+      evt.preventDefault(); // Предотвращаем открытие ссылки
 
       // Загружаем данные о фотографии, по которой кликнули, в модальное окно
       const curPictId = target.dataset.imgId;
@@ -57,4 +58,7 @@ getData()
       updateCommentsCounter(); // Обновляем счетчик комментариев
       openFullPhoto(evt); // Открываем модальное окно
     });
+  })
+  .catch((error) => {
+    showError(error);
   });

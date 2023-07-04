@@ -1,3 +1,5 @@
+import {showError} from './utils.js';
+
 const BASE_URL = 'https://29.javascript.pages.academy/kekstagram';
 const Routes = {
   GET_DATA: '/data',

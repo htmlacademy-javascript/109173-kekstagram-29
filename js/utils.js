@@ -1,3 +1,12 @@
+const MESSAGE_SHOW_TIMER = 5000;
+const BASE_MESSAGE_CLASS = 'system-messages__message';
+const MessageClasses = {
+  ERROR: 'system-messages__message--error',
+  SUCCESS: 'system-messages__message--success'
+};
+
+const messagesContainer = document.querySelector('.system-messages');
+
 function getRandomInt(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
@@ -75,6 +84,27 @@ function isValidHashTag(hashTagStr) {
   return regex.test(hashTagStr);
 }
 
+// Вывод сообщений пользователю
+function showMessage(messageText, messageClass) {
+  const message = document.createElement('li');
+  message.textContent = messageText;
+  message.classList.add(BASE_MESSAGE_CLASS);
+  message.classList.add(messageClass);
+
+  messagesContainer.prepend(message);
+
+  // Скрываем сообщение через MESSAGE_SHOW_TIMER миллисекунд
+  setTimeout(() => message.remove(), MESSAGE_SHOW_TIMER);
+}
+
+function showError(errorText) {
+  showMessage(errorText, MessageClasses.ERROR);
+}
+
+function showSuccess(successText) {
+  showMessage(successText, MessageClasses.SUCCESS);
+}
+
 export {
   getRandomInt,
   getRandomElemsFromArr,
@@ -82,5 +112,7 @@ export {
   getLoremDescription,
   hasClass,
   isEscapeKey,
-  isValidHashTag
+  isValidHashTag,
+  showError,
+  showSuccess
 };

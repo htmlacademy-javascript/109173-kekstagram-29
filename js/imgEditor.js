@@ -120,7 +120,14 @@ function setFilter(image, filterName) {
   image.style.filter = currentFilter;
 }
 
+function destroySlider() {
+  if (sliderElement.noUiSlider) {
+    sliderElement.noUiSlider.destroy();
+  }
+}
+
 export {
   changeScale,
-  changeEffectHandler
+  changeEffectHandler,
+  destroySlider
 };
