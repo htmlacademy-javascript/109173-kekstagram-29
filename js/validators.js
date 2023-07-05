@@ -52,6 +52,10 @@ function checkTagsUniq(tagsStr) {
 }
 
 function getNormallizedHashTags(tagsStr) {
+  if (tagsStr.length <= 0) {
+    return [];
+  }
+
   const tagsArr = tagsStr.trim().split(' ');
   const tags = tagsArr.map((tag) => tag.toLowerCase());
   return tags;

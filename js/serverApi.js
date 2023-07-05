@@ -1,5 +1,3 @@
-import {showError} from './utils.js';
-
 const BASE_URL = 'https://29.javascript.pages.academy/kekstagram';
 const Routes = {
   GET_DATA: '/data',
@@ -10,7 +8,7 @@ const Methods = {
   POST: 'POST'
 };
 const DataErrors = {
-  LOAD: 'Не удалось загрузить данные с сервера. Попробуйте позднее.',
+  LOAD: 'Не удалось загрузить данные с сервера. Перезагрузите страницу или попробуйте позднее.',
   SEND: 'Не удалось отправить данные на сервер. Попробуйте повторить отправку.'
 };
 

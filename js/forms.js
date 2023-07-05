@@ -28,8 +28,10 @@ const imgUploadForm = document.querySelector('.img-upload__form');
 const uploadImgInput = document.querySelector('.img-upload__input');
 const submitBtn = document.querySelector('.img-upload__submit');
 
+let pristine = null; // Не лучшее решение, но нужно очищать валидатор в formsModal.js, пока не придумал, как сделать иначе
+
 uploadImgInput.addEventListener('change', (evt) => {
-  const pristine = new Pristine(imgUploadForm, {
+  pristine = new Pristine(imgUploadForm, {
     classTo: 'img-upload__field-wrapper',
     errorClass: 'img-upload__item--invalid',
     errorTextParent: 'img-upload__field-wrapper',
@@ -95,3 +97,5 @@ function unblockSendBtn() {
   submitBtn.disabled = false;
   submitBtn.textContent = SubmitBtnText.BASE;
 }
+
+export {pristine};

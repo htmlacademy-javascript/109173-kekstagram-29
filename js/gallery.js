@@ -4,6 +4,7 @@ import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photosModal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
 import {showError} from './utils.js';
+import './forms.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
 
