@@ -30,25 +30,20 @@ const GalleryFilter = {
       const filterId = target.id;
 
       switch(filterId) {
-        case FilterIDs.DEFAULT: { // Все фото, по-умолчанию
-          const filter = debounce(() => settings.renderer(settings.photosData));
-
-          filter();
-
-          break;
-        }
-
         case FilterIDs.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
           const randomPictures = this.getRandPictures(settings.photosData);
-          const filter = debounce(() => settings.renderer(randomPictures));
-
-          filter();
-
+          debounce(() => settings.renderer(randomPictures))();
           break;
         }
 
         case FilterIDs.DISCUSSED: { // Фотографии, отсортированные по количеству лайков
-          console.log('DISCUSSED');
+          const mostDiscussed = this.getSortedByLikes(settings.photosData);
+          debounce(() => settings.renderer(mostDiscussed))();
+          break;
+        }
+
+        default: {
+          debounce(() => settings.renderer(settings.photosData))();
           break;
         }
       }
@@ -57,6 +52,12 @@ const GalleryFilter = {
 
   getRandPictures(picturesArr, picturesCount = RANDOM_PICTURES_COUNT) {
     return getRandUniqElemsFromArr(picturesArr, picturesCount);
+  },
+
+  getSortedByLikes(picturesArr) {
+    const result = picturesArr.slice();
+
+    return result.sort((picA, picB) => picB.likes - picA.likes);
   }
 };
 

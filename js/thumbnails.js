@@ -19,7 +19,7 @@ function getThumbnail({id, url, description, likes, comments}) {
   commentsContainer.textContent = comments.length || 0;
 
   const likesContainer = thumbnailElem.querySelector('.picture__likes');
-  likesContainer.textContent = likes.length || 0;
+  likesContainer.textContent = likes || 0;
 
   const thumbnail = document.createDocumentFragment();
   thumbnail.append(thumbnailElem);
