@@ -36,42 +36,11 @@ function uniqueIdGenerator(min = 0, max) {
   };
 }
 
-/*
-  @param {int} length - длина получаемого текста в символах
-  @param {bool} cutByWord - если true - фрагмент вырезается
-  не строго посимвольно, а по последнему целому слову, входящему
-  в установленную длину, с усечением в меньшую сторону.
-*/
-function getLoremDescription(length = 250, cutByWord = false) {
-  const loremText = `Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-  Dignissimos vero explicabo voluptatibus voluptas quos impedit quas, ex
-  sint blanditiis inventore excepturi consectetur pariatur rerum sunt quae
-  officiis consequuntur harum laborum. Id minima voluptatum placeat voluptate
-  debitis. Culpa repellendus voluptatum earum molestias dolore, explicabo quae
-  sequi inventore minus nobis. Cumque, minima!`;
-
-  let sliceOfText = loremText.slice(0, Math.round(length));
-
-  if (cutByWord && loremText[sliceOfText.length] !== ' ') {
-    const lastWordInSlicedText = sliceOfText.split(' ').at(-1);
-    const lastWordIndex = sliceOfText.lastIndexOf(lastWordInSlicedText);
-
-    sliceOfText = sliceOfText.slice(0, lastWordIndex).trimEnd();
-  }
-
-  return sliceOfText;
-}
-
 // Проверка наличия класса в класс-листе
 function hasClass(className, classList) {
   const classes = Array.from(classList);
 
   return classes.includes(className);
-}
-
-// Удаление лишних пробелов из строки
-function removeExtraSpaces(str) {
-  return str.replace(/\s{2,}/gm, ' ').trim();
 }
 
 // Проверка клавишь
