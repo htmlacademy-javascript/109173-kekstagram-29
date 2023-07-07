@@ -4,6 +4,8 @@ const MessageClasses = {
   ERROR: 'system-messages__message--error',
   SUCCESS: 'system-messages__message--success'
 };
+const DEBOUNCE_TIMEOUT = 500;
+const THROTTLE_DELAY = 1000;
 
 const messagesContainer = document.querySelector('.system-messages');
 
@@ -105,6 +107,32 @@ function showSuccess(successText) {
   showMessage(successText, MessageClasses.SUCCESS);
 }
 
+// Функции для устранения дребезга
+function debounce(callback, timeout = DEBOUNCE_TIMEOUT) {
+  let timerId = null;
+
+  return function (...rest) {
+    clearTimeout(timerId);
+
+    timerId = setTimeout(() => callback.apply(this, rest), timeout);
+  };
+}
+
+// Вызов функции не раньше, чем раз в delay миллисекунд
+function throttle(callback, delay = THROTTLE_DELAY) {
+  let previousTime = 0;
+
+  return function (...rest) {
+    const currentTime = new Date();
+
+    if (currentTime - previousTime >= delay) {
+      callback.apply(this, rest);
+
+      previousTime = currentTime;
+    }
+  };
+}
+
 export {
   getRandomInt,
   getRandomElemsFromArr,
@@ -114,5 +142,7 @@ export {
   isEscapeKey,
   isValidHashTag,
   showError,
-  showSuccess
+  showSuccess,
+  debounce,
+  throttle
 };
