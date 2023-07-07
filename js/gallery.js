@@ -3,7 +3,8 @@ import {getData} from './serverApi.js';
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photosModal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
-import {hasClass, showError,} from './utils.js';
+import {showError} from './utils.js';
+import {GalleryFilter} from './galleryFilters.js';
 import './forms.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
@@ -15,25 +16,18 @@ const likesCountContainer = document.querySelector('.likes-count');
 const commentsCounter = document.querySelector('.comments-count');
 const commentsContainer = document.querySelector('.social__comments');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
-const imageFiltersContainer = document.querySelector('.img-filters');
 
 // Получаем данные о фотографиях с сервера
 getData()
   .then((pictData) => {
 
-    // Показываем блок фильтров
-    imageFiltersContainer.classList.remove('img-filters--inactive');
-
-    imageFiltersContainer.addEventListener('click', (evt) => {
-      const target = evt.target;
-
-      // Не обрабатываем клики на уже активном элементе
-      if (hasClass('img-filters__button--active', target.classList)) {
-        return;
-      }
-      console.log(evt.target);
+    // Инициализируем фильтрацию изображений
+    GalleryFilter.init({
+      data: pictData,
+      callback: renderGallery
     });
 
+    // Первая, дефолтная отрисовка галереи без фильтрации
     renderGallery(pictData);
   })
   .catch((error) => {
