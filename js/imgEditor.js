@@ -74,6 +74,8 @@ function changeImageScale(image, amount) {
 function changeEffectHandler(evt) {
   const target = evt.target.closest('.effects__radio');
 
+  console.log(target);
+
   if (!target) {
     return;
   }
@@ -114,7 +116,7 @@ function setFilter(image, filterName) {
       image.style.filter = `${cssName}(${effectLvl.value}${units})`;
     });
   } else {
-    sliderElement.noUiSlider.destroy();
+    destroySlider();
   }
 
   image.style.filter = currentFilter;
