@@ -10,6 +10,9 @@ const THROTTLE_DELAY = 1000;
 const messagesContainer = document.querySelector('.system-messages');
 
 function getRandomInt(min, max) {
+  min = Math.floor(min);
+  max = Math.ceil(max);
+
   return Math.round(Math.random() * (max - min) + min);
 }
 
@@ -25,8 +28,8 @@ function getRandomElemsFromArr(arr, elemsCount = 1) {
   return elem;
 }
 
-// v.2 генератора (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
-function uniqueIdGenerator(min = 0, max) {
+// v.2  генератор последовательных псевдо-уникальных чисел (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
+function uniqueIdGenerator(min = 0, max = 10) {
   let currentId = min;
 
   return function () {
@@ -34,6 +37,42 @@ function uniqueIdGenerator(min = 0, max) {
       return currentId++;
     }
   };
+}
+
+// Генератор рандомных чисел в заданном диапазоне (с ростом числа элементов - будет работать медленнее)
+function randomUnicIdGenerator(min = 0, max = 10) {
+  const generatedIds = [];
+  let currentId = min;
+
+  return function () {
+    while(true) {
+      currentId = getRandomInt(min, max);
+
+      if(!generatedIds.includes(currentId)) {
+        generatedIds.push(currentId);
+        break;
+      }
+    }
+
+    return currentId;
+  };
+}
+
+// Функция для перемешивания массива (по алгоритму тасования Фишера-Йетса)
+function shuffleArr(arr) {
+  if (!arr.length) {
+    return;
+  }
+
+  const shuffledArr = arr.slice();
+
+  for (let i = shuffledArr.length - 1; i > 0; i--) {
+    const j = getRandomInt(0, i);
+
+    [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]];
+  }
+
+  return shuffledArr;
 }
 
 // Проверка наличия класса в класс-листе
@@ -106,7 +145,8 @@ export {
   getRandomInt,
   getRandomElemsFromArr,
   uniqueIdGenerator,
-  getLoremDescription,
+  randomUnicIdGenerator,
+  shuffleArr,
   hasClass,
   isEscapeKey,
   isValidHashTag,
