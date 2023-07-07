@@ -6,11 +6,11 @@ import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from '.
 import {showError} from './utils.js';
 import './forms.js';
 
-const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
-
 // Получаем данные о фотографиях с сервера
 getData()
   .then((pictData) => {
+    const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
+
     const picturesContainer = document.querySelector('.pictures.container');
     const fullPictureContainer = document.querySelector('.big-picture__img > img');
     const fullPictureDescription = document.querySelector('.social__caption');
