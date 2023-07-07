@@ -2,25 +2,16 @@ import {isEscapeKey} from './utils.js';
 import {
   changeScale,
   changeEffectHandler,
-  destroySlider
+  resetImgEditor
 } from './imgEditor.js';
-import {pristine} from './forms.js';
+
 
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
 const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
 
 const imgParamsContainer = document.querySelector('.img-upload__text');
-
 const uploadedImgEditor = document.querySelector('.img-upload__overlay');
 const closeImgEditorBtn = document.querySelector('.img-upload__cancel');
-
-const uploadImgInput = document.querySelector('.img-upload__input');
-const imgHashTags = document.querySelector('.text__hashtags');
-const imgDescription = document.querySelector('.text__description');
-const imgEffectsBtns = document.querySelectorAll('.effects__radio');
-
-const editingImage = document.querySelector('.img-upload__preview > img');
-const currentScale = document.querySelector('.scale__control--value');
 
 // Кнопки изменения масштаба изображения
 const scaleBigger = document.querySelector('.scale__control--bigger');
@@ -89,26 +80,6 @@ function closeImgEditor() {
 
   imgEffectsContainer.removeEventListener('click', changeEffectHandler);
   resetImgEditor();
-}
-
-function resetImgEditor() {
-  // Сбрасываем размер изображения
-  editingImage.style.transform = '';
-  currentScale.value = '100%';
-
-  // Сбрасываем значения полей
-  uploadImgInput.value = '';
-  imgHashTags.value = '';
-  imgDescription.value = '';
-
-  // Сбрасываем фильтры
-  for (const imgEffectBtn of imgEffectsBtns) {
-    imgEffectBtn.checked = false;
-  }
-
-  imgEffectsBtns[0].checked = true;
-  destroySlider();
-  pristine.reset();
 }
 
 export {

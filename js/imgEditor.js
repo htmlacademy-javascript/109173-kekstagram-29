@@ -1,4 +1,5 @@
 import {hasClass} from './utils.js';
+import {pristine} from './forms.js';
 
 const Scalable = {MIN: 25, MAX: 100};
 const SCALE_STEP = 25;
@@ -43,6 +44,11 @@ const currentScale = document.querySelector('.scale__control--value');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLvl = document.querySelector('.effect-level__value');
 
+const uploadImgInput = document.querySelector('.img-upload__input');
+const imgHashTags = document.querySelector('.text__hashtags');
+const imgDescription = document.querySelector('.text__description');
+const imgEffectsBtns = document.querySelectorAll('.effects__radio');
+
 // Работа с размерами изображения
 function changeScale(evt) {
   const target = evt.target;
@@ -73,8 +79,6 @@ function changeImageScale(image, amount) {
 // Наложение фильтров
 function changeEffectHandler(evt) {
   const target = evt.target.closest('.effects__radio');
-
-  console.log(target);
 
   if (!target) {
     return;
@@ -122,6 +126,28 @@ function setFilter(image, filterName) {
   image.style.filter = currentFilter;
 }
 
+function resetImgEditor() {
+  // Сбрасываем размер изображения
+  editingImage.style.transform = '';
+  currentScale.value = '100%';
+
+  // Сбрасываем значения полей
+  uploadImgInput.value = '';
+  imgHashTags.value = '';
+  imgDescription.value = '';
+
+  // Сбрасываем фильтры
+  editingImage.style.filter = '';
+
+  for (const imgEffectBtn of imgEffectsBtns) {
+    imgEffectBtn.checked = false;
+  }
+
+  imgEffectsBtns[0].checked = true;
+  destroySlider();
+  pristine.reset();
+}
+
 function destroySlider() {
   if (sliderElement.noUiSlider) {
     sliderElement.noUiSlider.destroy();
@@ -131,5 +157,6 @@ function destroySlider() {
 export {
   changeScale,
   changeEffectHandler,
+  resetImgEditor,
   destroySlider
 };
