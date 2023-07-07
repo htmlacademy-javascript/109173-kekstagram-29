@@ -1,6 +1,11 @@
-import {hasClass, getRandomElemsFromArr} from './utils.js';
+import {hasClass, getRandUniqElemsFromArr, debounce} from './utils.js';
 
 const RANDOM_PICTURES_COUNT = 10;
+const FilterIDs = {
+  DEFAULT: 'filter-default',
+  RANDOM: 'filter-random',
+  DISCUSSED: 'filter-discussed',
+};
 
 const imageFiltersContainer = document.querySelector('.img-filters');
 
@@ -11,8 +16,9 @@ const GalleryFilter = {
     imageFiltersContainer.addEventListener('click', (evt) => {
       const target = evt.target;
 
-      // Не обрабатываем клики на уже активном элементе
-      if (hasClass('img-filters__button--active', target.classList)) {
+      // Не обрабатываем клики на уже активном элементе и на чем либо, кроме кнопок фильтров
+      if (hasClass('img-filters__button--active', target.classList) ||
+         !hasClass('img-filters__button', target.classList)) {
         return;
       }
 
@@ -20,12 +26,37 @@ const GalleryFilter = {
       document.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
       target.classList.add('img-filters__button--active');
 
-      // Вызываем переданный коллбэк
-      console.log(settings);
+      // Вызываем фильтр
+      const filterId = target.id;
+
+      switch(filterId) {
+        case FilterIDs.DEFAULT: { // Все фото, по-умолчанию
+          const filter = debounce(() => settings.renderer(settings.photosData));
+
+          filter();
+
+          break;
+        }
+
+        case FilterIDs.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
+          const randomPictures = this.getRandPictures(settings.photosData);
+          const filter = debounce(() => settings.renderer(randomPictures));
+
+          filter();
+
+          break;
+        }
+
+        case FilterIDs.DISCUSSED: { // Фотографии, отсортированные по количеству лайков
+          console.log('DISCUSSED');
+          break;
+        }
+      }
     });
   },
 
-  getRandom(picturesCount = RANDOM_PICTURES_COUNT) {
+  getRandPictures(picturesArr, picturesCount = RANDOM_PICTURES_COUNT) {
+    return getRandUniqElemsFromArr(picturesArr, picturesCount);
   }
 };
 

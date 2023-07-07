@@ -36,7 +36,20 @@ function drawThumbnails(pictData) {
   }
 
   // Добавляем все фотографии настраницу разом
+  removeThumbnails();
   picturesContainer.append(picturesList);
+}
+
+function removeThumbnails() {
+  const thumbnails = document.querySelectorAll('.picture');
+
+  if (!thumbnails.length) {
+    return;
+  }
+
+  for (let i = 0; i < thumbnails.length; i++) {
+    thumbnails[i].remove();
+  }
 }
 
 export {drawThumbnails};

@@ -4,7 +4,7 @@ const MessageClasses = {
   ERROR: 'system-messages__message--error',
   SUCCESS: 'system-messages__message--success'
 };
-const DEBOUNCE_TIMEOUT = 500;
+const DEBOUNCE_TIMEOUT = 2000;
 const THROTTLE_DELAY = 1000;
 
 const messagesContainer = document.querySelector('.system-messages');
@@ -26,6 +26,29 @@ function getRandomElemsFromArr(arr, elemsCount = 1) {
   }
 
   return elem;
+}
+
+function getRandUniqElemsFromArr(arr, elemsCount = 1) {
+  if (elemsCount <= 1) {
+    return arr[getRandomInt(0, arr.length - 1)];
+  }
+
+  const result = [];
+  const generatedIDs = [];
+  const idsGenerator = uniqueIdGenerator(0, elemsCount);
+
+  for (let i = 0; i < elemsCount; i++) {
+    generatedIDs.push(idsGenerator());
+  }
+
+  const shuffledIDs = shuffleArr(generatedIDs);
+
+  for (let i = 0; i < shuffledIDs.length; i++) {
+    const elemIndex = shuffledIDs[i];
+    result.push(arr[elemIndex]);
+  }
+
+  return result;
 }
 
 // v.2  генератор последовательных псевдо-уникальных чисел (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
@@ -122,6 +145,8 @@ function debounce(callback, timeout = DEBOUNCE_TIMEOUT) {
   return function (...rest) {
     clearTimeout(timerId);
 
+    console.log('Debounce');
+
     timerId = setTimeout(() => callback.apply(this, rest), timeout);
   };
 }
@@ -144,6 +169,7 @@ function throttle(callback, delay = THROTTLE_DELAY) {
 export {
   getRandomInt,
   getRandomElemsFromArr,
+  getRandUniqElemsFromArr,
   uniqueIdGenerator,
   randomUnicIdGenerator,
   shuffleArr,

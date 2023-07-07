@@ -23,8 +23,8 @@ getData()
 
     // Инициализируем фильтрацию изображений
     GalleryFilter.init({
-      data: pictData,
-      callback: renderGallery
+      photosData: pictData,
+      renderer: renderGallery
     });
 
     // Первая, дефолтная отрисовка галереи без фильтрации
