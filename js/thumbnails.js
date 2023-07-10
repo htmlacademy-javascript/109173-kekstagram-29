@@ -36,7 +36,7 @@ function drawThumbnails(pictData) {
   }
 
   // Добавляем все фотографии настраницу разом
-  removeThumbnails();
+  removeThumbnails(); // Удаление отрисованных ранее фото, если такие есть (для работы фильтров)
   picturesContainer.append(picturesList);
 }
 

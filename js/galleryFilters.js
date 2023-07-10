@@ -26,7 +26,9 @@ function initGalleryFilters(settings) {
     target.classList.add('img-filters__button--active');
 
     // Меняем фильтр
-    setFilter(target.id, settings);
+    const filterID = target.id;
+
+    setFilter(filterID, settings);
   });
 }
 
