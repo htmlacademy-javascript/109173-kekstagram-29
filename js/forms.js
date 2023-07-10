@@ -31,10 +31,50 @@ const SubmitBtnText = {
 const imgUploadForm = document.querySelector('.img-upload__form');
 const uploadImgInput = document.querySelector('.img-upload__input');
 const submitBtn = document.querySelector('.img-upload__submit');
+const preview = document.querySelector('.img-upload__preview > img');
+const previewThumbnails = document.querySelectorAll('.effects__preview');
 
 let pristine = null; // Не лучшее решение, но нужно очищать валидатор в formsModal.js, пока не придумал, как сделать иначе
 
 uploadImgInput.addEventListener('change', (evt) => {
+  const target = evt.target;
+
+  setFormValidators(); // Устанавливаем валидаторы на форму
+
+  imgUploadForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const targetForm = event.target;
+
+    // Если форма валидна - отправляем
+    if (pristine.validate()) {
+      blockSendBtn();
+      sendData(new FormData(targetForm))
+        .then(() => showSuccess('Данные успешно отправлены'))
+        .catch(() => showError('Ошибка отправки данных'))
+        .finally(() => {
+          unblockSendBtn();
+          closeImgEditor();
+          pristine.reset();
+        });
+    }
+  });
+
+  setImagePreview(target.files[0]); // Загружаем изображение в модальное окно
+  openImgEditor(evt); // Открываем редактор изображения
+});
+
+function setImagePreview(fileInfo) {
+  const imageSrc = URL.createObjectURL(fileInfo);
+
+  preview.src = imageSrc;
+
+  for(let i = 0; i < previewThumbnails.length; i++) {
+    previewThumbnails[i].style.backgroundImage = `url(${imageSrc})`;
+  }
+}
+
+function setFormValidators() {
   pristine = new Pristine(imgUploadForm, {
     classTo: 'img-upload__field-wrapper',
     errorClass: 'img-upload__item--invalid',
@@ -68,29 +108,7 @@ uploadImgInput.addEventListener('change', (evt) => {
     checkComment,
     ValidatorMessages.COMM_LENGTH
   );
-
-  imgUploadForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const targetForm = event.target;
-
-    // Если форма валидна - отправляем
-    if (pristine.validate()) {
-      blockSendBtn();
-      sendData(new FormData(targetForm))
-        .then(() => showSuccess('Данные успешно отправлены'))
-        .catch(() => showError('Ошибка отправки данных'))
-        .finally(() => {
-          unblockSendBtn();
-          closeImgEditor();
-          pristine.reset();
-        });
-    }
-  });
-
-  // Открываем редактор изображения
-  openImgEditor(evt);
-});
+}
 
 function blockSendBtn() {
   submitBtn.disabled = true;
