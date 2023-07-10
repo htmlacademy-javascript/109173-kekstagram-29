@@ -1,4 +1,8 @@
-import {openImgEditor, closeImgEditor} from './formsModal.js';
+/*
+  TODO: Подумать, как решить проблему с экспортируемой изменяющейся
+  переменной let prestine, дабы код соответствовал требованию Б20 (https://up.htmlacademy.ru/profession/fullstack/6/javascript/29/criteries)
+*/
+import {openImgEditor, closeImgEditor} from './forms-modal.js';
 import {
   MAX_TAGS_COUNT,
   MAX_COMMENT_LENGTH,
@@ -7,7 +11,7 @@ import {
   checkTagsUniq,
   checkComment
 } from './validators.js';
-import {sendData} from './serverApi.js';
+import {sendData} from './server-api.js';
 import {showError, showSuccess} from './utils.js';
 
 const ValidatorMessages = {

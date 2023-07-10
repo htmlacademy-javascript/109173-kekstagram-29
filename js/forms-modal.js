@@ -3,7 +3,7 @@ import {
   changeScale,
   changeEffectHandler,
   resetImgEditor
-} from './imgEditor.js';
+} from './img-editor.js';
 
 
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить

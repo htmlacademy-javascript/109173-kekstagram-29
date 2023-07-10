@@ -1,10 +1,10 @@
 // import {createPhotos} from './dataGenerators.js';
-import {getData} from './serverApi.js';
+import {getData} from './server-api.js';
 import {drawThumbnails} from './thumbnails.js';
-import {openFullPhoto} from './photosModal.js';
+import {openFullPhoto} from './photos-modal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
 import {showError, debounce} from './utils.js';
-import {initGalleryFilters} from './galleryFilters.js';
+import {initGalleryFilters} from './gallery-filters.js';
 import './forms.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
