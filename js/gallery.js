@@ -3,8 +3,8 @@ import {getData} from './serverApi.js';
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photosModal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
-import {showError} from './utils.js';
-import {GalleryFilter} from './galleryFilters.js';
+import {showError, debounce} from './utils.js';
+import {initGalleryFilters} from './galleryFilters.js';
 import './forms.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
@@ -19,16 +19,16 @@ const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 // Получаем данные о фотографиях с сервера
 getData()
-  .then((pictData) => {
+  .then((photosData) => {
 
     // Инициализируем фильтрацию изображений
-    GalleryFilter.init({
-      photosData: pictData,
-      renderer: renderGallery
+    initGalleryFilters({
+      photosData: photosData,
+      callback: debounce(renderGallery),
     });
 
     // Первая, дефолтная отрисовка галереи без фильтрации
-    renderGallery(pictData);
+    renderGallery(photosData);
   })
   .catch((error) => {
     showError(error);

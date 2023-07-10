@@ -4,7 +4,7 @@ const MessageClasses = {
   ERROR: 'system-messages__message--error',
   SUCCESS: 'system-messages__message--success'
 };
-const DEBOUNCE_TIMEOUT = 2000;
+const DEBOUNCE_TIMEOUT = 500;
 const THROTTLE_DELAY = 1000;
 
 const messagesContainer = document.querySelector('.system-messages');
@@ -144,8 +144,6 @@ function debounce(callback, timeout = DEBOUNCE_TIMEOUT) {
 
   return function (...rest) {
     clearTimeout(timerId);
-
-    console.log('Debounce');
 
     timerId = setTimeout(() => callback.apply(this, rest), timeout);
   };
