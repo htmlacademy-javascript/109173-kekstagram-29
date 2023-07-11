@@ -69,7 +69,11 @@ function randomUnicIdGenerator(min = 0, max = 10) {
   let currentId = min;
 
   return function () {
-    while(true) {
+    if(generatedIds.length >= max) {
+      return;
+    }
+
+    while(generatedIds.length < max) {
       currentId = getRandomInt(min, max);
 
       if(!generatedIds.includes(currentId)) {
