@@ -168,8 +168,6 @@ function messageHandler(evt) {
   if(messageTriggers.includes(target.className)) {
     document.querySelector('.error')?.remove();
     document.querySelector('.success')?.remove();
-    document.querySelector('.success__button')?.addEventListener('click', messageHandler);
-    document.querySelector('.error__button')?.addEventListener('click', messageHandler);
   }
 }
 
