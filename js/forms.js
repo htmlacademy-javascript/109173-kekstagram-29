@@ -2,7 +2,7 @@
   TODO:
   - Prestine.js при каждом вызове, даже ни смотря на reset() и
   destroy() своего объекта - не затирает за собой слушатель события
-  input на #upload-file
+  input на #upload-file - Подумать, можно ли как-то это исправить.
 */
 import {openImgEditor, closeImgEditor} from './forms-modal.js';
 import {
@@ -56,11 +56,13 @@ function submitFormHandler(event) {
   if (pristine.validate()) {
     blockSendBtn();
     sendData(new FormData(targetForm))
-      .then(() => showSuccess('Данные успешно отправлены'))
+      .then(() => {
+        showSuccess('Данные успешно отправлены');
+        closeImgEditor(); // Закрываем форму только в случае успешной отправки
+      })
       .catch(() => showError('Ошибка отправки данных'))
       .finally(() => {
         unblockSendBtn();
-        closeImgEditor();
       });
   }
 }
