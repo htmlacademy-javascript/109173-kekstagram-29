@@ -153,6 +153,7 @@ function createMessage(messageText, messageType = MessageType.SUCCESS) {
   const message = messageTmpl.cloneNode(true);
   message.querySelector(messageTitleSelector).textContent = messageText;
   message.querySelector(messageContainerSelector).addEventListener('click', messageHandler);
+  document.addEventListener('keydown', messageHandler);
 
   return message;
 }
@@ -169,9 +170,10 @@ function messageHandler(evt) {
   const target = evt.target;
   const messageTriggers = ['success', 'success__button', 'error', 'error__button'];
 
-  if(messageTriggers.includes(target.className)) {
+  if(isEscapeKey(evt) || messageTriggers.includes(target.className)) {
     document.querySelector('.error')?.remove();
     document.querySelector('.success')?.remove();
+    document.removeEventListener('keydown', messageHandler);
   }
 }
 

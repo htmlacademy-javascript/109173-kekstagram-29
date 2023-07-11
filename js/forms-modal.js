@@ -21,7 +21,11 @@ const scaleSmaller = document.querySelector('.scale__control--smaller');
 const imgEffectsContainer = document.querySelector('.effects__list');
 
 function onKeyDownHandler(evt) {
-  if(isEscapeKey(evt)) {
+  /* Закрываем редактор изображения по нажатию клавиши ESC
+  кроме случаев, когда открыто сообщение об ошибке отправки
+  (иначе, мы не сможем дать пользователю отправить форму поаторно,
+  не потеряв введённые им данные, т.к. она закроется вместе с окном об ошибке) */
+  if(isEscapeKey(evt) && !document.querySelector('.error')) {
     closeImgEditor();
   }
 }
