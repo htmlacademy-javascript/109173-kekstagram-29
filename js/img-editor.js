@@ -1,5 +1,5 @@
 import {hasClass} from './utils.js';
-import {pristine} from './forms.js';
+import {removeFormValidators} from './forms.js';
 
 const Scalable = {MIN: 25, MAX: 100};
 const SCALE_STEP = 25;
@@ -145,7 +145,7 @@ function resetImgEditor() {
 
   imgEffectsBtns[0].checked = true;
   destroySlider();
-  pristine.reset();
+  removeFormValidators();
 }
 
 function destroySlider() {

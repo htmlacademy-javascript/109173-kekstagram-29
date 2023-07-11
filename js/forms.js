@@ -1,6 +1,14 @@
 /*
-  TODO: Подумать, как решить проблему с экспортируемой изменяющейся
-  переменной let prestine, дабы код соответствовал требованию Б20 (https://up.htmlacademy.ru/profession/fullstack/6/javascript/29/criteries)
+  TODO:
+  - Prestine.js при каждом вызове, даже ни смотря на reset() и
+  destroy() своего объекта - не затирает за собой слушатель события
+  input на #upload-file
+  - При каждой загрузке файла, растер по экспоненте
+  поличество вызовов функции на 56 строке (showSuccess),
+  из за чего, с каждым разом показывается все больше и больше
+  сообщений об успешной загрузке файла - УСТРАНИТЬ
+  (пока не знаю как, т.к. не понял причину увеличивающегося кол.-ва вызовов).
+
 */
 import {openImgEditor, closeImgEditor} from './forms-modal.js';
 import {
@@ -34,7 +42,7 @@ const submitBtn = document.querySelector('.img-upload__submit');
 const preview = document.querySelector('.img-upload__preview > img');
 const previewThumbnails = document.querySelectorAll('.effects__preview');
 
-let pristine = null; // Не лучшее решение, но нужно очищать валидатор в formsModal.js, пока не придумал, как сделать иначе
+let pristine = null;
 
 uploadImgInput.addEventListener('change', (evt) => {
   const target = evt.target;
@@ -55,7 +63,6 @@ uploadImgInput.addEventListener('change', (evt) => {
         .finally(() => {
           unblockSendBtn();
           closeImgEditor();
-          pristine.reset();
         });
     }
   });
@@ -110,6 +117,15 @@ function setFormValidators() {
   );
 }
 
+function removeFormValidators() {
+  if (!pristine) {
+    return;
+  }
+
+  pristine.reset();
+  pristine.destroy();
+}
+
 function blockSendBtn() {
   submitBtn.disabled = true;
   submitBtn.textContent = SubmitBtnText.PUBLISHING;
@@ -120,4 +136,4 @@ function unblockSendBtn() {
   submitBtn.textContent = SubmitBtnText.BASE;
 }
 
-export {pristine};
+export {removeFormValidators};
