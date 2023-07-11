@@ -3,12 +3,6 @@
   - Prestine.js при каждом вызове, даже ни смотря на reset() и
   destroy() своего объекта - не затирает за собой слушатель события
   input на #upload-file
-  - При каждой загрузке файла, растер по экспоненте
-  поличество вызовов функции на 56 строке (showSuccess),
-  из за чего, с каждым разом показывается все больше и больше
-  сообщений об успешной загрузке файла - УСТРАНИТЬ
-  (пока не знаю как, т.к. не понял причину увеличивающегося кол.-ва вызовов).
-
 */
 import {openImgEditor, closeImgEditor} from './forms-modal.js';
 import {
@@ -48,28 +42,28 @@ uploadImgInput.addEventListener('change', (evt) => {
   const target = evt.target;
 
   setFormValidators(); // Устанавливаем валидаторы на форму
-
-  imgUploadForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const targetForm = event.target;
-
-    // Если форма валидна - отправляем
-    if (pristine.validate()) {
-      blockSendBtn();
-      sendData(new FormData(targetForm))
-        .then(() => showSuccess('Данные успешно отправлены'))
-        .catch(() => showError('Ошибка отправки данных'))
-        .finally(() => {
-          unblockSendBtn();
-          closeImgEditor();
-        });
-    }
-  });
-
+  imgUploadForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
   setImagePreview(target.files[0]); // Загружаем изображение в модальное окно
   openImgEditor(evt); // Открываем редактор изображения
 });
+
+function submitFormHandler(event) {
+  event.preventDefault();
+
+  const targetForm = event.target;
+
+  // Если форма валидна - отправляем
+  if (pristine.validate()) {
+    blockSendBtn();
+    sendData(new FormData(targetForm))
+      .then(() => showSuccess('Данные успешно отправлены'))
+      .catch(() => showError('Ошибка отправки данных'))
+      .finally(() => {
+        unblockSendBtn();
+        closeImgEditor();
+      });
+  }
+}
 
 function setImagePreview(fileInfo) {
   const imageSrc = URL.createObjectURL(fileInfo);
@@ -118,6 +112,8 @@ function setFormValidators() {
 }
 
 function removeFormValidators() {
+  imgUploadForm.removeEventListener('submit', submitFormHandler);
+
   if (!pristine) {
     return;
   }
