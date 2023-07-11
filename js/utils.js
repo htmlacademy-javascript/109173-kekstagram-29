@@ -120,36 +120,35 @@ function isValidHashTag(hashTagStr) {
 
 // Вывод сообщений пользователю
 function showMessage(messageText, messageType = MessageType.SUCCESS) {
-  console.log('Вызвали');
   const message = createMessage(messageText, messageType);
   document.body.append(message);
 }
 
 
 function createMessage(messageText, messageType = MessageType.SUCCESS) {
+  let templateContainerSelector = null;
   let messageContainerSelector = null;
   let messageTitleSelector = null;
-  let messageBtnSelector = null;
 
   switch(messageType) {
     case MessageType.ERROR: {
-      messageContainerSelector = '#error';
+      templateContainerSelector = '#error';
+      messageContainerSelector = '.error';
       messageTitleSelector = '.error__title';
-      messageBtnSelector = '.error__button';
       break;
     }
     default: {
-      messageContainerSelector = '#success';
+      templateContainerSelector = '#success';
+      messageContainerSelector = '.success';
       messageTitleSelector = '.success__title';
-      messageBtnSelector = '.success__button';
       break;
     }
   }
 
-  const messageTmpl = document.querySelector(messageContainerSelector).content;
+  const messageTmpl = document.querySelector(templateContainerSelector).content;
   const message = messageTmpl.cloneNode(true);
   message.querySelector(messageTitleSelector).textContent = messageText;
-  message.querySelector(messageBtnSelector).addEventListener('click', messageHandler);
+  message.querySelector(messageContainerSelector).addEventListener('click', messageHandler);
 
   return message;
 }
@@ -162,12 +161,16 @@ function showSuccess(successText = MessagesText.SUCCESS) {
   showMessage(successText, MessageType.SUCCESS);
 }
 
-function messageHandler() {
-  console.log('click');
-  document.querySelector('.error')?.remove();
-  document.querySelector('.success')?.remove();
-  document.querySelector('.success__button')?.addEventListener('click', messageHandler);
-  document.querySelector('.error__button')?.addEventListener('click', messageHandler);
+function messageHandler(evt) {
+  const target = evt.target;
+  const messageTriggers = ['success', 'success__button', 'error', 'error__button'];
+
+  if(messageTriggers.includes(target.className)) {
+    document.querySelector('.error')?.remove();
+    document.querySelector('.success')?.remove();
+    document.querySelector('.success__button')?.addEventListener('click', messageHandler);
+    document.querySelector('.error__button')?.addEventListener('click', messageHandler);
+  }
 }
 
 // Функции для устранения дребезга

@@ -41,7 +41,7 @@ let pristine = null;
 uploadImgInput.addEventListener('change', (evt) => {
   const target = evt.target;
 
-  setFormValidators(); // Устанавливаем валидаторы на форму
+  setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
   imgUploadForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
   setImagePreview(target.files[0]); // Загружаем изображение в модальное окно
   openImgEditor(evt); // Открываем редактор изображения
