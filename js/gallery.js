@@ -2,6 +2,7 @@
   TODO: При перерисовке галереи не снимается обработчик с
   общего контейнера .pictures.container, а каждый раз устанавливается
   новое дополнительное событие.
+  UPD: Временно решено с помощью onclick - Переделать на addEventListener
 */
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photos-modal.js';
@@ -34,9 +35,7 @@ function renderGallery(pictData, filterApplied = false) {
   // Отрисовываем фотографии на странице
   drawThumbnails(pictData);
 
-  /* Добавляем обработчик событий клика по миниатюре через делегирование.
-  onclick - временное решение бесконечной установки новых обработчиков клика
-  при фильтрации изображений */
+  // Добавляем обработчик событий клика по миниатюре через делегирование.
   picturesContainer.onclick = (evt) => {
     if (!evt.target.closest('.picture')) {
       return;
