@@ -34,8 +34,10 @@ function renderGallery(pictData, filterApplied = false) {
   // Отрисовываем фотографии на странице
   drawThumbnails(pictData);
 
-  // Добавляем обработчик событий клика по миниатюре через делегирование
-  picturesContainer.addEventListener('click', (evt) => {
+  /* Добавляем обработчик событий клика по миниатюре через делегирование.
+  onclick - временное решение бесконечной установки новых обработчиков клика
+  при фильтрации изображений */
+  picturesContainer.onclick = (evt) => {
     if (!evt.target.closest('.picture')) {
       return;
     }
@@ -44,7 +46,7 @@ function renderGallery(pictData, filterApplied = false) {
 
     // Загружаем данные о фотографии, по которой кликнули, в модальное окно
     const target = evt.target.closest('.picture').querySelector('.picture__img');
-    const curPictId = target.dataset.imgId;
+    const curPictId = parseInt(target.dataset.imgId, 10);
     let currentImage = null;
 
     if (!filterApplied) { // Если галарея отсортирована по умолчанию (НЕ РАБОТАЕТ ПОКА)
@@ -77,7 +79,7 @@ function renderGallery(pictData, filterApplied = false) {
 
     updateCommentsCounter(); // Обновляем счетчик комментариев
     openFullPhoto(evt); // Открываем модальное окно
-  });
+  };
 }
 
 export {renderGallery};

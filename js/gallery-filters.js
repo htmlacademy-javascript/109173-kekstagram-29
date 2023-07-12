@@ -35,14 +35,14 @@ function initGalleryFilters(settings) {
 function setFilter(filterID, settings) {
   switch(filterID) {
     case FilterIDs.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
-      const randomPictures = getRandPictures(settings.photosData, true);
-      settings.callback(randomPictures);
+      const randomPictures = getRandPictures(settings.photosData);
+      settings.callback(randomPictures, true);
       break;
     }
 
     case FilterIDs.DISCUSSED: { // Фотографии, отсортированные по количеству лайков
-      const mostDiscussed = getSortedByLikes(settings.photosData, true);
-      settings.callback(mostDiscussed);
+      const mostDiscussed = getSortedByLikes(settings.photosData);
+      settings.callback(mostDiscussed, true);
       break;
     }
 
