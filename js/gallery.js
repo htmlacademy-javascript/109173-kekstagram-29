@@ -3,12 +3,9 @@
   общего контейнера .pictures.container, а каждый раз устанавливается
   новое дополнительное событие.
 */
-import {getData} from './server-api.js';
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photos-modal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
-import {showError, debounce} from './utils.js';
-import {initGalleryFilters} from './gallery-filters.js';
 import './forms.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
@@ -21,22 +18,6 @@ const commentsCounter = document.querySelector('.comments-count');
 const commentsContainer = document.querySelector('.social__comments');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
-// Получаем данные о фотографиях с сервера
-getData()
-  .then((photosData) => {
-
-    // Инициализируем фильтрацию изображений
-    initGalleryFilters({
-      photosData: photosData,
-      callback: debounce(renderGallery),
-    });
-
-    // Первая, дефолтная отрисовка галереи без фильтрации
-    renderGallery(photosData);
-  })
-  .catch((error) => {
-    showError(error);
-  });
 /*
   @param {Object} pictData - Объект с данными о фотографиях
   @param {Bool} filterApplied - Была ли отфильтрована галерея.
@@ -98,3 +79,5 @@ function renderGallery(pictData, filterApplied = false) {
     openFullPhoto(evt); // Открываем модальное окно
   });
 }
+
+export {renderGallery};
