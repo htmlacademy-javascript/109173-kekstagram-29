@@ -1,4 +1,8 @@
-// import {createPhotos} from './dataGenerators.js';
+/*
+  TODO: При перерисовке галереи не снимается обработчик с
+  общего контейнера .pictures.container, а каждый раз устанавливается
+  новое дополнительное событие.
+*/
 import {getData} from './server-api.js';
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photos-modal.js';
@@ -33,24 +37,42 @@ getData()
   .catch((error) => {
     showError(error);
   });
-
-function renderGallery(pictData) {
+/*
+  @param {Object} pictData - Объект с данными о фотографиях
+  @param {Bool} filterApplied - Была ли отфильтрована галерея.
+  Параметр необходим, т.к. по умолчинию индекс в массиве с фото
+  соответствует id изображения в этом массиве, что дает
+  нам простой доступ к фотографии по pictData[curPictId].
+  Однако, если отфильтровать фотографии, допустим, по лайкам,
+  в таком случае на месте 0 индекса может оказаться фото с другим
+  id, например 17. В таком случае, простой доступ по индексу - не подойдет.
+  Необходимо пройтись по всему массиву с данными, чтобы найти фото с тем id,
+  который нам нужен
+*/
+function renderGallery(pictData, filterApplied = false) {
   // Отрисовываем фотографии на странице
   drawThumbnails(pictData);
 
   // Добавляем обработчик событий клика по миниатюре через делегирование
   picturesContainer.addEventListener('click', (evt) => {
-    const target = evt.target;
-
-    if (target.className !== 'picture__img') {
+    if (!evt.target.closest('.picture')) {
       return;
     }
 
     evt.preventDefault(); // Предотвращаем открытие ссылки
 
     // Загружаем данные о фотографии, по которой кликнули, в модальное окно
+    const target = evt.target.closest('.picture').querySelector('.picture__img');
     const curPictId = target.dataset.imgId;
-    const {url, description, likes, comments} = pictData[curPictId];
+    let currentImage = null;
+
+    if (!filterApplied) { // Если галарея отсортирована по умолчанию (НЕ РАБОТАЕТ ПОКА)
+      currentImage = pictData[curPictId];
+    } else {
+      currentImage = pictData.find((image) => image.id === curPictId);
+    }
+
+    const {url, description, likes, comments} = currentImage;
 
     fullPictureContainer.src = url;
     fullPictureDescription.textContent = description;
