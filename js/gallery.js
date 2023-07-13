@@ -57,7 +57,6 @@ function renderGallery(pictData, filterApplied = false) {
     }
 
     setFullPhotoData(currentImage);
-    updateCommentsCounter(); // Обновляем счетчик комментариев
     openFullPhoto(evt); // Открываем модальное окно
   };
 }
@@ -84,6 +83,8 @@ function setFullPhotoData(currentImage) {
   if (isAllCommentsLoaded(comments.length)) {
     loadMoreCommentsBtn.classList.add('hidden');
   }
+
+  updateCommentsCounter(); // Обновляем счетчик комментариев
 }
 
 export {renderGallery};
