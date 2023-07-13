@@ -9,7 +9,6 @@ import {
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
 const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
 
-const imgParamsContainer = document.querySelector('.img-upload__text');
 const uploadedImgEditor = document.querySelector('.img-upload__overlay');
 const closeImgEditorBtn = document.querySelector('.img-upload__cancel');
 
@@ -21,32 +20,19 @@ const scaleSmaller = document.querySelector('.scale__control--smaller');
 const imgEffectsContainer = document.querySelector('.effects__list');
 
 function onKeyDownHandler(evt) {
+  const target = evt.target;
+  // Запрещаем закрытие редактора изображений при фокусе на определенных элементах
+  // (поле вовода хэш-тегов и комментария при добавлении фотографии)
+  if(PREVENT_ESC_ON_ELEMS.includes(target.className)) {
+    return;
+  }
+
   /* Закрываем редактор изображения по нажатию клавиши ESC
   кроме случаев, когда открыто сообщение об ошибке отправки
   (иначе, мы не сможем дать пользователю отправить форму поаторно,
   не потеряв введённые им данные, т.к. она закроется вместе с окном об ошибке) */
   if(isEscapeKey(evt) && !document.querySelector('.error')) {
     closeImgEditor();
-  }
-}
-
-// Запрещаем закрытие редактора изображений при фокусе на определенных элементах
-function onFocusHandler(evt) {
-  const target = evt.target;
-
-  if (PREVENT_ESC_ON_ELEMS.includes(target.className)) {
-    document.removeEventListener('keydown', onKeyDownHandler);
-  }
-}
-
-function onBlurHandler(evt) {
-  const target = evt.target;
-
-  document.addEventListener('keydown', onKeyDownHandler);
-
-  if (!PREVENT_ESC_ON_ELEMS.includes(target.className)) {
-    imgParamsContainer.removeEventListener('focusin', onFocusHandler);
-    imgParamsContainer.removeEventListener('focusout', onBlurHandler);
   }
 }
 
@@ -57,10 +43,6 @@ function openImgEditor() {
 
   document.addEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.addEventListener('click', closeImgEditor);
-
-  // Запрещаем закрывать редактор при фокусе на определенных элементах
-  imgParamsContainer.addEventListener('focusin', onFocusHandler);
-  imgParamsContainer.addEventListener('focusout', onBlurHandler);
 
   // Работа с размером изображения
   scaleBigger.addEventListener('click', changeScale);
