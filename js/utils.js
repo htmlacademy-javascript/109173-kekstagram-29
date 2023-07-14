@@ -115,13 +115,6 @@ function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-// Валидаторы
-function isValidHashTag(hashTagStr) {
-  const regex = /^#[\w\dа-яА-Я]{1,19}$/gi;
-
-  return regex.test(hashTagStr);
-}
-
 // Вывод сообщений пользователю
 function showMessage(messageText, messageType = MessageType.SUCCESS) {
   const message = createMessage(messageText, messageType);
@@ -212,7 +205,6 @@ export {
   shuffleArr,
   hasClass,
   isEscapeKey,
-  isValidHashTag,
   MessageType,
   showError,
   showSuccess,

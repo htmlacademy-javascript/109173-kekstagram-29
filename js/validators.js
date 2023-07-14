@@ -1,7 +1,12 @@
-import {isValidHashTag} from './utils.js';
-
 const MAX_TAGS_COUNT = 5;
 const MAX_COMMENT_LENGTH = 140;
+
+// Валидаторы
+function isValidHashTag(hashTagStr) {
+  const regex = /^#[\w\dа-яА-Я]{1,19}$/gi;
+
+  return regex.test(hashTagStr);
+}
 
 // Валидаторы хэш-тегов
 function checkTagsSemantics(tagsStr) {
@@ -18,7 +23,6 @@ function checkTagsSemantics(tagsStr) {
 
   return true;
 }
-
 
 function checkTagsCount(tagsStr) {
   const tags = getNormallizedHashTags(tagsStr);
