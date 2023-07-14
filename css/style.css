@@ -1351,6 +1351,11 @@ main {
   border-radius: 4px;
 }
 
+.text__hashtags + .img-upload__error
+{
+  margin-top: -20px;
+}
+
 .img-upload__item--invalid > input,
 .img-upload__item--invalid > textarea
 {

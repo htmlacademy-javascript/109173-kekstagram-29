@@ -90,19 +90,25 @@ function setFormValidators() {
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsSemantics, // Проверка общей сементики
-    ValidatorMessages.HT_SEMANTICS
+    ValidatorMessages.HT_SEMANTICS,
+    1,
+    true
   );
 
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsCount, // Проверка количества тегов
-    ValidatorMessages.HT_COUNT
+    ValidatorMessages.HT_COUNT,
+    2,
+    true
   );
 
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsUniq, // Проверка на уникальность
-    ValidatorMessages.HT_UNIQ
+    ValidatorMessages.HT_UNIQ,
+    3,
+    true
   );
 
   // Валидатор комментария
