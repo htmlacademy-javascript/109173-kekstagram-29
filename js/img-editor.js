@@ -39,15 +39,12 @@ const FILTERS = {
   },
 };
 
+const uploadImgForm = document.querySelector('.img-upload__form');
 const editingImage = document.querySelector('.img-upload__preview > img');
 const currentScale = document.querySelector('.scale__control--value');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLvl = document.querySelector('.effect-level__value');
 
-const uploadImgInput = document.querySelector('.img-upload__input');
-const imgHashTags = document.querySelector('.text__hashtags');
-const imgDescription = document.querySelector('.text__description');
-const imgEffectsBtns = document.querySelectorAll('.effects__radio');
 
 // Работа с размерами изображения
 function changeScale(evt) {
@@ -132,18 +129,11 @@ function resetImgEditor() {
   currentScale.value = '100%';
 
   // Сбрасываем значения полей
-  uploadImgInput.value = '';
-  imgHashTags.value = '';
-  imgDescription.value = '';
+  uploadImgForm.reset();
 
   // Сбрасываем фильтры
   editingImage.style.filter = '';
 
-  for (const imgEffectBtn of imgEffectsBtns) {
-    imgEffectBtn.checked = false;
-  }
-
-  imgEffectsBtns[0].checked = true;
   destroySlider();
   removeFormValidators();
 }
