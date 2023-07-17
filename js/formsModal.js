@@ -1,8 +1,10 @@
 import {isEscapeKey} from './utils.js';
 import {
   changeScale,
-  changeEffectHandler
+  changeEffectHandler,
+  destroySlider
 } from './imgEditor.js';
+import {pristine} from './forms.js';
 
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
 const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
@@ -91,7 +93,7 @@ function closeImgEditor() {
 
 function resetImgEditor() {
   // Сбрасываем размер изображения
-  editingImage.style.scale = '';
+  editingImage.style.transform = '';
   currentScale.value = '100%';
 
   // Сбрасываем значения полей
@@ -105,7 +107,12 @@ function resetImgEditor() {
   }
 
   imgEffectsBtns[0].checked = true;
+  destroySlider();
+  pristine.reset();
 }
 
-export {openImgEditor};
+export {
+  openImgEditor,
+  closeImgEditor
+};
 

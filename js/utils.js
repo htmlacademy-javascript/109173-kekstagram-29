@@ -1,3 +1,14 @@
+const MESSAGE_SHOW_TIMER = 5000;
+const BASE_MESSAGE_CLASS = 'system-messages__message';
+const MessageClasses = {
+  ERROR: 'system-messages__message--error',
+  SUCCESS: 'system-messages__message--success'
+};
+const DEBOUNCE_TIMEOUT = 500;
+const THROTTLE_DELAY = 1000;
+
+const messagesContainer = document.querySelector('.system-messages');
+
 function getRandomInt(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
@@ -75,6 +86,53 @@ function isValidHashTag(hashTagStr) {
   return regex.test(hashTagStr);
 }
 
+// Вывод сообщений пользователю
+function showMessage(messageText, messageClass) {
+  const message = document.createElement('li');
+  message.textContent = messageText;
+  message.classList.add(BASE_MESSAGE_CLASS);
+  message.classList.add(messageClass);
+
+  messagesContainer.prepend(message);
+
+  // Скрываем сообщение через MESSAGE_SHOW_TIMER миллисекунд
+  setTimeout(() => message.remove(), MESSAGE_SHOW_TIMER);
+}
+
+function showError(errorText) {
+  showMessage(errorText, MessageClasses.ERROR);
+}
+
+function showSuccess(successText) {
+  showMessage(successText, MessageClasses.SUCCESS);
+}
+
+// Функции для устранения дребезга
+function debounce(callback, timeout = DEBOUNCE_TIMEOUT) {
+  let timerId = null;
+
+  return function (...rest) {
+    clearTimeout(timerId);
+
+    timerId = setTimeout(() => callback.apply(this, rest), timeout);
+  };
+}
+
+// Вызов функции не раньше, чем раз в delay миллисекунд
+function throttle(callback, delay = THROTTLE_DELAY) {
+  let previousTime = 0;
+
+  return function (...rest) {
+    const currentTime = new Date();
+
+    if (currentTime - previousTime >= delay) {
+      callback.apply(this, rest);
+
+      previousTime = currentTime;
+    }
+  };
+}
+
 export {
   getRandomInt,
   getRandomElemsFromArr,
@@ -82,5 +140,9 @@ export {
   getLoremDescription,
   hasClass,
   isEscapeKey,
-  isValidHashTag
+  isValidHashTag,
+  showError,
+  showSuccess,
+  debounce,
+  throttle
 };
