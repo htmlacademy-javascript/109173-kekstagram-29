@@ -40,8 +40,8 @@ function setFilter(filterID, settings) {
       break;
     }
 
-    case FilterIDs.DISCUSSED: { // Фотографии, отсортированные по количеству лайков
-      const mostDiscussed = getSortedByLikes(settings.photosData);
+    case FilterIDs.DISCUSSED: { // Фотографии, отсортированные по количеству комментариев
+      const mostDiscussed = getSortedByComments(settings.photosData);
       settings.callback(mostDiscussed, true);
       break;
     }
@@ -57,10 +57,10 @@ function getRandPictures(picturesArr, picturesCount = RANDOM_PICTURES_COUNT) {
   return getRandUniqElemsFromArr(picturesArr, picturesCount);
 }
 
-function getSortedByLikes(picturesArr) {
+function getSortedByComments(picturesArr) {
   const result = picturesArr.slice();
 
-  return result.sort((picA, picB) => picB.likes - picA.likes);
+  return result.sort((picA, picB) => picB.comments.length - picA.comments.length);
 }
 
 export {initGalleryFilters};

@@ -26,14 +26,14 @@ const FILTERS = {
   },
   phobos: { // Фобос
     cssName: 'blur',
-    initValue: 1,
+    initValue: 3,
     max: 3,
     step: 0.1,
     units: 'px'
   },
   heat: { // Зной
     cssName: 'brightness',
-    initValue: 1.5,
+    initValue: 3,
     max: 3,
     step: 0.1,
   },
@@ -42,6 +42,7 @@ const FILTERS = {
 const uploadImgForm = document.querySelector('.img-upload__form');
 const editingImage = document.querySelector('.img-upload__preview > img');
 const currentScale = document.querySelector('.scale__control--value');
+const sliderContainer = document.querySelector('.img-upload__effect-level');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLvl = document.querySelector('.effect-level__value');
 
@@ -116,11 +117,21 @@ function setFilter(image, filterName) {
 
       image.style.filter = `${cssName}(${effectLvl.value}${units})`;
     });
+
+    showSLider();
   } else {
     destroySlider();
   }
 
   image.style.filter = currentFilter;
+}
+
+function showSLider() {
+  sliderContainer.classList.remove('hidden');
+}
+
+function hideSLider() {
+  sliderContainer.classList.add('hidden');
 }
 
 function resetImgEditor() {
@@ -136,10 +147,12 @@ function resetImgEditor() {
 
   destroySlider();
   removeFormValidators();
+  hideSLider();
 }
 
 function destroySlider() {
   if (sliderElement.noUiSlider) {
+    hideSLider();
     sliderElement.noUiSlider.destroy();
   }
 }
