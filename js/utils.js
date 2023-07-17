@@ -1,8 +1,8 @@
-const NOTIF_CONTAINER_CLASS = 'system-messages';
-const BASE_NOTIF_CLASS = 'system-messages__message';
+const NOTIF_CONTAINER_CLASS = 'system-notification';
+const BASE_NOTIF_CLASS = 'system-notification__message';
 const NotifClass = {
-  ERROR: 'system-messages__message--error',
-  SUCCESS: 'system-messages__message--success'
+  ERROR: 'system-notification__message--error',
+  SUCCESS: 'system-notification__message--success'
 };
 const MESSAGE_SHOW_TIMER = 5000;
 
@@ -166,16 +166,16 @@ function createNotifContainer() {
   return notifContainer;
 }
 
-function showNotification(messageText, messageClass) {
+function showNotification(notifText, notifClass) {
   if (!document.querySelector(`.${NOTIF_CONTAINER_CLASS}`)) {
     document.body.append(createNotifContainer());
   }
 
   const notifocationsContainer = document.querySelector(`.${NOTIF_CONTAINER_CLASS}`);
   const notification = document.createElement('li');
-  notification.textContent = messageText;
+  notification.textContent = notifText;
   notification.classList.add(BASE_NOTIF_CLASS);
-  notification.classList.add(messageClass);
+  notification.classList.add(notifClass);
 
   notifocationsContainer.prepend(notification);
 
