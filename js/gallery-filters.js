@@ -1,4 +1,4 @@
-import {hasClass, getRandUniqElemsFromArr} from './utils.js';
+import {getRandUniqElemsFromArr} from './utils.js';
 
 const RANDOM_PICTURES_COUNT = 10;
 const FilterIDs = {
@@ -16,8 +16,8 @@ function initGalleryFilters(settings) {
     const target = evt.target;
 
     // Не обрабатываем клики на уже активном элементе и на чем либо, кроме кнопок фильтров
-    if (hasClass('img-filters__button--active', target.classList) ||
-      !hasClass('img-filters__button', target.classList)) {
+    if (target.classList.contains('img-filters__button--active') ||
+      !target.classList.contains('img-filters__button')) {
       return;
     }
 

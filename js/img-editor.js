@@ -1,4 +1,3 @@
-import {hasClass} from './utils.js';
 import {removeFormValidators} from './forms.js';
 
 const Scalable = {MIN: 25, MAX: 100};
@@ -52,7 +51,7 @@ function changeScale(evt) {
   const target = evt.target;
   let scaleAmount = parseInt(currentScale.value, 10);
 
-  if (hasClass('scale__control--bigger', target.classList)) {
+  if (target.classList.contains('scale__control--bigger')) {
     scaleAmount += SCALE_STEP;
   } else {
     scaleAmount -= SCALE_STEP;

@@ -103,13 +103,6 @@ function shuffleArr(arr) {
   return shuffledArr;
 }
 
-// Проверка наличия класса в класс-листе
-function hasClass(className, classList) {
-  const classes = Array.from(classList);
-
-  return classes.includes(className);
-}
-
 // Проверка клавишь
 function isEscapeKey(evt) {
   return evt.key === 'Escape';
@@ -203,7 +196,6 @@ export {
   uniqueIdGenerator,
   randomUnicIdGenerator,
   shuffleArr,
-  hasClass,
   isEscapeKey,
   MessageType,
   showError,
