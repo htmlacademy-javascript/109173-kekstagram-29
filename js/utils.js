@@ -1,5 +1,5 @@
 const NOTIF_CONTAINER_CLASS = 'system-notification';
-const BASE_NOTIF_CLASS = 'system-notification__message';
+const NOTIF_BASE_CLASS = 'system-notification__message';
 const NotifClass = {
   ERROR: 'system-notification__message--error',
   SUCCESS: 'system-notification__message--success'
@@ -174,7 +174,7 @@ function showNotification(notifText, notifClass) {
   const notifocationsContainer = document.querySelector(`.${NOTIF_CONTAINER_CLASS}`);
   const notification = document.createElement('li');
   notification.textContent = notifText;
-  notification.classList.add(BASE_NOTIF_CLASS);
+  notification.classList.add(NOTIF_BASE_CLASS);
   notification.classList.add(notifClass);
 
   notifocationsContainer.prepend(notification);
