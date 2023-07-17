@@ -4,7 +4,7 @@ const NotifClass = {
   ERROR: 'system-notification__message--error',
   SUCCESS: 'system-notification__message--success'
 };
-const MESSAGE_SHOW_TIMER = 5000;
+const NOTIF_SHOW_TIMER = 5000;
 
 const MessageType = {
   ERROR: 'ERROR',
@@ -180,7 +180,7 @@ function showNotification(notifText, notifClass) {
   notifocationsContainer.prepend(notification);
 
   // Скрываем сообщение через MESSAGE_SHOW_TIMER миллисекунд
-  setTimeout(() => notification.remove(), MESSAGE_SHOW_TIMER);
+  setTimeout(() => notification.remove(), NOTIF_SHOW_TIMER);
 }
 
 function showErrorNotif(errorText) {
