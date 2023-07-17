@@ -2,7 +2,7 @@ const MessageType = {
   ERROR: 'ERROR',
   SUCCESS: 'SUCCESS'
 };
-const MessagesText = {
+const MessageText = {
   ERROR: 'Ошибка загрузки файла',
   SUCCESS: 'Изображение успешно загружено'
 };
@@ -144,11 +144,11 @@ function createMessage(messageText, messageType = MessageType.SUCCESS) {
   return message;
 }
 
-function showError(errorText = MessagesText.ERROR) {
+function showError(errorText = MessageText.ERROR) {
   showMessage(errorText, MessageType.ERROR);
 }
 
-function showSuccess(successText = MessagesText.SUCCESS) {
+function showSuccess(successText = MessageText.SUCCESS) {
   showMessage(successText, MessageType.SUCCESS);
 }
 

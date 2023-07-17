@@ -1,7 +1,7 @@
 import {getRandUniqElemsFromArr} from './utils.js';
 
 const RANDOM_PICTURES_COUNT = 10;
-const FilterIDs = {
+const FilterID = {
   DEFAULT: 'filter-default',
   RANDOM: 'filter-random',
   DISCUSSED: 'filter-discussed',
@@ -34,13 +34,13 @@ function initGalleryFilters(settings) {
 
 function setFilter(filterID, settings) {
   switch(filterID) {
-    case FilterIDs.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
+    case FilterID.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
       const randomPictures = getRandPictures(settings.photosData);
       settings.callback(randomPictures, true);
       break;
     }
 
-    case FilterIDs.DISCUSSED: { // Фотографии, отсортированные по количеству комментариев
+    case FilterID.DISCUSSED: { // Фотографии, отсортированные по количеству комментариев
       const mostDiscussed = getSortedByComments(settings.photosData);
       settings.callback(mostDiscussed, true);
       break;
