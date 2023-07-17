@@ -1,3 +1,11 @@
+const NOTIF_CONTAINER_CLASS = 'system-messages';
+const BASE_NOTIF_CLASS = 'system-messages__message';
+const NotifClass = {
+  ERROR: 'system-messages__message--error',
+  SUCCESS: 'system-messages__message--success'
+};
+const MESSAGE_SHOW_TIMER = 5000;
+
 const MessageType = {
   ERROR: 'ERROR',
   SUCCESS: 'SUCCESS'
@@ -6,9 +14,9 @@ const MessageText = {
   ERROR: 'Ошибка загрузки файла',
   SUCCESS: 'Изображение успешно загружено'
 };
+
 const DEBOUNCE_TIMEOUT = 500;
 const THROTTLE_DELAY = 1000;
-
 
 function getRandomInt(min, max) {
   min = Math.floor(min);
@@ -108,12 +116,11 @@ function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-// Вывод сообщений пользователю
+// Вывод ошибок при загрузке фотографий на сервер
 function showMessage(messageText, messageType = MessageType.SUCCESS) {
   const message = createMessage(messageText, messageType);
   document.body.append(message);
 }
-
 
 function createMessage(messageText, messageType = MessageType.SUCCESS) {
   let templateContainerSelector = null;
@@ -150,6 +157,38 @@ function showError(errorText = MessageText.ERROR) {
 
 function showSuccess(successText = MessageText.SUCCESS) {
   showMessage(successText, MessageType.SUCCESS);
+}
+
+// Вывод прочих уведомлений пользователям сервиса
+function createNotifContainer() {
+  const notifContainer = document.createElement('ul');
+  notifContainer.className = NOTIF_CONTAINER_CLASS;
+  return notifContainer;
+}
+
+function showNotification(messageText, messageClass) {
+  if (!document.querySelector(`.${NOTIF_CONTAINER_CLASS}`)) {
+    document.body.append(createNotifContainer());
+  }
+
+  const notifocationsContainer = document.querySelector(`.${NOTIF_CONTAINER_CLASS}`);
+  const notification = document.createElement('li');
+  notification.textContent = messageText;
+  notification.classList.add(BASE_NOTIF_CLASS);
+  notification.classList.add(messageClass);
+
+  notifocationsContainer.prepend(notification);
+
+  // Скрываем сообщение через MESSAGE_SHOW_TIMER миллисекунд
+  setTimeout(() => notification.remove(), MESSAGE_SHOW_TIMER);
+}
+
+function showErrorNotif(errorText) {
+  showNotification(errorText, NotifClass.ERROR);
+}
+
+function showSuccessNotif(successText) {
+  showNotification(successText, NotifClass.SUCCESS);
 }
 
 function messageHandler(evt) {
@@ -200,6 +239,8 @@ export {
   MessageType,
   showError,
   showSuccess,
+  showErrorNotif,
+  showSuccessNotif,
   debounce,
   throttle
 };
