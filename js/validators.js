@@ -1,18 +1,17 @@
 import {isValidHashTag} from './utils.js';
 
+const MAX_TAGS_COUNT = 5;
 const MAX_COMMENT_LENGTH = 140;
 
-function hashTags(tagsStr) {
-  const normillizedStr = tagsStr.trim();
+// Валидаторы хэш-тегов
+function checkTagsSemantics(tagsStr) {
+  const tags = getNormallizedHashTags(tagsStr);
 
-  if (normillizedStr !== '') {
-    const tags = normillizedStr.split(' ');
-
-    if (tags.length > 0) {
-      for (const tag of tags) {
-        if (!isValidHashTag(tag)) {
-          return false;
-        }
+  // Проверяем каждый тег
+  if (tags.length > 0) {
+    for (const tag of tags) {
+      if (!isValidHashTag(tag)) {
+        return false;
       }
     }
   }
@@ -20,11 +19,54 @@ function hashTags(tagsStr) {
   return true;
 }
 
-function comment(commentStr) {
+
+function checkTagsCount(tagsStr) {
+  const tags = getNormallizedHashTags(tagsStr);
+
+  // Не больше MAX_TAGS_COUNT тегов на фотографии
+  if (tags.length > MAX_TAGS_COUNT) {
+    return false;
+  }
+
+  return true;
+}
+
+function checkTagsUniq(tagsStr) {
+  const tags = getNormallizedHashTags(tagsStr);
+
+  // Проверяем каждый тег
+  if (tags.length > 0) {
+    const usedTags = new Set();
+
+    for (const tag of tags) {
+      // Тег должен быть валидным и не должен использоваться повторно
+      if (usedTags.has(tag)) {
+        return false;
+      }
+
+      usedTags.add(tag);
+    }
+  }
+
+  return true;
+}
+
+function getNormallizedHashTags(tagsStr) {
+  const tagsArr = tagsStr.trim().split(' ');
+  const tags = tagsArr.map((tag) => tag.toLowerCase());
+  return tags;
+}
+
+// Валидаторы комментариев
+function checkComment(commentStr) {
   return !(commentStr.length > MAX_COMMENT_LENGTH);
 }
 
 export {
-  hashTags,
-  comment,
+  MAX_TAGS_COUNT,
+  MAX_COMMENT_LENGTH,
+  checkTagsSemantics,
+  checkTagsCount,
+  checkTagsUniq,
+  checkComment,
 };

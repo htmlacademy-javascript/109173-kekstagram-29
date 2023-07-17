@@ -1,12 +1,31 @@
 import {isEscapeKey} from './utils.js';
+import {
+  changeScale,
+  changeEffectHandler
+} from './imgEditor.js';
+
+// При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
+const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
+
+const imgParamsContainer = document.querySelector('.img-upload__text');
+
+const uploadedImgEditor = document.querySelector('.img-upload__overlay');
+const closeImgEditorBtn = document.querySelector('.img-upload__cancel');
 
 const uploadImgInput = document.querySelector('.img-upload__input');
 const imgHashTags = document.querySelector('.text__hashtags');
 const imgDescription = document.querySelector('.text__description');
 const imgEffectsBtns = document.querySelectorAll('.effects__radio');
 
-const uploadedImgEditor = document.querySelector('.img-upload__overlay');
-const closeImgEditorBtn = document.querySelector('.img-upload__cancel');
+const editingImage = document.querySelector('.img-upload__preview > img');
+const currentScale = document.querySelector('.scale__control--value');
+
+// Кнопки изменения масштаба изображения
+const scaleBigger = document.querySelector('.scale__control--bigger');
+const scaleSmaller = document.querySelector('.scale__control--smaller');
+
+// Фильтры
+const imgEffectsContainer = document.querySelector('.effects__list');
 
 function onKeyDownHandler(evt) {
   if(isEscapeKey(evt)) {
@@ -14,47 +33,73 @@ function onKeyDownHandler(evt) {
   }
 }
 
-function onDescriptionFocus() {
-  document.removeEventListener('keydown', onKeyDownHandler);
+// Запрещаем закрытие редактора изображений при фокусе на определенных элементах
+function onFocusHandler(evt) {
+  const target = evt.target;
+
+  if (PREVENT_ESC_ON_ELEMS.includes(target.className)) {
+    document.removeEventListener('keydown', onKeyDownHandler);
+  }
 }
 
-function onDescriptionBlur() {
+function onBlurHandler(evt) {
+  const target = evt.target;
+
   document.addEventListener('keydown', onKeyDownHandler);
-  imgDescription.removeEventListener('focus', onDescriptionFocus);
-  imgDescription.removeEventListener('blur', onDescriptionBlur);
+
+  if (!PREVENT_ESC_ON_ELEMS.includes(target.className)) {
+    imgParamsContainer.removeEventListener('focusin', onFocusHandler);
+    imgParamsContainer.removeEventListener('focusout', onBlurHandler);
+  }
 }
 
 // Функции работы с модальными окнами
-function openImgEditor(evt) {
-  evt.preventDefault();
-
-
+function openImgEditor() {
   uploadedImgEditor.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.addEventListener('click', closeImgEditor);
 
-  // Запрещаем закрывать редактор при фокусе на описании
-  imgDescription.addEventListener('focus', onDescriptionFocus);
-  imgDescription.addEventListener('blur', onDescriptionBlur);
+  // Запрещаем закрывать редактор при фокусе на определенных элементах
+  imgParamsContainer.addEventListener('focusin', onFocusHandler);
+  imgParamsContainer.addEventListener('focusout', onBlurHandler);
+
+  // Работа с размером изображения
+  scaleBigger.addEventListener('click', changeScale);
+  scaleSmaller.addEventListener('click', changeScale);
+
+  // Наложение фильтров
+  imgEffectsContainer.addEventListener('click', changeEffectHandler);
 }
 
 function closeImgEditor() {
+  // Закрываем модалку
   uploadedImgEditor.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
+  // Удаляем все подвешенные обработчики
   document.removeEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.removeEventListener('click', closeImgEditor);
 
-  clearImgEditor();
+  scaleBigger.removeEventListener('click', changeScale);
+  scaleSmaller.removeEventListener('click', changeScale);
+
+  imgEffectsContainer.removeEventListener('click', changeEffectHandler);
+  resetImgEditor();
 }
 
-function clearImgEditor() {
+function resetImgEditor() {
+  // Сбрасываем размер изображения
+  editingImage.style.scale = '';
+  currentScale.value = '100%';
+
+  // Сбрасываем значения полей
   uploadImgInput.value = '';
   imgHashTags.value = '';
   imgDescription.value = '';
 
+  // Сбрасываем фильтры
   for (const imgEffectBtn of imgEffectsBtns) {
     imgEffectBtn.checked = false;
   }
