@@ -11,6 +11,7 @@
   <!-- Scripts -->
   <script async src="/js/functions.js"></script>
   <script async src="/js/main.js" type="module"></script>
+  <script async src="/vendor/pristine/pristine.min.js"></script>
 </head>
 
 <body>
@@ -34,7 +35,7 @@
       <section class="img-upload">
         <div class="img-upload__wrapper">
           <h2 class="img-upload__title  visually-hidden">Загрузка фотографии</h2>
-          <form class="img-upload__form" id="upload-select-image" autocomplete="off">
+          <form class="img-upload__form" id="upload-select-image" action="https://29.javascript.pages.academy/kekstagram" method="POST" enctype="multipart/form-data" autocomplete="off">
 
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
@@ -171,7 +172,7 @@
           </ul>
 
           <!-- Кнопка для загрузки новой порции комментариев -->
-          <button type="button" class="social__comments-loader  comments-loader hidden">Загрузить еще</button>
+          <button type="button" class="social__comments-loader  comments-loader">Загрузить еще</button>
 
           <!-- Форма для отправки комментария -->
           <div class="social__footer">

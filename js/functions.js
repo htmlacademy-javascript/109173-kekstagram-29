@@ -43,7 +43,7 @@ function minutesToHours(minutes) {
 
 // Получение минут из строки с часами и минутами (формат - 08:00)
 function getMinutesFromTime(timeString) {
-  const normilizedTimeString = timeString.replace(/[^:|\d]/gi, '');
+  const normilizedTimeString = timeString.replace(/[^:|\d]/g, '');
   const [hours, minutes] = normilizedTimeString.split(':');
 
   return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
