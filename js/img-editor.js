@@ -57,13 +57,9 @@ function changeScale(evt) {
     scaleAmount -= SCALE_STEP;
   }
 
-  if (scaleAmount > Scalable.MAX) {
-    scaleAmount = Scalable.MAX;
-  }
-
-  if (scaleAmount < Scalable.MIN) {
-    scaleAmount = Scalable.MIN;
-  }
+  // Предотвращение выхода за пределы допустимых значений
+  scaleAmount = Math.min(scaleAmount, Scalable.MAX);
+  scaleAmount = Math.max(scaleAmount, Scalable.MIN);
 
   currentScale.value = `${scaleAmount}%`;
   changeImageScale(editingImage, scaleAmount);
