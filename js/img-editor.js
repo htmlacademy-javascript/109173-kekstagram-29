@@ -45,9 +45,10 @@ const sliderContainer = document.querySelector('.img-upload__effect-level');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLvl = document.querySelector('.effect-level__value');
 
+let currentFilter = null;
 
 // Работа с размерами изображения
-function changeScale(evt) {
+function changeImgScale(evt) {
   const target = evt.target;
   let scaleAmount = parseInt(currentScale.value, 10);
 
@@ -62,11 +63,11 @@ function changeScale(evt) {
   scaleAmount = Math.max(scaleAmount, Scalable.MIN);
 
   currentScale.value = `${scaleAmount}%`;
-  changeImageScale(editingImage, scaleAmount);
+  setImageScale(scaleAmount);
 }
 
-function changeImageScale(image, amount) {
-  image.style.transform = `scale(${amount / 100})`;
+function setImageScale(scaleAmount) {
+  editingImage.style.transform = `scale(${scaleAmount / 100})`;
 }
 
 // Наложение фильтров
@@ -79,14 +80,15 @@ function changeEffectHandler(evt) {
 
   const filterName = target.value;
 
-  setFilter(editingImage, filterName);
+  currentFilter = FILTERS[filterName];
+  setFilter(currentFilter);
 }
 
-function setFilter(image, filterName) {
-  let currentFilter = '';
+function setFilter(filter) {
+  let filterStr = '';
 
-  if (filterName !== 'none') {
-    const {cssName = '', initValue, max, step, units = ''} = FILTERS[filterName];
+  if (filter.cssName) {
+    const {cssName = '', initValue, max, step, units = ''} = currentFilter;
     const sliderOptions = {
       range: {
         min: 0,
@@ -97,28 +99,34 @@ function setFilter(image, filterName) {
       connect: 'lower',
     };
 
-    currentFilter = `${cssName}(${initValue}${units})`;
-
-    // Слайдер изменения величины накладываемого эффекта
-    if (!sliderElement.noUiSlider) {
-      noUiSlider.create(sliderElement, sliderOptions);
-    } else {
-      sliderElement.noUiSlider.updateOptions(sliderOptions);
-    }
-
-    // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
-    sliderElement.noUiSlider.on('update', () => {
-      effectLvl.value = sliderElement.noUiSlider.get();
-
-      image.style.filter = `${cssName}(${effectLvl.value}${units})`;
-    });
-
+    filterStr = `${cssName}(${initValue}${units})`;
+    initSlider(sliderOptions);
     showSLider();
   } else {
     destroySlider();
   }
 
-  image.style.filter = currentFilter;
+  editingImage.style.filter = filterStr;
+}
+
+function initSlider(sliderOptions) {
+  // Слайдер изменения величины накладываемого эффекта
+  if (!sliderElement.noUiSlider) {
+    noUiSlider.create(sliderElement, sliderOptions);
+
+    // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
+    sliderElement.noUiSlider.on('update', onSliderUpdateHandler);
+  } else {
+    sliderElement.noUiSlider.updateOptions(sliderOptions);
+  }
+}
+
+function onSliderUpdateHandler() {
+  const newEffectValue = sliderElement.noUiSlider.get();
+  const {cssName = '', units = ''} = currentFilter;
+
+  effectLvl.value = newEffectValue;
+  editingImage.style.filter = `${cssName}(${newEffectValue}${units})`;
 }
 
 function showSLider() {
@@ -153,7 +161,7 @@ function destroySlider() {
 }
 
 export {
-  changeScale,
+  changeImgScale as changeScale,
   changeEffectHandler,
   resetImgEditor,
   destroySlider

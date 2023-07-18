@@ -11,16 +11,16 @@ import './forms.js';
 
 const COMMENTS_PER_PAGE = 5; // Количество комментариев, загружающихся под фото за 1 раз
 
-const picturesContainer = document.querySelector('.pictures.container');
-const fullPictureContainer = document.querySelector('.big-picture__img > img');
-const fullPictureDescription = document.querySelector('.social__caption');
+const photosContainer = document.querySelector('.pictures.container');
+const fullPhotoContainer = document.querySelector('.big-picture__img > img');
+const fullPhotoDescription = document.querySelector('.social__caption');
 const likesCountContainer = document.querySelector('.likes-count');
 const commentsCounter = document.querySelector('.comments-count');
 const commentsContainer = document.querySelector('.social__comments');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 /*
-  @param {Object} pictData - Объект с данными о фотографиях
+  @param {Object} photosData - Объект с данными о фотографиях
   @param {Bool} filterApplied - Была ли отфильтрована галерея.
   Параметр необходим, т.к. по умолчинию индекс в массиве с фото
   соответствует id изображения в этом массиве, что дает
@@ -31,12 +31,12 @@ const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
   Необходимо пройтись по всему массиву с данными, чтобы найти фото с тем id,
   который нам нужен
 */
-function renderGallery(pictData, filterApplied = false) {
+function renderGallery(photosData, filterApplied = false) {
   // Отрисовываем фотографии на странице
-  drawThumbnails(pictData);
+  drawThumbnails(photosData);
 
   // Добавляем обработчик событий клика по миниатюре через делегирование.
-  picturesContainer.onclick = (evt) => {
+  photosContainer.onclick = (evt) => {
     const targetParent = evt.target.closest('.picture');
 
     if (!targetParent) {
@@ -51,9 +51,9 @@ function renderGallery(pictData, filterApplied = false) {
     let currentImage = null;
 
     if (!filterApplied) { // Если галарея отсортирована по умолчанию (НЕ РАБОТАЕТ ПОКА)
-      currentImage = pictData[curPictId];
+      currentImage = photosData[curPictId];
     } else {
-      currentImage = pictData.find((image) => image.id === curPictId);
+      currentImage = photosData.find((image) => image.id === curPictId);
     }
 
     setFullPhotoData(currentImage);
@@ -64,8 +64,8 @@ function renderGallery(pictData, filterApplied = false) {
 function setFullPhotoData(currentImage) {
   const {url, description, likes, comments} = currentImage;
 
-  fullPictureContainer.src = url;
-  fullPictureDescription.textContent = description;
+  fullPhotoContainer.src = url;
+  fullPhotoDescription.textContent = description;
   likesCountContainer.textContent = likes || 0;
   commentsCounter.textContent = comments.length || 0;
   commentsContainer.innerHTML = ''; // Очищаем от старых комментариев

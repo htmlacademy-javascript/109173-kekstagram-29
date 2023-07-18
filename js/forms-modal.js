@@ -9,12 +9,12 @@ import {
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
 const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
 
-const uploadedImgEditor = document.querySelector('.img-upload__overlay');
+const imgEditorContainer = document.querySelector('.img-upload__overlay');
 const closeImgEditorBtn = document.querySelector('.img-upload__cancel');
 
 // Кнопки изменения масштаба изображения
-const scaleBigger = document.querySelector('.scale__control--bigger');
-const scaleSmaller = document.querySelector('.scale__control--smaller');
+const scaleBiggerBtn = document.querySelector('.scale__control--bigger');
+const scaleSmallerBtn = document.querySelector('.scale__control--smaller');
 
 // Фильтры
 const imgEffectsContainer = document.querySelector('.effects__list');
@@ -38,15 +38,15 @@ function onKeyDownHandler(evt) {
 
 // Функции работы с модальными окнами
 function openImgEditor() {
-  uploadedImgEditor.classList.remove('hidden');
+  imgEditorContainer.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
   document.addEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.addEventListener('click', closeImgEditor);
 
   // Работа с размером изображения
-  scaleBigger.addEventListener('click', changeScale);
-  scaleSmaller.addEventListener('click', changeScale);
+  scaleBiggerBtn.addEventListener('click', changeScale);
+  scaleSmallerBtn.addEventListener('click', changeScale);
 
   // Наложение фильтров
   imgEffectsContainer.addEventListener('click', changeEffectHandler);
@@ -54,15 +54,15 @@ function openImgEditor() {
 
 function closeImgEditor() {
   // Закрываем модалку
-  uploadedImgEditor.classList.add('hidden');
+  imgEditorContainer.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
   // Удаляем все подвешенные обработчики
   document.removeEventListener('keydown', onKeyDownHandler);
   closeImgEditorBtn.removeEventListener('click', closeImgEditor);
 
-  scaleBigger.removeEventListener('click', changeScale);
-  scaleSmaller.removeEventListener('click', changeScale);
+  scaleBiggerBtn.removeEventListener('click', changeScale);
+  scaleSmallerBtn.removeEventListener('click', changeScale);
 
   imgEffectsContainer.removeEventListener('click', changeEffectHandler);
   resetImgEditor();

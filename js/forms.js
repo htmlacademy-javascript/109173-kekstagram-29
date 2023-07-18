@@ -16,7 +16,7 @@ import {
 import {sendData} from './server-api.js';
 import {isValidFileType, showError, showSuccess} from './utils.js';
 
-const ValidatorMessages = {
+const ValidatorMessage = {
   // Хеш-теги
   HT_SEMANTICS: 'Хэш-теги должны начинаться с символа # и содержать только буквы/цифры',
   HT_COUNT: `К одной фотографии можно добавить не более ${MAX_TAGS_COUNT} хэш-тегов`,
@@ -27,7 +27,7 @@ const ValidatorMessages = {
 
 const SubmitBtnText = {
   BASE: 'Опубликовать',
-  PUBLISHING: 'Публикуем'
+  PUBLISHING: 'Публикуем...'
 };
 
 const imgUploadForm = document.querySelector('.img-upload__form');
@@ -55,9 +55,10 @@ function submitFormHandler(event) {
   event.preventDefault();
 
   const targetForm = event.target;
+  const isValidForm = pristine.validate();
 
   // Если форма валидна - отправляем
-  if (pristine.validate()) {
+  if (isValidForm) {
     blockSendBtn();
     sendData(new FormData(targetForm))
       .then(() => {
@@ -94,7 +95,7 @@ function setFormValidators() {
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsSemantics, // Проверка общей сементики
-    ValidatorMessages.HT_SEMANTICS,
+    ValidatorMessage.HT_SEMANTICS,
     1,
     true
   );
@@ -102,7 +103,7 @@ function setFormValidators() {
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsCount, // Проверка количества тегов
-    ValidatorMessages.HT_COUNT,
+    ValidatorMessage.HT_COUNT,
     2,
     true
   );
@@ -110,7 +111,7 @@ function setFormValidators() {
   pristine.addValidator(
     imgUploadForm.querySelector('.text__hashtags'),
     checkTagsUniq, // Проверка на уникальность
-    ValidatorMessages.HT_UNIQ,
+    ValidatorMessage.HT_UNIQ,
     3,
     true
   );
@@ -119,7 +120,7 @@ function setFormValidators() {
   pristine.addValidator(
     imgUploadForm.querySelector('.text__description'),
     checkComment,
-    ValidatorMessages.COMM_LENGTH
+    ValidatorMessage.COMM_LENGTH
   );
 }
 

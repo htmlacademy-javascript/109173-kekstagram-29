@@ -1,6 +1,6 @@
 import {getRandUniqElemsFromArr} from './utils.js';
 
-const RANDOM_PICTURES_COUNT = 10;
+const RANDOM_PHOTOS_COUNT = 10;
 const FilterID = {
   DEFAULT: 'filter-default',
   RANDOM: 'filter-random',
@@ -33,34 +33,34 @@ function initGalleryFilters(settings) {
 }
 
 function setFilter(filterID, settings) {
+  const photos = settings.photosData.slice();
+
   switch(filterID) {
     case FilterID.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
-      const randomPictures = getRandPictures(settings.photosData);
+      const randomPictures = getRandPhotos(photos);
       settings.callback(randomPictures, true);
       break;
     }
 
     case FilterID.DISCUSSED: { // Фотографии, отсортированные по количеству комментариев
-      const mostDiscussed = getSortedByComments(settings.photosData);
+      const mostDiscussed = getSortedByComments(photos);
       settings.callback(mostDiscussed, true);
       break;
     }
 
     default: {
-      settings.callback(settings.photosData);
+      settings.callback(photos);
       break;
     }
   }
 }
 
-function getRandPictures(picturesArr, picturesCount = RANDOM_PICTURES_COUNT) {
-  return getRandUniqElemsFromArr(picturesArr, picturesCount);
+function getRandPhotos(photosArr, photosCount = RANDOM_PHOTOS_COUNT) {
+  return getRandUniqElemsFromArr(photosArr, photosCount);
 }
 
-function getSortedByComments(picturesArr) {
-  const result = picturesArr.slice();
-
-  return result.sort((picA, picB) => picB.comments.length - picA.comments.length);
+function getSortedByComments(photosArr) {
+  return photosArr.sort((picA, picB) => picB.comments.length - picA.comments.length);
 }
 
 export {initGalleryFilters};
