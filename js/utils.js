@@ -1,3 +1,4 @@
+const ACCEPTED_FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const NOTIF_CONTAINER_CLASS = 'system-notification';
 const NOTIF_BASE_CLASS = 'system-notification__message';
 const NotifClass = {
@@ -17,6 +18,16 @@ const MessageText = {
 
 const DEBOUNCE_TIMEOUT = 500;
 const THROTTLE_DELAY = 1000;
+
+function isValidFileType(file) {
+  if (file) {
+    const fileExt = file.type.split('/')[1];
+
+    return ACCEPTED_FILE_TYPES.includes(fileExt);
+  }
+
+  return false;
+}
 
 function getRandomInt(min, max) {
   min = Math.floor(min);
@@ -229,6 +240,7 @@ function throttle(callback, delay = THROTTLE_DELAY) {
 }
 
 export {
+  isValidFileType,
   getRandomInt,
   getRandomElemsFromArr,
   getRandUniqElemsFromArr,

@@ -14,7 +14,7 @@ import {
   checkComment
 } from './validators.js';
 import {sendData} from './server-api.js';
-import {showError, showSuccess} from './utils.js';
+import {isValidFileType, showError, showSuccess} from './utils.js';
 
 const ValidatorMessages = {
   // Хеш-теги
@@ -40,11 +40,15 @@ let pristine = null;
 
 uploadImgInput.addEventListener('change', (evt) => {
   const target = evt.target;
+  const choosedFile = target.files[0];
 
-  setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
-  imgUploadForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
-  setImagePreview(target.files[0]); // Загружаем изображение в модальное окно
-  openImgEditor(evt); // Открываем редактор изображения
+  // Если загружен файл валидного типа
+  if (isValidFileType(choosedFile)) {
+    setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
+    imgUploadForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
+    setImagePreview(choosedFile); // Загружаем изображение в модальное окно
+    openImgEditor(evt); // Открываем редактор изображения
+  }
 });
 
 function submitFormHandler(event) {
