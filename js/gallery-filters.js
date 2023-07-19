@@ -1,7 +1,9 @@
+import {setGalleryData} from './gallery.js';
 import {getRandUniqElemsFromArr} from './utils.js';
 
+const ACTIVE_BTN_CLASS = 'img-filters__button--active';
 const RANDOM_PHOTOS_COUNT = 10;
-const FilterID = {
+const Filter = {
   DEFAULT: 'filter-default',
   RANDOM: 'filter-random',
   DISCUSSED: 'filter-discussed',
@@ -16,14 +18,12 @@ function initGalleryFilters(settings) {
     const target = evt.target;
 
     // Не обрабатываем клики на уже активном элементе и на чем либо, кроме кнопок фильтров
-    if (target.classList.contains('img-filters__button--active') ||
-      !target.classList.contains('img-filters__button')) {
+    if (isActiveFilter(target)) {
       return;
     }
 
     // Сбрасываем предыдущую активную кнопку фильтра. Активируем текущую.
-    document.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
-    target.classList.add('img-filters__button--active');
+    toogleBtnActiveClass(target);
 
     // Меняем фильтр
     const filterID = target.id;
@@ -32,27 +32,47 @@ function initGalleryFilters(settings) {
   });
 }
 
+function isActiveFilter(target) {
+  if (target.classList.contains(ACTIVE_BTN_CLASS) || // Если кликаем по уже активному фильтру
+    !target.classList.contains('img-filters__button')) { // Если кликаем по самому контейнеру фильтров, а не по кнопкам
+    return true;
+  }
+
+  return false;
+}
+
+function toogleBtnActiveClass(target) {
+  document.querySelector(`.${ACTIVE_BTN_CLASS}`).classList.remove(ACTIVE_BTN_CLASS);
+  target.classList.add(ACTIVE_BTN_CLASS);
+}
+
 function setFilter(filterID, settings) {
   const photos = settings.photosData.slice();
+  let filterApplied = false;
 
   switch(filterID) {
-    case FilterID.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
+    case Filter.RANDOM: { // Случайные фотографии в количестве RANDOM_PICTURES_COUNT штук
       const randomPictures = getRandPhotos(photos);
-      settings.callback(randomPictures, true);
+      setGalleryData(randomPictures);
+      filterApplied = true;
       break;
     }
 
-    case FilterID.DISCUSSED: { // Фотографии, отсортированные по количеству комментариев
+    case Filter.DISCUSSED: { // Фотографии, отсортированные по количеству комментариев
       const mostDiscussed = getSortedByComments(photos);
-      settings.callback(mostDiscussed, true);
+      setGalleryData(mostDiscussed);
+      filterApplied = true;
       break;
     }
 
     default: {
-      settings.callback(photos);
+      setGalleryData(photos);
       break;
     }
   }
+
+  // Перерисовываем отсортированную галерею
+  settings.callback(filterApplied);
 }
 
 function getRandPhotos(photosArr, photosCount = RANDOM_PHOTOS_COUNT) {

@@ -1,3 +1,5 @@
+import {removeThumbnailClickHandler} from './gallery.js';
+
 const thumbnailTemplate = document.querySelector('#picture').content;
 const picturesContainer = document.querySelector('.pictures.container');
 
@@ -48,6 +50,9 @@ function removeThumbnails() {
   for (let i = 0; i < thumbnails.length; i++) {
     thumbnails[i].remove();
   }
+
+  // Удаляем обработчик события клика по миниатюрам
+  removeThumbnailClickHandler();
 }
 
 export {drawThumbnails};

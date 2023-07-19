@@ -1,29 +1,29 @@
 import {isEscapeKey} from './utils.js';
 
-const fullScreenContainer = document.querySelector('.big-picture');
-const closeFullScreenBtn = document.querySelector('.big-picture__cancel');
+const fullPhotoContainer = document.querySelector('.big-picture');
+const closeFullPhotoBtn = document.querySelector('.big-picture__cancel');
 
 function keyDownHandler(evt) {
   if(isEscapeKey(evt)) {
-    closeFullPhotto();
+    closeFullPhoto();
   }
 }
 
 // Функции работы с модальными окнами
 function openFullPhoto() {
   document.body.classList.add('modal-open'); // Запрещаем прокрутку body
-  fullScreenContainer.classList.remove('hidden'); // Открываем попап с фото
+  fullPhotoContainer.classList.remove('hidden'); // Открываем попап с фото
 
   document.addEventListener('keydown', keyDownHandler);
-  closeFullScreenBtn.addEventListener('click', closeFullPhotto);
+  closeFullPhotoBtn.addEventListener('click', closeFullPhoto);
 }
 
-function closeFullPhotto() {
-  fullScreenContainer.classList.add('hidden');
+function closeFullPhoto() {
+  fullPhotoContainer.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
   document.removeEventListener('keydown', keyDownHandler);
-  closeFullScreenBtn.removeEventListener('click', closeFullPhotto);
+  closeFullPhotoBtn.removeEventListener('click', closeFullPhoto);
 }
 
 export {openFullPhoto};

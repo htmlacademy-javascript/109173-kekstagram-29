@@ -1,5 +1,5 @@
 import {getData} from './server-api.js';
-import {renderGallery} from './gallery.js';
+import {setGalleryData, renderGallery} from './gallery.js';
 import {showErrorNotif, debounce} from './utils.js';
 import {initGalleryFilters} from './gallery-filters.js';
 import './gallery.js';
@@ -7,6 +7,8 @@ import './gallery.js';
 // Получаем данные о фотографиях с сервера
 getData()
   .then((photosData) => {
+    // Инициализируем галерею
+    setGalleryData(photosData);
 
     // Инициализируем фильтрацию изображений
     initGalleryFilters({
@@ -15,7 +17,7 @@ getData()
     });
 
     // Первая, дефолтная отрисовка галереи без фильтрации
-    renderGallery(photosData);
+    renderGallery();
   })
   .catch((error) => {
     showErrorNotif(error);

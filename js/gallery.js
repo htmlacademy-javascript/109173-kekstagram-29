@@ -19,8 +19,15 @@ const commentsCounter = document.querySelector('.comments-count');
 const commentsContainer = document.querySelector('.social__comments');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
+let photosData = null;
+let galleryFiltered = false;
+
+//  @param {Object} data - Объект с данными о фотографиях
+function setGalleryData(data) {
+  photosData = data;
+}
+
 /*
-  @param {Object} photosData - Объект с данными о фотографиях
   @param {Bool} filterApplied - Была ли отфильтрована галерея.
   Параметр необходим, т.к. по умолчинию индекс в массиве с фото
   соответствует id изображения в этом массиве, что дает
@@ -31,32 +38,45 @@ const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
   Необходимо пройтись по всему массиву с данными, чтобы найти фото с тем id,
   который нам нужен
 */
-function renderGallery(photosData, filterApplied = false) {
+function renderGallery(filterApplied = false) {
   // Отрисовываем фотографии на странице
   drawThumbnails(photosData);
+  galleryFiltered = filterApplied;
 
   // Добавляем обработчик событий клика по миниатюре через делегирование.
-  photosContainer.onclick = (evt) => {
-    const targetParent = evt.target.closest('.picture');
-
-    if (!targetParent) {
-      return;
-    }
-
-    evt.preventDefault(); // Предотвращаем открытие ссылки
-
-    // Загружаем данные о фотографии, по которой кликнули, в модальное окно
-    const target = targetParent.querySelector('.picture__img');
-    const curImgId = parseInt(target.dataset.imgId, 10);
-    const currentImg = !filterApplied ? photosData[curImgId] : photosData.find((image) => image.id === curImgId);
-
-    setFullPhotoData(currentImg);
-    openFullPhoto(evt); // Открываем модальное окно
-  };
+  photosContainer.addEventListener('click', thumbnailClickHandler);
 }
 
-function setFullPhotoData(currentImage) {
-  const {url, description, likes, comments} = currentImage;
+function thumbnailClickHandler(evt) {
+  const targetParent = evt.target.closest('.picture');
+
+  if (!targetParent) {
+    return;
+  }
+
+  evt.preventDefault(); // Предотвращаем открытие ссылки
+
+  // Загружаем данные о фотографии, по которой кликнули, в модальное окно
+  const target = targetParent.querySelector('.picture__img');
+  const currentImg = getCurrentThumbnailData(target);
+
+  setFullPhotoData(currentImg);
+  openFullPhoto(); // Открываем модальное окно
+}
+
+function removeThumbnailClickHandler() {
+  photosContainer.removeEventListener('click', thumbnailClickHandler);
+}
+
+function getCurrentThumbnailData(target) {
+  const curImgId = parseInt(target.dataset.imgId, 10);
+  const currentImg = !galleryFiltered ? photosData[curImgId] : photosData.find((image) => image.id === curImgId);
+
+  return currentImg;
+}
+
+function setFullPhotoData(currentImg) {
+  const {url, description, likes, comments} = currentImg;
 
   fullPhotoContainer.src = url;
   fullPhotoDescription.textContent = description;
@@ -66,19 +86,28 @@ function setFullPhotoData(currentImage) {
 
   if (comments.length > 0) { // Отрисовываем комментарии
     const drawComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
-    drawComments();
 
-    loadMoreCommentsBtn.classList.remove('hidden');
+    drawComments();
+    showLoadCommentsBtn();
+
     // loadMoreCommentsBtn.addEventListener('click', drawComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
     loadMoreCommentsBtn.onclick = drawComments; // Временное решение, т.к. непонятно пока, как удалять обработчик при закрытии окна в ./photosModal.js
   }
 
   // Если все комментарии загружены - скрыть кнопку загрузки
   if (isAllCommentsLoaded(comments.length)) {
-    loadMoreCommentsBtn.classList.add('hidden');
+    hideLoadCommentsBtn();
   }
 
   updateCommentsCounter(); // Обновляем счетчик комментариев
 }
 
-export {renderGallery};
+function showLoadCommentsBtn() {
+  loadMoreCommentsBtn.classList.remove('hidden');
+}
+
+function hideLoadCommentsBtn() {
+  loadMoreCommentsBtn.classList.add('hidden');
+}
+
+export {setGalleryData, renderGallery, removeThumbnailClickHandler};
