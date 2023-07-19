@@ -21,6 +21,7 @@ const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 let photosData = null;
 let galleryFiltered = false;
+let renderComments = null; // Редререр комментариев
 
 //  @param {Object} data - Объект с данными о фотографиях
 function setGalleryData(data) {
@@ -58,9 +59,9 @@ function thumbnailClickHandler(evt) {
 
   // Загружаем данные о фотографии, по которой кликнули, в модальное окно
   const target = targetParent.querySelector('.picture__img');
-  const currentImg = getCurrentThumbnailData(target);
+  const currentImgData = getCurrentThumbnailData(target);
 
-  setFullPhotoData(currentImg);
+  setFullPhotoData(currentImgData);
   openFullPhoto(); // Открываем модальное окно
 }
 
@@ -70,9 +71,9 @@ function removeThumbnailClickHandler() {
 
 function getCurrentThumbnailData(target) {
   const curImgId = parseInt(target.dataset.imgId, 10);
-  const currentImg = !galleryFiltered ? photosData[curImgId] : photosData.find((image) => image.id === curImgId);
+  const currentImgData = !galleryFiltered ? photosData[curImgId] : photosData.find((image) => image.id === curImgId);
 
-  return currentImg;
+  return currentImgData;
 }
 
 function setFullPhotoData(currentImg) {
@@ -82,16 +83,20 @@ function setFullPhotoData(currentImg) {
   fullPhotoDescription.textContent = description;
   likesCountContainer.textContent = likes || 0;
   commentsCounter.textContent = comments.length || 0;
+
+  initComments(comments);
+}
+
+function initComments(comments) {
   commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
 
   if (comments.length > 0) { // Отрисовываем комментарии
-    const drawComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
+    renderComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
 
-    drawComments();
+    renderComments();
     showLoadCommentsBtn();
 
-    // loadMoreCommentsBtn.addEventListener('click', drawComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
-    loadMoreCommentsBtn.onclick = drawComments; // Временное решение, т.к. непонятно пока, как удалять обработчик при закрытии окна в ./photosModal.js
+    loadMoreCommentsBtn.addEventListener('click', renderComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
   }
 
   // Если все комментарии загружены - скрыть кнопку загрузки
@@ -102,6 +107,10 @@ function setFullPhotoData(currentImg) {
   updateCommentsCounter(); // Обновляем счетчик комментариев
 }
 
+function removeLoadCommentsHandler() {
+  loadMoreCommentsBtn.removeEventListener('click', renderComments);
+}
+
 function showLoadCommentsBtn() {
   loadMoreCommentsBtn.classList.remove('hidden');
 }
@@ -110,4 +119,4 @@ function hideLoadCommentsBtn() {
   loadMoreCommentsBtn.classList.add('hidden');
 }
 
-export {setGalleryData, renderGallery, removeThumbnailClickHandler};
+export {setGalleryData, renderGallery, removeThumbnailClickHandler, removeLoadCommentsHandler};
