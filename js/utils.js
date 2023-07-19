@@ -55,7 +55,7 @@ function getRandUniqElemsFromArr(arr, elemsCount = 1) {
 
   const result = [];
   const generatedIDs = [];
-  const idsGenerator = uniqueIdGenerator(0, elemsCount);
+  const idsGenerator = getUniqIdGenerator(0, elemsCount);
 
   for (let i = 0; i < elemsCount; i++) {
     generatedIDs.push(idsGenerator());
@@ -72,36 +72,13 @@ function getRandUniqElemsFromArr(arr, elemsCount = 1) {
 }
 
 // v.2  генератор последовательных псевдо-уникальных чисел (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
-function uniqueIdGenerator(min = 0, max = 10) {
+function getUniqIdGenerator(min = 0, max = 10) {
   let currentId = min;
 
   return function () {
     if (min < max) {
       return currentId++;
     }
-  };
-}
-
-// Генератор рандомных чисел в заданном диапазоне (с ростом числа элементов - будет работать медленнее)
-function randomUnicIdGenerator(min = 0, max = 10) {
-  const generatedIds = [];
-  let currentId = min;
-
-  return function () {
-    if(generatedIds.length >= max) {
-      return;
-    }
-
-    while(generatedIds.length < max) {
-      currentId = getRandomInt(min, max);
-
-      if(!generatedIds.includes(currentId)) {
-        generatedIds.push(currentId);
-        break;
-      }
-    }
-
-    return currentId;
   };
 }
 
@@ -122,12 +99,12 @@ function shuffleArr(arr) {
   return shuffledArr;
 }
 
-// Проверка клавишь
+// Проверка нажатой клавиши
 function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-// Вывод ошибок при загрузке фотографий на сервер
+// Вывод сообщений об ошибках/успехе загрузки фотографий на сервер
 function showMessage(messageText, messageType = MessageType.SUCCESS) {
   const message = createMessage(messageText, messageType);
   document.body.append(message);
@@ -156,8 +133,8 @@ function createMessage(messageText, messageType = MessageType.SUCCESS) {
   const messageTmpl = document.querySelector(templateContainerSelector).content;
   const message = messageTmpl.cloneNode(true);
   message.querySelector(messageTitleSelector).textContent = messageText;
-  message.querySelector(messageContainerSelector).addEventListener('click', messageHandler);
-  document.addEventListener('keydown', messageHandler);
+  message.querySelector(messageContainerSelector).addEventListener('click', closeMessageClickHandler);
+  document.addEventListener('keydown', closeMessageKeyDownHandler);
 
   return message;
 }
@@ -179,7 +156,8 @@ function createNotifContainer() {
 
 function showNotification(notifText, notifClass) {
   if (!document.querySelector(`.${NOTIF_CONTAINER_CLASS}`)) {
-    document.body.append(createNotifContainer());
+    const notifContainer = createNotifContainer();
+    document.body.append(notifContainer);
   }
 
   const notifocationsContainer = document.querySelector(`.${NOTIF_CONTAINER_CLASS}`);
@@ -190,7 +168,7 @@ function showNotification(notifText, notifClass) {
 
   notifocationsContainer.prepend(notification);
 
-  // Скрываем сообщение через MESSAGE_SHOW_TIMER миллисекунд
+  // Скрываем сообщение через NOTIF_SHOW_TIMER миллисекунд
   setTimeout(() => notification.remove(), NOTIF_SHOW_TIMER);
 }
 
@@ -202,15 +180,28 @@ function showSuccessNotif(successText) {
   showNotification(successText, NotifClass.SUCCESS);
 }
 
-function messageHandler(evt) {
+function closeMessageClickHandler(evt) {
   const target = evt.target;
-  const messageTriggers = ['success', 'success__button', 'error', 'error__button'];
+  const closeMessageTriggers = ['success', 'success__button', 'error', 'error__button'];
 
-  if(isEscapeKey(evt) || messageTriggers.includes(target.className)) {
-    document.querySelector('.error')?.remove();
-    document.querySelector('.success')?.remove();
-    document.removeEventListener('keydown', messageHandler);
+  // Закрываем сообщение при клике по соответствующему классу
+  if(closeMessageTriggers.includes(target.className)) {
+    removeMessage();
+    document.removeEventListener('keydown', closeMessageClickHandler);
   }
+}
+
+function closeMessageKeyDownHandler(evt) {
+  // Закрываем сообщение только при нажатии ESC
+  if(isEscapeKey(evt)) {
+    removeMessage();
+    document.removeEventListener('keydown', closeMessageKeyDownHandler);
+  }
+}
+
+function removeMessage() {
+  document.querySelector('.error')?.remove();
+  document.querySelector('.success')?.remove();
 }
 
 // Функции для устранения дребезга
@@ -244,9 +235,6 @@ export {
   getRandomInt,
   getRandomElemsFromArr,
   getRandUniqElemsFromArr,
-  uniqueIdGenerator,
-  randomUnicIdGenerator,
-  shuffleArr,
   isEscapeKey,
   MessageType,
   showError,

@@ -19,7 +19,7 @@ const scaleSmallerBtn = document.querySelector('.scale__control--smaller');
 // Фильтры
 const imgEffectsContainer = document.querySelector('.effects__list');
 
-function onKeyDownHandler(evt) {
+function keyDownHandler(evt) {
   const target = evt.target;
   /* Запрещаем закрытие редактора изображений при фокусе на определенных элементах
   (поле вовода хэш-тегов и комментария при добавлении фотографии), а также
@@ -41,7 +41,7 @@ function openImgEditor() {
   imgEditorContainer.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-  document.addEventListener('keydown', onKeyDownHandler);
+  document.addEventListener('keydown', keyDownHandler);
   closeImgEditorBtn.addEventListener('click', closeImgEditor);
 
   // Работа с размером изображения
@@ -58,7 +58,7 @@ function closeImgEditor() {
   document.body.classList.remove('modal-open');
 
   // Удаляем все подвешенные обработчики
-  document.removeEventListener('keydown', onKeyDownHandler);
+  document.removeEventListener('keydown', keyDownHandler);
   closeImgEditorBtn.removeEventListener('click', closeImgEditor);
 
   scaleBiggerBtn.removeEventListener('click', changeScale);

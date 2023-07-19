@@ -11,7 +11,7 @@ import {
   checkTagsSemantics,
   checkTagsCount,
   checkTagsUniq,
-  checkComment
+  checkCommentLength
 } from './validators.js';
 import {sendData} from './server-api.js';
 import {isValidFileType, showError, showSuccess} from './utils.js';
@@ -30,11 +30,11 @@ const SubmitBtnText = {
   PUBLISHING: 'Публикуем...'
 };
 
-const imgUploadForm = document.querySelector('.img-upload__form');
+const uploadImgForm = document.querySelector('.img-upload__form');
 const uploadImgInput = document.querySelector('.img-upload__input');
-const submitBtn = document.querySelector('.img-upload__submit');
+const submitFormBtn = document.querySelector('.img-upload__submit');
 const preview = document.querySelector('.img-upload__preview > img');
-const previewThumbnails = document.querySelectorAll('.effects__preview');
+const effectThumbnails = document.querySelectorAll('.effects__preview');
 
 let pristine = null;
 
@@ -45,7 +45,7 @@ uploadImgInput.addEventListener('change', (evt) => {
   // Если загружен файл валидного типа
   if (isValidFileType(choosedFile)) {
     setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
-    imgUploadForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
+    uploadImgForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
     setImagePreview(choosedFile); // Загружаем изображение в модальное окно
     openImgEditor(evt); // Открываем редактор изображения
   }
@@ -77,13 +77,13 @@ function setImagePreview(fileInfo) {
 
   preview.src = imageSrc;
 
-  for(let i = 0; i < previewThumbnails.length; i++) {
-    previewThumbnails[i].style.backgroundImage = `url(${imageSrc})`;
+  for(let i = 0; i < effectThumbnails.length; i++) {
+    effectThumbnails[i].style.backgroundImage = `url(${imageSrc})`;
   }
 }
 
 function setFormValidators() {
-  pristine = new Pristine(imgUploadForm, {
+  pristine = new Pristine(uploadImgForm, {
     classTo: 'img-upload__field-wrapper',
     errorClass: 'img-upload__item--invalid',
     errorTextParent: 'img-upload__field-wrapper',
@@ -93,7 +93,7 @@ function setFormValidators() {
 
   // Валидация хэш-тегов
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__hashtags'),
+    uploadImgForm.querySelector('.text__hashtags'),
     checkTagsSemantics, // Проверка общей сементики
     ValidatorMessage.HT_SEMANTICS,
     1,
@@ -101,7 +101,7 @@ function setFormValidators() {
   );
 
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__hashtags'),
+    uploadImgForm.querySelector('.text__hashtags'),
     checkTagsCount, // Проверка количества тегов
     ValidatorMessage.HT_COUNT,
     2,
@@ -109,7 +109,7 @@ function setFormValidators() {
   );
 
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__hashtags'),
+    uploadImgForm.querySelector('.text__hashtags'),
     checkTagsUniq, // Проверка на уникальность
     ValidatorMessage.HT_UNIQ,
     3,
@@ -117,15 +117,16 @@ function setFormValidators() {
   );
 
   // Валидатор комментария
+  const test = document.querySelector('.text__description').value.length;
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__description'),
-    checkComment,
-    ValidatorMessage.COMM_LENGTH
+    uploadImgForm.querySelector('.text__description'),
+    checkCommentLength,
+    `${ValidatorMessage.COMM_LENGTH} (${test})`
   );
 }
 
 function removeFormValidators() {
-  imgUploadForm.removeEventListener('submit', submitFormHandler);
+  uploadImgForm.removeEventListener('submit', submitFormHandler);
 
   if (!pristine) {
     return;
@@ -136,13 +137,13 @@ function removeFormValidators() {
 }
 
 function blockSendBtn() {
-  submitBtn.disabled = true;
-  submitBtn.textContent = SubmitBtnText.PUBLISHING;
+  submitFormBtn.disabled = true;
+  submitFormBtn.textContent = SubmitBtnText.PUBLISHING;
 }
 
 function unblockSendBtn() {
-  submitBtn.disabled = false;
-  submitBtn.textContent = SubmitBtnText.BASE;
+  submitFormBtn.disabled = false;
+  submitFormBtn.textContent = SubmitBtnText.BASE;
 }
 
 export {removeFormValidators};

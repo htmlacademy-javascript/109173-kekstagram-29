@@ -47,16 +47,10 @@ function renderGallery(photosData, filterApplied = false) {
 
     // Загружаем данные о фотографии, по которой кликнули, в модальное окно
     const target = targetParent.querySelector('.picture__img');
-    const curPictId = parseInt(target.dataset.imgId, 10);
-    let currentImage = null;
+    const curImgId = parseInt(target.dataset.imgId, 10);
+    const currentImg = !filterApplied ? photosData[curImgId] : photosData.find((image) => image.id === curImgId);
 
-    if (!filterApplied) { // Если галарея отсортирована по умолчанию (НЕ РАБОТАЕТ ПОКА)
-      currentImage = photosData[curPictId];
-    } else {
-      currentImage = photosData.find((image) => image.id === curPictId);
-    }
-
-    setFullPhotoData(currentImage);
+    setFullPhotoData(currentImg);
     openFullPhoto(evt); // Открываем модальное окно
   };
 }

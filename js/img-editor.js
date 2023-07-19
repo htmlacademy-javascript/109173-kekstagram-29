@@ -115,13 +115,13 @@ function initSlider(sliderOptions) {
     noUiSlider.create(sliderElement, sliderOptions);
 
     // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
-    sliderElement.noUiSlider.on('update', onSliderUpdateHandler);
+    sliderElement.noUiSlider.on('update', sliderUpdateHandler);
   } else {
     sliderElement.noUiSlider.updateOptions(sliderOptions);
   }
 }
 
-function onSliderUpdateHandler() {
+function sliderUpdateHandler() {
   const newEffectValue = sliderElement.noUiSlider.get();
   const {cssName = '', units = ''} = currentFilter;
 

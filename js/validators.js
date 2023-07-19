@@ -56,7 +56,7 @@ function getNormallizedHashTags(tagsStr) {
 }
 
 // Валидаторы комментариев
-function checkComment(commentStr) {
+function checkCommentLength(commentStr) {
   return commentStr.length <= MAX_COMMENT_LENGTH;
 }
 
@@ -66,5 +66,5 @@ export {
   checkTagsSemantics,
   checkTagsCount,
   checkTagsUniq,
-  checkComment,
+  checkCommentLength,
 };

@@ -29,7 +29,7 @@ function getCommentsRenderer(comments, container, commentsCount = comments.lengt
       return;
     }
 
-    commentsCount = (commentsCount > comments.length) ? comments.length : commentsCount;
+    commentsCount = Math.min(commentsCount, comments.length);
 
     const commentsArr = comments.slice(startIndex, startIndex + commentsCount);
     const commentsList = document.createDocumentFragment();
