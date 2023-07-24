@@ -10,6 +10,9 @@ const THROTTLE_DELAY = 1000;
 const messagesContainer = document.querySelector('.system-messages');
 
 function getRandomInt(min, max) {
+  min = Math.floor(min);
+  max = Math.ceil(max);
+
   return Math.round(Math.random() * (max - min) + min);
 }
 
@@ -25,8 +28,31 @@ function getRandomElemsFromArr(arr, elemsCount = 1) {
   return elem;
 }
 
-// v.2 генератора (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
-function uniqueIdGenerator(min = 0, max) {
+function getRandUniqElemsFromArr(arr, elemsCount = 1) {
+  if (elemsCount <= 1) {
+    return arr[getRandomInt(0, arr.length - 1)];
+  }
+
+  const result = [];
+  const generatedIDs = [];
+  const idsGenerator = uniqueIdGenerator(0, elemsCount);
+
+  for (let i = 0; i < elemsCount; i++) {
+    generatedIDs.push(idsGenerator());
+  }
+
+  const shuffledIDs = shuffleArr(generatedIDs);
+
+  for (let i = 0; i < shuffledIDs.length; i++) {
+    const elemIndex = shuffledIDs[i];
+    result.push(arr[elemIndex]);
+  }
+
+  return result;
+}
+
+// v.2  генератор последовательных псевдо-уникальных чисел (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
+function uniqueIdGenerator(min = 0, max = 10) {
   let currentId = min;
 
   return function () {
@@ -36,30 +62,40 @@ function uniqueIdGenerator(min = 0, max) {
   };
 }
 
-/*
-  @param {int} length - длина получаемого текста в символах
-  @param {bool} cutByWord - если true - фрагмент вырезается
-  не строго посимвольно, а по последнему целому слову, входящему
-  в установленную длину, с усечением в меньшую сторону.
-*/
-function getLoremDescription(length = 250, cutByWord = false) {
-  const loremText = `Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-  Dignissimos vero explicabo voluptatibus voluptas quos impedit quas, ex
-  sint blanditiis inventore excepturi consectetur pariatur rerum sunt quae
-  officiis consequuntur harum laborum. Id minima voluptatum placeat voluptate
-  debitis. Culpa repellendus voluptatum earum molestias dolore, explicabo quae
-  sequi inventore minus nobis. Cumque, minima!`;
+// Генератор рандомных чисел в заданном диапазоне (с ростом числа элементов - будет работать медленнее)
+function randomUnicIdGenerator(min = 0, max = 10) {
+  const generatedIds = [];
+  let currentId = min;
 
-  let sliceOfText = loremText.slice(0, Math.round(length));
+  return function () {
+    while(true) {
+      currentId = getRandomInt(min, max);
 
-  if (cutByWord && loremText[sliceOfText.length] !== ' ') {
-    const lastWordInSlicedText = sliceOfText.split(' ').at(-1);
-    const lastWordIndex = sliceOfText.lastIndexOf(lastWordInSlicedText);
+      if(!generatedIds.includes(currentId)) {
+        generatedIds.push(currentId);
+        break;
+      }
+    }
 
-    sliceOfText = sliceOfText.slice(0, lastWordIndex).trimEnd();
+    return currentId;
+  };
+}
+
+// Функция для перемешивания массива (по алгоритму тасования Фишера-Йетса)
+function shuffleArr(arr) {
+  if (!arr.length) {
+    return;
   }
 
-  return sliceOfText;
+  const shuffledArr = arr.slice();
+
+  for (let i = shuffledArr.length - 1; i > 0; i--) {
+    const j = getRandomInt(0, i);
+
+    [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]];
+  }
+
+  return shuffledArr;
 }
 
 // Проверка наличия класса в класс-листе
@@ -67,11 +103,6 @@ function hasClass(className, classList) {
   const classes = Array.from(classList);
 
   return classes.includes(className);
-}
-
-// Удаление лишних пробелов из строки
-function removeExtraSpaces(str) {
-  return str.replace(/\s{2,}/gm, ' ').trim();
 }
 
 // Проверка клавишь
@@ -136,8 +167,10 @@ function throttle(callback, delay = THROTTLE_DELAY) {
 export {
   getRandomInt,
   getRandomElemsFromArr,
+  getRandUniqElemsFromArr,
   uniqueIdGenerator,
-  getLoremDescription,
+  randomUnicIdGenerator,
+  shuffleArr,
   hasClass,
   isEscapeKey,
   isValidHashTag,
