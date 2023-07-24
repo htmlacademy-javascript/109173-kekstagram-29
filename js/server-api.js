@@ -1,3 +1,7 @@
+/*
+  TODO: Попробовать реализовать повторную попытку
+  загрузки изображений с сервера в случае неудачи (n-число раз)
+*/
 const BASE_URL = 'https://29.javascript.pages.academy/kekstagram';
 const Route = {
   GET_DATA: '/data',
