@@ -38,6 +38,7 @@ const FILTERS = {
   },
 };
 
+const SCALE_BIGGER_BTN_CLASS = 'scale__control--bigger';
 const uploadImgForm = document.querySelector('.img-upload__form');
 const editingImage = document.querySelector('.img-upload__preview > img');
 const currentScale = document.querySelector('.scale__control--value');
@@ -52,7 +53,7 @@ function changeImgScale(evt) {
   const target = evt.target;
   let scaleAmount = parseInt(currentScale.value, 10);
 
-  if (target.classList.contains('scale__control--bigger')) {
+  if (target.classList.contains(SCALE_BIGGER_BTN_CLASS)) {
     scaleAmount += SCALE_STEP;
   } else {
     scaleAmount -= SCALE_STEP;
@@ -161,7 +162,7 @@ function destroySlider() {
 }
 
 export {
-  changeImgScale as changeScale,
+  changeImgScale,
   changeEffectHandler,
   resetImgEditor,
   destroySlider

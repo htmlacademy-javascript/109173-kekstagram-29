@@ -1,10 +1,11 @@
 import {isEscapeKey} from './utils.js';
 import {
-  changeScale,
+  changeImgScale,
   changeEffectHandler,
   resetImgEditor
 } from './img-editor.js';
 
+const MODAL_OPENED_BODY_CLASS = 'modal-open';
 
 // При фокусе на элементах с этими классами - закрытие окна по ESC - отключить
 const PREVENT_ESC_ON_ELEMS = ['text__hashtags', 'text__description'];
@@ -39,14 +40,14 @@ function keyDownHandler(evt) {
 // Функции работы с модальными окнами
 function openImgEditor() {
   imgEditorContainer.classList.remove('hidden');
-  document.body.classList.add('modal-open');
+  disableBodyScroll();
 
   document.addEventListener('keydown', keyDownHandler);
   closeImgEditorBtn.addEventListener('click', closeImgEditor);
 
   // Работа с размером изображения
-  scaleBiggerBtn.addEventListener('click', changeScale);
-  scaleSmallerBtn.addEventListener('click', changeScale);
+  scaleBiggerBtn.addEventListener('click', changeImgScale);
+  scaleSmallerBtn.addEventListener('click', changeImgScale);
 
   // Наложение фильтров
   imgEffectsContainer.addEventListener('click', changeEffectHandler);
@@ -55,17 +56,25 @@ function openImgEditor() {
 function closeImgEditor() {
   // Закрываем модалку
   imgEditorContainer.classList.add('hidden');
-  document.body.classList.remove('modal-open');
+  enableBodyScroll();
 
   // Удаляем все подвешенные обработчики
   document.removeEventListener('keydown', keyDownHandler);
   closeImgEditorBtn.removeEventListener('click', closeImgEditor);
 
-  scaleBiggerBtn.removeEventListener('click', changeScale);
-  scaleSmallerBtn.removeEventListener('click', changeScale);
+  scaleBiggerBtn.removeEventListener('click', changeImgScale);
+  scaleSmallerBtn.removeEventListener('click', changeImgScale);
 
   imgEffectsContainer.removeEventListener('click', changeEffectHandler);
   resetImgEditor();
+}
+
+function enableBodyScroll() {
+  document.body.classList.remove(MODAL_OPENED_BODY_CLASS);
+}
+
+function disableBodyScroll() {
+  document.body.classList.add(MODAL_OPENED_BODY_CLASS);
 }
 
 export {
