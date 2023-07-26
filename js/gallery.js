@@ -1,9 +1,3 @@
-/*
-  TODO: При перерисовке галереи не снимается обработчик с
-  общего контейнера .pictures.container, а каждый раз устанавливается
-  новое дополнительное событие.
-  UPD: Временно решено с помощью onclick - Переделать на addEventListener
-*/
 import {drawThumbnails} from './thumbnails.js';
 import {openFullPhoto} from './photos-modal.js';
 import {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded} from './comments.js';
