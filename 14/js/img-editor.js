@@ -102,7 +102,7 @@ function setFilter(filter) {
 
     filterStr = `${cssName}(${initValue}${units})`;
     initSlider(sliderOptions);
-    showSLider();
+    changeSliderState();
   } else {
     destroySlider();
   }
@@ -130,12 +130,13 @@ function sliderUpdateHandler() {
   editingImage.style.filter = `${cssName}(${newEffectValue}${units})`;
 }
 
-function showSLider() {
-  sliderContainer.classList.remove('hidden');
-}
+function changeSliderState(hidden = false) {
+  if (hidden) {
+    sliderContainer.classList.add('hidden');
+    return;
+  }
 
-function hideSLider() {
-  sliderContainer.classList.add('hidden');
+  sliderContainer.classList.remove('hidden');
 }
 
 function resetImgEditor() {
@@ -151,12 +152,12 @@ function resetImgEditor() {
 
   destroySlider();
   removeFormValidators();
-  hideSLider();
+  changeSliderState(true);
 }
 
 function destroySlider() {
   if (sliderElement.noUiSlider) {
-    hideSLider();
+    changeSliderState(true);
     sliderElement.noUiSlider.destroy();
   }
 }

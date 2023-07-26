@@ -88,13 +88,23 @@ function submitFormHandler(event) {
 }
 
 function setImagePreview(fileInfo) {
-  const imageSrc = URL.createObjectURL(fileInfo);
+  const imgSrc = URL.createObjectURL(fileInfo);
 
-  preview.src = imageSrc;
+  preview.src = imgSrc;
 
-  for(let i = 0; i < effectThumbnails.length; i++) {
-    effectThumbnails[i].style.backgroundImage = `url(${imageSrc})`;
-  }
+  effectThumbnails.forEach((thumbnail) => {
+    thumbnail.style.backgroundImage = `url(${imgSrc})`;
+  });
+
+  // Очищаем память от созданного URL
+  const lastThumbnail = effectThumbnails[effectThumbnails.length - 1];
+
+  setTimeout(() => {
+    lastThumbnail.onload = () => {
+      URL.revokeObjectURL(imgSrc);
+      lastThumbnail.onload = null;
+    };
+  }, 0);
 }
 
 function setFormValidators() {

@@ -1,6 +1,6 @@
 import {getData} from './server-api.js';
 import {setGalleryData, renderGallery} from './gallery.js';
-import {showErrorNotif, debounce} from './utils.js';
+import {showErrorNotification, debounce} from './utils.js';
 import {initGalleryFilters} from './gallery-filters.js';
 import './gallery.js';
 
@@ -20,5 +20,5 @@ getData()
     renderGallery();
   })
   .catch((error) => {
-    showErrorNotif(error);
+    showErrorNotification(error);
   });
