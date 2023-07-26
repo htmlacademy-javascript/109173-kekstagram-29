@@ -1198,69 +1198,6 @@ main {
   transform: translateX(-50%);
 }
 
-.system-messages
-{
-  display: block;
-  position: fixed;
-  right: 0;
-  top: 0;
-  padding: 15px;
-  list-style: none;
-  z-index: 3;
-}
-
-.system-messages__message
-{
-  position: relative;
-  left: 150%;
-  display: block;
-  max-width: 400px;
-  margin-bottom: 5px;
-  padding: 10px;
-
-  animation: slidein 0.4s forwards;
-}
-
-.system-messages__message::after
-{
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 4px;
-  height: 100%;
-}
-
-.system-messages__message--error
-{
-  background-color: #8b0000eb;
-  color: white;
-}
-
-.system-messages__message--error::after
-{
-  background-color: red;
-}
-
-.system-messages__message--success
-{
-  background-color: #006400e0;
-  color: white;
-}
-
-.system-messages__message--success::after
-{
-  background-color: green;
-}
-
-@keyframes slidein
-{
-  to {
-    left: -4px;
-  }
-}
-
-
 /**
  * Экраны ошибки и успеха загрузки изображения
  */
@@ -1316,6 +1253,7 @@ main {
   margin-bottom: 50px;
 
   font-size: 32px;
+  line-height: 32px;
 }
 
 .success__title {
@@ -1413,6 +1351,11 @@ main {
   border-radius: 4px;
 }
 
+.text__hashtags + .img-upload__error
+{
+  margin-top: -20px;
+}
+
 .img-upload__item--invalid > input,
 .img-upload__item--invalid > textarea
 {
@@ -1492,4 +1435,68 @@ main {
 
 .hidden {
   display: none;
+}
+
+
+/* Блок вывода пользовательских сообщений об ошибках */
+.system-notification
+{
+  display: block;
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: 15px;
+  list-style: none;
+  z-index: 3;
+}
+
+.system-notification__message
+{
+  position: relative;
+  left: 150%;
+  display: block;
+  max-width: 400px;
+  margin-bottom: 5px;
+  padding: 10px;
+
+  animation: slidein 0.4s forwards;
+}
+
+.system-notification__message::after
+{
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.system-notification__message--error
+{
+  background-color: #8b0000eb;
+  color: white;
+}
+
+.system-notification__message--error::after
+{
+  background-color: red;
+}
+
+.system-notification__message--success
+{
+  background-color: #006400e0;
+  color: white;
+}
+
+.system-notification__message--success::after
+{
+  background-color: green;
+}
+
+@keyframes slidein
+{
+  to {
+    left: -4px;
+  }
 }

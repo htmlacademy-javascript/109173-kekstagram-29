@@ -8,21 +8,10 @@
   <link rel="stylesheet" href="vendor/nouislider/nouislider.css">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <title>Кекстаграм</title>
-
-  <!-- Scripts -->
-  <script async src="js/main.js" type="module"></script>
-  <script async src="vendor/pristine/pristine.min.js"></script>
-  <script async src="vendor/nouislider/nouislider.js"></script>
 </head>
 
 <body>
   <main>
-    <!-- Блок вывода сообщений для пользователя -->
-    <ul class="system-messages">
-        <!-- <li class="system-messages__message system-messages__message--error">Произошла ошибка при загрузке данных. Повторите попытку.</li>
-        <li class="system-messages__message system-messages__message--success">Данные успешно загружены! Вы красавчик</li> -->
-    </ul>
-
     <!-- Фильтрация изображений от других пользователей -->
     <section class="img-filters  img-filters--inactive  container">
       <h2 class="img-filters__title  visually-hidden">Фильтр фотографий</h2>
@@ -45,7 +34,7 @@
 
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
-              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" required>
+              <input type="file" id="upload-file" class="img-upload__input  visually-hidden" name="filename" accept="image/png, image/jpeg" required>
               <label for="upload-file" class="img-upload__label  img-upload__control">Загрузить</label>
             </fieldset>
 
@@ -67,7 +56,7 @@
                   </div>
 
                   <!-- Изменение глубины эффекта, накладываемого на изображение -->
-                  <fieldset class="img-upload__effect-level  effect-level">
+                  <fieldset class="img-upload__effect-level  effect-level hidden">
                     <input class="effect-level__value" type="number" step="any" name="effect-level" value="">
                     <div class="effect-level__slider"></div>
                   </fieldset>
@@ -165,7 +154,7 @@
           </div>
 
           <!-- Комментарии к изображению -->
-          <div class="social__comment-count">5 из <span class="comments-count">125</span> комментариев</div>
+          <div class="social__comment-count"><span class="showed-comments-count">5</span> из <span class="comments-count">125</span> комментариев</div>
           <ul class="social__comments">
             <li class="social__comment">
               <img class="social__picture" src="img/avatar-4.svg" alt="Аватар комментатора фотографии" width="35" height="35">
@@ -249,5 +238,10 @@
         <p class="social__text">{{текст комментария}}</p>
     </li>
   </template>
+
+  <!-- Скрипты -->
+  <script src="vendor/pristine/pristine.min.js"></script>
+  <script src="vendor/nouislider/nouislider.js"></script>
+  <script src="js/main.js" type="module"></script>
 </body>
 </html>

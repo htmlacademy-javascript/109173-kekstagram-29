@@ -1,7 +1,12 @@
-import {isValidHashTag} from './utils.js';
-
 const MAX_TAGS_COUNT = 5;
 const MAX_COMMENT_LENGTH = 140;
+
+// Валидаторы
+function isValidHashTag(hashTagStr) {
+  const regex = /^#[\w\dа-яА-Я]{1,19}$/gi;
+
+  return regex.test(hashTagStr);
+}
 
 // Валидаторы хэш-тегов
 function checkTagsSemantics(tagsStr) {
@@ -19,51 +24,40 @@ function checkTagsSemantics(tagsStr) {
   return true;
 }
 
-
 function checkTagsCount(tagsStr) {
   const tags = getNormallizedHashTags(tagsStr);
 
   // Не больше MAX_TAGS_COUNT тегов на фотографии
-  if (tags.length > MAX_TAGS_COUNT) {
-    return false;
-  }
-
-  return true;
+  return tags.length <= MAX_TAGS_COUNT;
 }
 
 function checkTagsUniq(tagsStr) {
   const tags = getNormallizedHashTags(tagsStr);
 
-  // Проверяем каждый тег
-  if (tags.length > 0) {
-    const usedTags = new Set();
-
-    for (const tag of tags) {
-      // Тег должен быть валидным и не должен использоваться повторно
-      if (usedTags.has(tag)) {
-        return false;
-      }
-
-      usedTags.add(tag);
-    }
-  }
-
-  return true;
+  /* т.к. Set возвращает массив только из уникальных элементов
+  мы легко можем использовать эту особенность для проверки
+  исходного массива на уникальность. Если после "уникализации"
+  длины массивов не равны - значит в исходном массиве есть
+  повторяющиеся элементы */
+  return tags.length === new Set(tags).size;
 }
 
 function getNormallizedHashTags(tagsStr) {
-  if (tagsStr.length <= 0) {
-    return [];
-  }
-
   const tagsArr = tagsStr.trim().split(' ');
-  const tags = tagsArr.map((tag) => tag.toLowerCase());
-  return tags;
+  const result = [];
+
+  tagsArr.map((tag) => {
+    if (tag) {
+      result.push(tag.toLowerCase());
+    }
+  });
+
+  return result;
 }
 
 // Валидаторы комментариев
-function checkComment(commentStr) {
-  return !(commentStr.length > MAX_COMMENT_LENGTH);
+function checkCommentLength(commentStr) {
+  return commentStr.length <= MAX_COMMENT_LENGTH;
 }
 
 export {
@@ -72,5 +66,5 @@ export {
   checkTagsSemantics,
   checkTagsCount,
   checkTagsUniq,
-  checkComment,
+  checkCommentLength,
 };

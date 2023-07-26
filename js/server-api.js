@@ -1,18 +1,22 @@
+/*
+  TODO: Попробовать реализовать повторную попытку
+  загрузки изображений с сервера в случае неудачи (n-число раз)
+*/
 const BASE_URL = 'https://29.javascript.pages.academy/kekstagram';
-const Routes = {
+const Route = {
   GET_DATA: '/data',
   SEND_DATA: '/',
 };
-const Methods = {
+const Method = {
   GET: 'GET',
   POST: 'POST'
 };
-const DataErrors = {
+const ErrorText = {
   LOAD: 'Не удалось загрузить данные с сервера. Перезагрузите страницу или попробуйте позднее.',
   SEND: 'Не удалось отправить данные на сервер. Попробуйте повторить отправку.'
 };
 
-function loadData(route, errorText, method = Methods.GET, body = null) {
+function loadData(route, errorText, method = Method.GET, body = null) {
   return fetch(`${BASE_URL}${route}`, {method, body})
     .then((response) => {
       if (response.ok) {
@@ -27,11 +31,11 @@ function loadData(route, errorText, method = Methods.GET, body = null) {
 }
 
 function getData() {
-  return loadData(Routes.GET_DATA, DataErrors.LOAD);
+  return loadData(Route.GET_DATA, ErrorText.LOAD);
 }
 
 function sendData(data) {
-  return loadData(Routes.SEND_DATA, DataErrors.SEND, Methods.POST, data);
+  return loadData(Route.SEND_DATA, ErrorText.SEND, Method.POST, data);
 }
 
 export {getData, sendData};

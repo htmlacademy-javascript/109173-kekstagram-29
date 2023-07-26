@@ -1,6 +1,8 @@
 /*
-  TODO: Подумать, как решить проблему с экспортируемой изменяющейся
-  переменной let prestine, дабы код соответствовал требованию Б20 (https://up.htmlacademy.ru/profession/fullstack/6/javascript/29/criteries)
+  TODO:
+  - Prestine.js при каждом вызове, даже ни смотря на reset() и
+  destroy() своего объекта - не затирает за собой слушатель события
+  input на #upload-file - Подумать, можно ли как-то это исправить.
 */
 import {openImgEditor, closeImgEditor} from './forms-modal.js';
 import {
@@ -9,12 +11,30 @@ import {
   checkTagsSemantics,
   checkTagsCount,
   checkTagsUniq,
-  checkComment
+  checkCommentLength
 } from './validators.js';
 import {sendData} from './server-api.js';
-import {showError, showSuccess} from './utils.js';
+import {isValidFileType, showError, showSuccess} from './utils.js';
 
-const ValidatorMessages = {
+// Статусы отправки формы
+const SubmitBtnText = {
+  BASE: 'Опубликовать',
+  PUBLISHING: 'Публикуем...'
+};
+const DataSendStatusText = {
+  SUCCESS: 'Данные успешно отправлены',
+  ERROR: 'Ошибка отправки данных'
+};
+
+// Валидация
+const PrestineClass = {
+  to: 'img-upload__field-wrapper',
+  error: 'img-upload__item--invalid',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'span',
+  errorText: 'img-upload__error'
+};
+const ValidatorMessage = {
   // Хеш-теги
   HT_SEMANTICS: 'Хэш-теги должны начинаться с символа # и содержать только буквы/цифры',
   HT_COUNT: `К одной фотографии можно добавить не более ${MAX_TAGS_COUNT} хэш-тегов`,
@@ -23,83 +43,131 @@ const ValidatorMessages = {
   COMM_LENGTH: `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов.`,
 };
 
-const SubmitBtnText = {
-  BASE: 'Опубликовать',
-  PUBLISHING: 'Публикуем'
-};
-
-const imgUploadForm = document.querySelector('.img-upload__form');
+const uploadImgForm = document.querySelector('.img-upload__form');
 const uploadImgInput = document.querySelector('.img-upload__input');
-const submitBtn = document.querySelector('.img-upload__submit');
+const submitFormBtn = document.querySelector('.img-upload__submit');
+const preview = document.querySelector('.img-upload__preview > img');
+const effectThumbnails = document.querySelectorAll('.effects__preview');
+const hashTagsInput = uploadImgForm.querySelector('.text__hashtags');
+const descriptionInput = uploadImgForm.querySelector('.text__description');
 
-let pristine = null; // Не лучшее решение, но нужно очищать валидатор в formsModal.js, пока не придумал, как сделать иначе
+let pristine = null;
 
 uploadImgInput.addEventListener('change', (evt) => {
-  pristine = new Pristine(imgUploadForm, {
-    classTo: 'img-upload__field-wrapper',
-    errorClass: 'img-upload__item--invalid',
-    errorTextParent: 'img-upload__field-wrapper',
-    errorTextTag: 'span',
-    errorTextClass: 'img-upload__error'
+  const target = evt.target;
+  const choosedFile = target.files[0];
+
+  // Если загружен файл валидного типа
+  if (isValidFileType(choosedFile)) {
+    setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
+    uploadImgForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
+    setImagePreview(choosedFile); // Загружаем изображение в модальное окно
+    openImgEditor(evt); // Открываем редактор изображения
+  }
+});
+
+function submitFormHandler(event) {
+  event.preventDefault();
+
+  const targetForm = event.target;
+  const isValidForm = pristine.validate();
+
+  // Если форма валидна - отправляем
+  if (isValidForm) {
+    blockSendBtn();
+    sendData(new FormData(targetForm))
+      .then(() => {
+        showSuccess(DataSendStatusText.SUCCESS);
+        closeImgEditor(); // Закрываем форму только в случае успешной отправки
+      })
+      .catch(() => showError(DataSendStatusText.ERROR))
+      .finally(() => {
+        unblockSendBtn();
+      });
+  }
+}
+
+function setImagePreview(fileInfo) {
+  const imgSrc = URL.createObjectURL(fileInfo);
+
+  preview.src = imgSrc;
+
+  effectThumbnails.forEach((thumbnail) => {
+    thumbnail.style.backgroundImage = `url(${imgSrc})`;
+  });
+
+  // Очищаем память от созданного URL
+  const lastThumbnail = effectThumbnails[effectThumbnails.length - 1];
+
+  setTimeout(() => {
+    lastThumbnail.onload = () => {
+      URL.revokeObjectURL(imgSrc);
+      lastThumbnail.onload = null;
+    };
+  }, 0);
+}
+
+function setFormValidators() {
+  pristine = new Pristine(uploadImgForm, {
+    classTo: PrestineClass.to,
+    errorClass: PrestineClass.error,
+    errorTextParent: PrestineClass.errorTextParent,
+    errorTextTag: PrestineClass.errorTextTag,
+    errorTextClass: PrestineClass.errorText
   });
 
   // Валидация хэш-тегов
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__hashtags'),
-    checkTagsSemantics, // Проверка общей сементики
-    ValidatorMessages.HT_SEMANTICS
+    hashTagsInput,
+    checkTagsSemantics, // Проверка общей семантики
+    ValidatorMessage.HT_SEMANTICS,
+    1,
+    true
   );
 
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__hashtags'),
+    hashTagsInput,
     checkTagsCount, // Проверка количества тегов
-    ValidatorMessages.HT_COUNT
+    ValidatorMessage.HT_COUNT,
+    2,
+    true
   );
 
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__hashtags'),
+    hashTagsInput,
     checkTagsUniq, // Проверка на уникальность
-    ValidatorMessages.HT_UNIQ
+    ValidatorMessage.HT_UNIQ,
+    3,
+    true
   );
 
   // Валидатор комментария
   pristine.addValidator(
-    imgUploadForm.querySelector('.text__description'),
-    checkComment,
-    ValidatorMessages.COMM_LENGTH
+    descriptionInput,
+    checkCommentLength,
+    ValidatorMessage.COMM_LENGTH
   );
+}
 
-  imgUploadForm.addEventListener('submit', (event) => {
-    event.preventDefault();
+function removeFormValidators() {
+  uploadImgForm.removeEventListener('submit', submitFormHandler);
 
-    const targetForm = event.target;
+  if (!pristine) {
+    return;
+  }
 
-    // Если форма валидна - отправляем
-    if (pristine.validate()) {
-      blockSendBtn();
-      sendData(new FormData(targetForm))
-        .then(() => showSuccess('Данные успешно отправлены'))
-        .catch(() => showError('Ошибка отправки данных'))
-        .finally(() => {
-          unblockSendBtn();
-          closeImgEditor();
-          pristine.reset();
-        });
-    }
-  });
-
-  // Открываем редактор изображения
-  openImgEditor(evt);
-});
+  pristine.reset();
+  pristine.destroy();
+}
 
 function blockSendBtn() {
-  submitBtn.disabled = true;
-  submitBtn.textContent = SubmitBtnText.PUBLISHING;
+  submitFormBtn.disabled = true;
+  submitFormBtn.textContent = SubmitBtnText.PUBLISHING;
 }
 
 function unblockSendBtn() {
-  submitBtn.disabled = false;
-  submitBtn.textContent = SubmitBtnText.BASE;
+  submitFormBtn.disabled = false;
+  submitFormBtn.textContent = SubmitBtnText.BASE;
 }
 
-export {pristine};
+export {removeFormValidators};

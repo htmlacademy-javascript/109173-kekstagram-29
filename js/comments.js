@@ -1,7 +1,7 @@
 const Avatar = {WIDTH: 35, HEIGHT: 35};
 const commentsTemplate = document.querySelector('#comment').content;
 const showedComments = document.querySelector('.social__comments').children;
-const commentsCounter = document.querySelector('.social__comment-count');
+const showedCommentsCounter = document.querySelector('.showed-comments-count');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
 function getComment({avatar, name, message}) {
@@ -29,7 +29,7 @@ function getCommentsRenderer(comments, container, commentsCount = comments.lengt
       return;
     }
 
-    commentsCount = (commentsCount > comments.length) ? comments.length : commentsCount;
+    commentsCount = Math.min(commentsCount, comments.length);
 
     const commentsArr = comments.slice(startIndex, startIndex + commentsCount);
     const commentsList = document.createDocumentFragment();
@@ -55,7 +55,7 @@ function getShowedCommentsCount() {
 }
 
 function updateCommentsCounter() {
-  commentsCounter.firstChild.textContent = `${getShowedCommentsCount()} из `;
+  showedCommentsCounter.textContent = getShowedCommentsCount();
 }
 
 function isAllCommentsLoaded(commentsCount) {

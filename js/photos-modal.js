@@ -1,29 +1,33 @@
 import {isEscapeKey} from './utils.js';
+import {removeLoadCommentsHandler} from './gallery.js';
 
-const fullScreenContainer = document.querySelector('.big-picture');
-const closeFullScreenBtn = document.querySelector('.big-picture__cancel');
+const fullPhotoContainer = document.querySelector('.big-picture');
+const closeFullPhotoBtn = document.querySelector('.big-picture__cancel');
 
-function onKeyDownHandler(evt) {
+function keyDownHandler(evt) {
   if(isEscapeKey(evt)) {
-    closeFullPhotto();
+    closeFullPhoto();
   }
 }
 
 // Функции работы с модальными окнами
 function openFullPhoto() {
   document.body.classList.add('modal-open'); // Запрещаем прокрутку body
-  fullScreenContainer.classList.remove('hidden'); // Открываем попап с фото
+  fullPhotoContainer.classList.remove('hidden'); // Открываем попап с фото
 
-  document.addEventListener('keydown', onKeyDownHandler);
-  closeFullScreenBtn.addEventListener('click', closeFullPhotto);
+  document.addEventListener('keydown', keyDownHandler);
+  closeFullPhotoBtn.addEventListener('click', closeFullPhoto);
 }
 
-function closeFullPhotto() {
-  fullScreenContainer.classList.add('hidden');
+function closeFullPhoto() {
+  fullPhotoContainer.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
-  document.removeEventListener('keydown', onKeyDownHandler);
-  closeFullScreenBtn.removeEventListener('click', closeFullPhotto);
+  document.removeEventListener('keydown', keyDownHandler);
+  closeFullPhotoBtn.removeEventListener('click', closeFullPhoto);
+
+  // Удаляем обработчик с кнопки загрузки комментариев
+  removeLoadCommentsHandler();
 }
 
 export {openFullPhoto};

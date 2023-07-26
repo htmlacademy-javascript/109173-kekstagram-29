@@ -1,5 +1,4 @@
-import {hasClass} from './utils.js';
-import {pristine} from './forms.js';
+import {removeFormValidators} from './forms.js';
 
 const Scalable = {MIN: 25, MAX: 100};
 const SCALE_STEP = 25;
@@ -26,54 +25,50 @@ const FILTERS = {
   },
   phobos: { // Фобос
     cssName: 'blur',
-    initValue: 1,
+    initValue: 3,
     max: 3,
     step: 0.1,
     units: 'px'
   },
   heat: { // Зной
     cssName: 'brightness',
-    initValue: 1.5,
+    initValue: 3,
     max: 3,
     step: 0.1,
   },
 };
 
+const SCALE_BIGGER_BTN_CLASS = 'scale__control--bigger';
+const uploadImgForm = document.querySelector('.img-upload__form');
 const editingImage = document.querySelector('.img-upload__preview > img');
 const currentScale = document.querySelector('.scale__control--value');
+const sliderContainer = document.querySelector('.img-upload__effect-level');
 const sliderElement = document.querySelector('.effect-level__slider');
 const effectLvl = document.querySelector('.effect-level__value');
 
-const uploadImgInput = document.querySelector('.img-upload__input');
-const imgHashTags = document.querySelector('.text__hashtags');
-const imgDescription = document.querySelector('.text__description');
-const imgEffectsBtns = document.querySelectorAll('.effects__radio');
+let currentFilter = null;
 
 // Работа с размерами изображения
-function changeScale(evt) {
+function changeImgScale(evt) {
   const target = evt.target;
   let scaleAmount = parseInt(currentScale.value, 10);
 
-  if (hasClass('scale__control--bigger', target.classList)) {
+  if (target.classList.contains(SCALE_BIGGER_BTN_CLASS)) {
     scaleAmount += SCALE_STEP;
   } else {
     scaleAmount -= SCALE_STEP;
   }
 
-  if (scaleAmount > Scalable.MAX) {
-    scaleAmount = Scalable.MAX;
-  }
-
-  if (scaleAmount < Scalable.MIN) {
-    scaleAmount = Scalable.MIN;
-  }
+  // Предотвращение выхода за пределы допустимых значений
+  scaleAmount = Math.min(scaleAmount, Scalable.MAX);
+  scaleAmount = Math.max(scaleAmount, Scalable.MIN);
 
   currentScale.value = `${scaleAmount}%`;
-  changeImageScale(editingImage, scaleAmount);
+  setImageScale(scaleAmount);
 }
 
-function changeImageScale(image, amount) {
-  image.style.transform = `scale(${amount / 100})`;
+function setImageScale(scaleAmount) {
+  editingImage.style.transform = `scale(${scaleAmount / 100})`;
 }
 
 // Наложение фильтров
@@ -86,14 +81,15 @@ function changeEffectHandler(evt) {
 
   const filterName = target.value;
 
-  setFilter(editingImage, filterName);
+  currentFilter = FILTERS[filterName];
+  setFilter(currentFilter);
 }
 
-function setFilter(image, filterName) {
-  let currentFilter = '';
+function setFilter(filter) {
+  let filterStr = '';
 
-  if (filterName !== 'none') {
-    const {cssName = '', initValue, max, step, units = ''} = FILTERS[filterName];
+  if (filter.cssName) {
+    const {cssName = '', initValue, max, step, units = ''} = currentFilter;
     const sliderOptions = {
       range: {
         min: 0,
@@ -104,26 +100,43 @@ function setFilter(image, filterName) {
       connect: 'lower',
     };
 
-    currentFilter = `${cssName}(${initValue}${units})`;
-
-    // Слайдер изменения величины накладываемого эффекта
-    if (!sliderElement.noUiSlider) {
-      noUiSlider.create(sliderElement, sliderOptions);
-    } else {
-      sliderElement.noUiSlider.updateOptions(sliderOptions);
-    }
-
-    // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
-    sliderElement.noUiSlider.on('update', () => {
-      effectLvl.value = sliderElement.noUiSlider.get();
-
-      image.style.filter = `${cssName}(${effectLvl.value}${units})`;
-    });
+    filterStr = `${cssName}(${initValue}${units})`;
+    initSlider(sliderOptions);
+    changeSliderState();
   } else {
     destroySlider();
   }
 
-  image.style.filter = currentFilter;
+  editingImage.style.filter = filterStr;
+}
+
+function initSlider(sliderOptions) {
+  // Слайдер изменения величины накладываемого эффекта
+  if (!sliderElement.noUiSlider) {
+    noUiSlider.create(sliderElement, sliderOptions);
+
+    // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
+    sliderElement.noUiSlider.on('update', sliderUpdateHandler);
+  } else {
+    sliderElement.noUiSlider.updateOptions(sliderOptions);
+  }
+}
+
+function sliderUpdateHandler() {
+  const newEffectValue = sliderElement.noUiSlider.get();
+  const {cssName = '', units = ''} = currentFilter;
+
+  effectLvl.value = newEffectValue;
+  editingImage.style.filter = `${cssName}(${newEffectValue}${units})`;
+}
+
+function changeSliderState(hidden = false) {
+  if (hidden) {
+    sliderContainer.classList.add('hidden');
+    return;
+  }
+
+  sliderContainer.classList.remove('hidden');
 }
 
 function resetImgEditor() {
@@ -132,30 +145,25 @@ function resetImgEditor() {
   currentScale.value = '100%';
 
   // Сбрасываем значения полей
-  uploadImgInput.value = '';
-  imgHashTags.value = '';
-  imgDescription.value = '';
+  uploadImgForm.reset();
 
   // Сбрасываем фильтры
   editingImage.style.filter = '';
 
-  for (const imgEffectBtn of imgEffectsBtns) {
-    imgEffectBtn.checked = false;
-  }
-
-  imgEffectsBtns[0].checked = true;
   destroySlider();
-  pristine.reset();
+  removeFormValidators();
+  changeSliderState(true);
 }
 
 function destroySlider() {
   if (sliderElement.noUiSlider) {
+    changeSliderState(true);
     sliderElement.noUiSlider.destroy();
   }
 }
 
 export {
-  changeScale,
+  changeImgScale,
   changeEffectHandler,
   resetImgEditor,
   destroySlider

@@ -1,13 +1,49 @@
-const MESSAGE_SHOW_TIMER = 5000;
-const BASE_MESSAGE_CLASS = 'system-messages__message';
-const MessageClasses = {
-  ERROR: 'system-messages__message--error',
-  SUCCESS: 'system-messages__message--success'
+const ACCEPTED_FILE_TYPES = ['jpg', 'jpeg', 'png'];
+
+// Параметры уведомлений
+const NOTIFICATION_CONTAINER_CLASS = 'system-notification';
+const NOTIFICATION_BASE_CLASS = 'system-notification__message';
+const NotificationClass = {
+  ERROR: 'system-notification__message--error',
+  SUCCESS: 'system-notification__message--success'
 };
+const NOTIFICATION_SHOW_TIMER = 5000;
+
+// Параметры сообщений
+const MessageType = {
+  ERROR: 'ERROR',
+  SUCCESS: 'SUCCESS'
+};
+const MessageText = {
+  ERROR: 'Ошибка загрузки файла',
+  SUCCESS: 'Изображение успешно загружено'
+};
+const MESSAGE_PARAMS = {
+  ERROR: {
+    ID: '#error',
+    CLASS: '.error',
+    TITLE: '.error__title',
+  },
+  SUCCESS: {
+    ID: '#success',
+    CLASS: '.success',
+    TITLE: '.success__title',
+  }
+};
+
+// Параметры задержки
 const DEBOUNCE_TIMEOUT = 500;
 const THROTTLE_DELAY = 1000;
 
-const messagesContainer = document.querySelector('.system-messages');
+function isValidFileType(file) {
+  if (file) {
+    const fileExt = file.type.split('/')[1];
+
+    return ACCEPTED_FILE_TYPES.includes(fileExt);
+  }
+
+  return false;
+}
 
 function getRandomInt(min, max) {
   min = Math.floor(min);
@@ -35,7 +71,7 @@ function getRandUniqElemsFromArr(arr, elemsCount = 1) {
 
   const result = [];
   const generatedIDs = [];
-  const idsGenerator = uniqueIdGenerator(0, elemsCount);
+  const idsGenerator = getUniqIdGenerator(0, elemsCount);
 
   for (let i = 0; i < elemsCount; i++) {
     generatedIDs.push(idsGenerator());
@@ -52,32 +88,13 @@ function getRandUniqElemsFromArr(arr, elemsCount = 1) {
 }
 
 // v.2  генератор последовательных псевдо-уникальных чисел (с ростом числа элементов будет работать быстрее, чем рандомайзер с массивом)
-function uniqueIdGenerator(min = 0, max = 10) {
+function getUniqIdGenerator(min = 0, max = 10) {
   let currentId = min;
 
   return function () {
     if (min < max) {
       return currentId++;
     }
-  };
-}
-
-// Генератор рандомных чисел в заданном диапазоне (с ростом числа элементов - будет работать медленнее)
-function randomUnicIdGenerator(min = 0, max = 10) {
-  const generatedIds = [];
-  let currentId = min;
-
-  return function () {
-    while(true) {
-      currentId = getRandomInt(min, max);
-
-      if(!generatedIds.includes(currentId)) {
-        generatedIds.push(currentId);
-        break;
-      }
-    }
-
-    return currentId;
   };
 }
 
@@ -98,44 +115,96 @@ function shuffleArr(arr) {
   return shuffledArr;
 }
 
-// Проверка наличия класса в класс-листе
-function hasClass(className, classList) {
-  const classes = Array.from(classList);
-
-  return classes.includes(className);
-}
-
-// Проверка клавишь
+// Проверка нажатой клавиши
 function isEscapeKey(evt) {
   return evt.key === 'Escape';
 }
 
-// Валидаторы
-function isValidHashTag(hashTagStr) {
-  const regex = /^#[\w\dа-яА-Я]{1,19}$/gi;
-
-  return regex.test(hashTagStr);
+// Вывод сообщений об ошибках/успехе загрузки фотографий на сервер
+function showMessage(messageText, messageType = MessageType.SUCCESS) {
+  const message = createMessage(messageText, messageType);
+  document.body.append(message);
 }
 
-// Вывод сообщений пользователю
-function showMessage(messageText, messageClass) {
-  const message = document.createElement('li');
-  message.textContent = messageText;
-  message.classList.add(BASE_MESSAGE_CLASS);
-  message.classList.add(messageClass);
+function createMessage(messageText, messageType = MessageType.SUCCESS) {
+  // Параметры контейнера сообщения
+  const templateContainerSelector = MESSAGE_PARAMS[messageType].ID;
+  const messageContainerSelector = MESSAGE_PARAMS[messageType].CLASS;
+  const messageTitleSelector = MESSAGE_PARAMS[messageType].TITLE;
 
-  messagesContainer.prepend(message);
+  // Создаем сообщение
+  const messageTmpl = document.querySelector(templateContainerSelector).content;
+  const message = messageTmpl.cloneNode(true);
+  message.querySelector(messageTitleSelector).textContent = messageText;
+  message.querySelector(messageContainerSelector).addEventListener('click', closeMessageClickHandler);
+  document.addEventListener('keydown', closeMessageKeyDownHandler);
 
-  // Скрываем сообщение через MESSAGE_SHOW_TIMER миллисекунд
-  setTimeout(() => message.remove(), MESSAGE_SHOW_TIMER);
+  return message;
 }
 
-function showError(errorText) {
-  showMessage(errorText, MessageClasses.ERROR);
+function showError(errorText = MessageText.ERROR) {
+  showMessage(errorText, MessageType.ERROR);
 }
 
-function showSuccess(successText) {
-  showMessage(successText, MessageClasses.SUCCESS);
+function showSuccess(successText = MessageText.SUCCESS) {
+  showMessage(successText, MessageType.SUCCESS);
+}
+
+// Вывод прочих уведомлений пользователям сервиса
+function createNotificationContainer() {
+  const notifContainer = document.createElement('ul');
+  notifContainer.className = NOTIFICATION_CONTAINER_CLASS;
+  return notifContainer;
+}
+
+function showNotification(notifText, notifClass) {
+  if (!document.querySelector(`.${NOTIFICATION_CONTAINER_CLASS}`)) {
+    const notificationContainer = createNotificationContainer();
+    document.body.append(notificationContainer);
+  }
+
+  const notifocationsContainer = document.querySelector(`.${NOTIFICATION_CONTAINER_CLASS}`);
+  const notification = document.createElement('li');
+  notification.textContent = notifText;
+  notification.classList.add(NOTIFICATION_BASE_CLASS);
+  notification.classList.add(notifClass);
+
+  notifocationsContainer.prepend(notification);
+
+  // Скрываем сообщение через NOTIF_SHOW_TIMER миллисекунд
+  setTimeout(() => notification.remove(), NOTIFICATION_SHOW_TIMER);
+}
+
+function showErrorNotification(errorText) {
+  showNotification(errorText, NotificationClass.ERROR);
+}
+
+function showSuccessNotification(successText) {
+  showNotification(successText, NotificationClass.SUCCESS);
+}
+
+function closeMessageClickHandler(evt) {
+  const target = evt.target;
+  const closeMessageTriggers = ['success', 'success__button', 'error', 'error__button'];
+
+  // Закрываем сообщение при клике по соответствующему классу
+  if(closeMessageTriggers.includes(target.className)) {
+    removeMessage();
+    document.removeEventListener('keydown', closeMessageClickHandler);
+  }
+}
+
+function closeMessageKeyDownHandler(evt) {
+  // Закрываем сообщение только при нажатии ESC
+  if(isEscapeKey(evt)) {
+    removeMessage();
+    document.removeEventListener('keydown', closeMessageKeyDownHandler);
+  }
+}
+
+function removeMessage() {
+  document.querySelector(MESSAGE_PARAMS.ERROR.CLASS)?.remove();
+  document.querySelector(MESSAGE_PARAMS.SUCCESS.CLASS)?.remove();
 }
 
 // Функции для устранения дребезга
@@ -165,17 +234,16 @@ function throttle(callback, delay = THROTTLE_DELAY) {
 }
 
 export {
+  isValidFileType,
   getRandomInt,
   getRandomElemsFromArr,
   getRandUniqElemsFromArr,
-  uniqueIdGenerator,
-  randomUnicIdGenerator,
-  shuffleArr,
-  hasClass,
   isEscapeKey,
-  isValidHashTag,
+  MessageType,
   showError,
   showSuccess,
+  showErrorNotification,
+  showSuccessNotification,
   debounce,
   throttle
 };
