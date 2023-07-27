@@ -1,7 +1,7 @@
 import {removeFormValidators} from './forms.js';
 
-const Scalable = {MIN: 25, MAX: 100};
 const SCALE_STEP = 25;
+const SCALE_BIGGER_BTN_CLASS = 'scale__control--bigger';
 const FILTERS = {
   none:{}, // Оригинальное изображение
   chrome: { // Хром
@@ -38,7 +38,8 @@ const FILTERS = {
   },
 };
 
-const SCALE_BIGGER_BTN_CLASS = 'scale__control--bigger';
+const Scalable = {MIN: 25, MAX: 100};
+
 const uploadImgForm = document.querySelector('.img-upload__form');
 const editingImage = document.querySelector('.img-upload__preview > img');
 const currentScale = document.querySelector('.scale__control--value');
@@ -49,7 +50,11 @@ const effectLvl = document.querySelector('.effect-level__value');
 let currentFilter = null;
 
 // Работа с размерами изображения
-function changeImgScale(evt) {
+const setImageScale = (scaleAmount) => {
+  editingImage.style.transform = `scale(${scaleAmount / 100})`;
+};
+
+const changeImgScale = (evt) => {
   const target = evt.target;
   let scaleAmount = parseInt(currentScale.value, 10);
 
@@ -65,27 +70,47 @@ function changeImgScale(evt) {
 
   currentScale.value = `${scaleAmount}%`;
   setImageScale(scaleAmount);
-}
+};
 
-function setImageScale(scaleAmount) {
-  editingImage.style.transform = `scale(${scaleAmount / 100})`;
-}
 
-// Наложение фильтров
-function changeEffectHandler(evt) {
-  const target = evt.target.closest('.effects__radio');
+const sliderUpdateHandler = () => {
+  const newEffectValue = sliderElement.noUiSlider.get();
+  const {cssName = '', units = ''} = currentFilter;
 
-  if (!target) {
+  effectLvl.value = newEffectValue;
+  editingImage.style.filter = `${cssName}(${newEffectValue}${units})`;
+};
+
+const changeSliderState = (hidden = false) => {
+  if (hidden) {
+    sliderContainer.classList.add('hidden');
     return;
   }
 
-  const filterName = target.value;
+  sliderContainer.classList.remove('hidden');
+};
 
-  currentFilter = FILTERS[filterName];
-  setFilter(currentFilter);
-}
+const initSlider = (sliderOptions) => {
+  // Слайдер изменения величины накладываемого эффекта
+  if (!sliderElement.noUiSlider) {
+    noUiSlider.create(sliderElement, sliderOptions);
 
-function setFilter(filter) {
+    // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
+    sliderElement.noUiSlider.on('update', sliderUpdateHandler);
+  } else {
+    sliderElement.noUiSlider.updateOptions(sliderOptions);
+  }
+};
+
+const destroySlider = () => {
+  if (sliderElement.noUiSlider) {
+    changeSliderState(true);
+    sliderElement.noUiSlider.destroy();
+  }
+};
+
+// Наложение фильтров
+const setFilter = (filter) => {
   let filterStr = '';
 
   if (filter.cssName) {
@@ -108,38 +133,22 @@ function setFilter(filter) {
   }
 
   editingImage.style.filter = filterStr;
-}
+};
 
-function initSlider(sliderOptions) {
-  // Слайдер изменения величины накладываемого эффекта
-  if (!sliderElement.noUiSlider) {
-    noUiSlider.create(sliderElement, sliderOptions);
+const changeEffectHandler = (evt) => {
+  const target = evt.target.closest('.effects__radio');
 
-    // При изменении значения слайдера - обновляем скрытое поле и изменяем интенсивность фильтра
-    sliderElement.noUiSlider.on('update', sliderUpdateHandler);
-  } else {
-    sliderElement.noUiSlider.updateOptions(sliderOptions);
-  }
-}
-
-function sliderUpdateHandler() {
-  const newEffectValue = sliderElement.noUiSlider.get();
-  const {cssName = '', units = ''} = currentFilter;
-
-  effectLvl.value = newEffectValue;
-  editingImage.style.filter = `${cssName}(${newEffectValue}${units})`;
-}
-
-function changeSliderState(hidden = false) {
-  if (hidden) {
-    sliderContainer.classList.add('hidden');
+  if (!target) {
     return;
   }
 
-  sliderContainer.classList.remove('hidden');
-}
+  const filterName = target.value;
 
-function resetImgEditor() {
+  currentFilter = FILTERS[filterName];
+  setFilter(currentFilter);
+};
+
+const resetImgEditor = () => {
   // Сбрасываем размер изображения
   editingImage.style.transform = '';
   currentScale.value = '100%';
@@ -153,14 +162,7 @@ function resetImgEditor() {
   destroySlider();
   removeFormValidators();
   changeSliderState(true);
-}
-
-function destroySlider() {
-  if (sliderElement.noUiSlider) {
-    changeSliderState(true);
-    sliderElement.noUiSlider.destroy();
-  }
-}
+};
 
 export {
   changeImgScale,

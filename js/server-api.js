@@ -16,8 +16,8 @@ const ErrorText = {
   SEND: 'Не удалось отправить данные на сервер. Попробуйте повторить отправку.'
 };
 
-function loadData(route, errorText, method = Method.GET, body = null) {
-  return fetch(`${BASE_URL}${route}`, {method, body})
+const loadData = (route, errorText, method = Method.GET, body = null) =>
+  fetch(`${BASE_URL}${route}`, {method, body})
     .then((response) => {
       if (response.ok) {
         return response.json();
@@ -28,14 +28,9 @@ function loadData(route, errorText, method = Method.GET, body = null) {
     .catch(() => {
       throw new Error(errorText);
     });
-}
 
-function getData() {
-  return loadData(Route.GET_DATA, ErrorText.LOAD);
-}
+const getData = () => loadData(Route.GET_DATA, ErrorText.LOAD);
 
-function sendData(data) {
-  return loadData(Route.SEND_DATA, ErrorText.SEND, Method.POST, data);
-}
+const sendData = (data) => loadData(Route.SEND_DATA, ErrorText.SEND, Method.POST, data);
 
 export {getData, sendData};

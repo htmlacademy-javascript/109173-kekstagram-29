@@ -19,6 +19,4 @@ getData()
     // Первая, дефолтная отрисовка галереи без фильтрации
     renderGallery();
   })
-  .catch((error) => {
-    showErrorNotification(error);
-  });
+  .catch((error) => showErrorNotification(error));
