@@ -16,6 +16,14 @@ import {
 import {sendData} from './server-api.js';
 import {isValidFileType, showError, showSuccess} from './utils.js';
 
+const uploadImgForm = document.querySelector('.img-upload__form');
+const uploadImgInput = document.querySelector('.img-upload__input');
+const submitFormBtn = document.querySelector('.img-upload__submit');
+const preview = document.querySelector('.img-upload__preview > img');
+const effectThumbnails = document.querySelectorAll('.effects__preview');
+const hashTagsInput = uploadImgForm.querySelector('.text__hashtags');
+const descriptionInput = uploadImgForm.querySelector('.text__description');
+
 // Статусы отправки формы
 const SubmitBtnText = {
   BASE: 'Опубликовать',
@@ -43,38 +51,29 @@ const ValidatorMessage = {
   COMM_LENGTH: `Длина комментария не должна превышать ${MAX_COMMENT_LENGTH} символов.`,
 };
 
-const uploadImgForm = document.querySelector('.img-upload__form');
-const uploadImgInput = document.querySelector('.img-upload__input');
-const submitFormBtn = document.querySelector('.img-upload__submit');
-const preview = document.querySelector('.img-upload__preview > img');
-const effectThumbnails = document.querySelectorAll('.effects__preview');
-const hashTagsInput = uploadImgForm.querySelector('.text__hashtags');
-const descriptionInput = uploadImgForm.querySelector('.text__description');
-
 let pristine = null;
 
-uploadImgInput.addEventListener('change', (evt) => {
-  const target = evt.target;
-  const choosedFile = target.files[0];
+const changeSendBtnState = (btnBlocked = false) => {
+  if (btnBlocked) {
+    submitFormBtn.disabled = true;
+    submitFormBtn.textContent = SubmitBtnText.PUBLISHING;
 
-  // Если загружен файл валидного типа
-  if (isValidFileType(choosedFile)) {
-    setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
-    uploadImgForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
-    setImagePreview(choosedFile); // Загружаем изображение в модальное окно
-    openImgEditor(evt); // Открываем редактор изображения
+    return;
   }
-});
 
-function submitFormHandler(event) {
-  event.preventDefault();
+  submitFormBtn.disabled = false;
+  submitFormBtn.textContent = SubmitBtnText.BASE;
+};
 
-  const targetForm = event.target;
+const submitFormHandler = (evt) => {
+  evt.preventDefault();
+
+  const targetForm = evt.target;
   const isValidForm = pristine.validate();
 
   // Если форма валидна - отправляем
   if (isValidForm) {
-    blockSendBtn();
+    changeSendBtnState(true);
     sendData(new FormData(targetForm))
       .then(() => {
         showSuccess(DataSendStatusText.SUCCESS);
@@ -82,12 +81,12 @@ function submitFormHandler(event) {
       })
       .catch(() => showError(DataSendStatusText.ERROR))
       .finally(() => {
-        unblockSendBtn();
+        changeSendBtnState();
       });
   }
-}
+};
 
-function setImagePreview(fileInfo) {
+const setImagePreview = (fileInfo) => {
   const imgSrc = URL.createObjectURL(fileInfo);
 
   preview.src = imgSrc;
@@ -95,19 +94,9 @@ function setImagePreview(fileInfo) {
   effectThumbnails.forEach((thumbnail) => {
     thumbnail.style.backgroundImage = `url(${imgSrc})`;
   });
+};
 
-  // Очищаем память от созданного URL
-  const lastThumbnail = effectThumbnails[effectThumbnails.length - 1];
-
-  setTimeout(() => {
-    lastThumbnail.onload = () => {
-      URL.revokeObjectURL(imgSrc);
-      lastThumbnail.onload = null;
-    };
-  }, 0);
-}
-
-function setFormValidators() {
+const setFormValidators = () => {
   pristine = new Pristine(uploadImgForm, {
     classTo: PrestineClass.to,
     errorClass: PrestineClass.error,
@@ -147,9 +136,9 @@ function setFormValidators() {
     checkCommentLength,
     ValidatorMessage.COMM_LENGTH
   );
-}
+};
 
-function removeFormValidators() {
+const removeFormValidators = () => {
   uploadImgForm.removeEventListener('submit', submitFormHandler);
 
   if (!pristine) {
@@ -158,16 +147,22 @@ function removeFormValidators() {
 
   pristine.reset();
   pristine.destroy();
-}
+};
 
-function blockSendBtn() {
-  submitFormBtn.disabled = true;
-  submitFormBtn.textContent = SubmitBtnText.PUBLISHING;
-}
+const uploadFileHandler = (evt) => {
+  const target = evt.target;
+  const choosedFile = target.files[0];
 
-function unblockSendBtn() {
-  submitFormBtn.disabled = false;
-  submitFormBtn.textContent = SubmitBtnText.BASE;
-}
+  // Если загружен файл валидного типа
+  if (isValidFileType(choosedFile)) {
+    setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
+    uploadImgForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
+    setImagePreview(choosedFile); // Загружаем изображение в модальное окно
+    openImgEditor(evt); // Открываем редактор изображения
+  }
+};
+
+// Обработка загрузки пользовательских изображений
+uploadImgInput.addEventListener('change', uploadFileHandler);
 
 export {removeFormValidators};

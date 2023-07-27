@@ -1,10 +1,19 @@
 const Avatar = {WIDTH: 35, HEIGHT: 35};
+
 const commentsTemplate = document.querySelector('#comment').content;
 const showedComments = document.querySelector('.social__comments').children;
 const showedCommentsCounter = document.querySelector('.showed-comments-count');
 const loadMoreCommentsBtn = document.querySelector('.social__comments-loader');
 
-function getComment({avatar, name, message}) {
+const getShowedCommentsCount = () => showedComments.length;
+
+const updateCommentsCounter = () => {
+  showedCommentsCounter.textContent = getShowedCommentsCount();
+};
+
+const isAllCommentsLoaded = (commentsCount) => getShowedCommentsCount() === commentsCount;
+
+const getComment = ({avatar, name, message}) => {
   const commentElem = commentsTemplate.cloneNode(true);
 
   const commentAvatar = commentElem.querySelector('.social__picture');
@@ -20,46 +29,32 @@ function getComment({avatar, name, message}) {
   comment.append(commentElem);
 
   return comment;
-}
+};
 
 // Функция для отрисовки определенного количества комментариев
-function getCommentsRenderer(comments, container, commentsCount = comments.length, startIndex = 0) {
-  return () => {
-    if (comments.length <= 0) {
-      return;
-    }
+const getCommentsRenderer = (comments, container, commentsCount = comments.length, startIndex = 0) => () => {
+  if (comments.length <= 0) {
+    return;
+  }
 
-    commentsCount = Math.min(commentsCount, comments.length);
+  commentsCount = Math.min(commentsCount, comments.length);
 
-    const commentsArr = comments.slice(startIndex, startIndex + commentsCount);
-    const commentsList = document.createDocumentFragment();
+  const commentsArr = comments.slice(startIndex, startIndex + commentsCount);
+  const commentsList = document.createDocumentFragment();
 
-    for (let i = 0; i < commentsArr.length; i++) { // Собираем нужное кол.-во комментариев в коллекцию
-      commentsList.append(getComment(commentsArr[i]));
-    }
+  for (let i = 0; i < commentsArr.length; i++) { // Собираем нужное кол.-во комментариев в коллекцию
+    commentsList.append(getComment(commentsArr[i]));
+  }
 
-    container.append(commentsList); // Добавляем собранные комментарии в DOM
+  container.append(commentsList); // Добавляем собранные комментарии в DOM
 
-    // Если все комментарии загружены - скрыть кнопку загрузки
-    if (isAllCommentsLoaded(comments.length)) {
-      loadMoreCommentsBtn.classList.add('hidden');
-    }
+  // Если все комментарии загружены - скрыть кнопку загрузки
+  if (isAllCommentsLoaded(comments.length)) {
+    loadMoreCommentsBtn.classList.add('hidden');
+  }
 
-    startIndex += commentsCount;
-    updateCommentsCounter();
-  };
-}
-
-function getShowedCommentsCount() {
-  return showedComments.length;
-}
-
-function updateCommentsCounter() {
-  showedCommentsCounter.textContent = getShowedCommentsCount();
-}
-
-function isAllCommentsLoaded(commentsCount) {
-  return getShowedCommentsCount() === commentsCount;
-}
+  startIndex += commentsCount;
+  updateCommentsCounter();
+};
 
 export {getCommentsRenderer, updateCommentsCounter, isAllCommentsLoaded};

@@ -18,9 +18,9 @@ let galleryFiltered = false;
 let renderComments = null; // Редререр комментариев
 
 //  @param {Object} data - Объект с данными о фотографиях
-function setGalleryData(data) {
+const setGalleryData = (data) => {
   photosData = data;
-}
+};
 
 /*
   @param {Bool} filterApplied - Была ли отфильтрована галерея.
@@ -33,14 +33,70 @@ function setGalleryData(data) {
   Необходимо пройтись по всему массиву с данными, чтобы найти фото с тем id,
   который нам нужен
 */
-function renderGallery(filterApplied = false) {
+const renderGallery = (filterApplied = false) => {
   // Отрисовываем фотографии на странице
   drawThumbnails(photosData);
   galleryFiltered = filterApplied;
 
   // Добавляем обработчик событий клика по миниатюре через делегирование.
   photosContainer.addEventListener('click', thumbnailClickHandler);
-}
+};
+
+const removeThumbnailClickHandler = () => photosContainer.removeEventListener('click', thumbnailClickHandler);
+
+const getCurrentThumbnailData = (target) => {
+  const curImgId = parseInt(target.dataset.imgId, 10);
+  const currentImgData = !galleryFiltered
+    ? photosData[curImgId]
+    : photosData.find((image) => image.id === curImgId);
+
+  return currentImgData;
+};
+
+const changeLoadCommentsBtnState = (btnShowed = true) => {
+  if (btnShowed) {
+    loadMoreCommentsBtn.classList.remove('hidden');
+
+    return;
+  }
+
+  loadMoreCommentsBtn.classList.add('hidden');
+};
+
+const loadCommentsHandler = () => renderComments();
+
+const removeLoadCommentsHandler = () => loadMoreCommentsBtn.removeEventListener('click', loadCommentsHandler);
+
+const initComments = (comments) => {
+  commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
+
+  if (comments.length > 0) { // Отрисовываем комментарии
+    renderComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
+
+    renderComments();
+    changeLoadCommentsBtnState();
+
+    loadMoreCommentsBtn.addEventListener('click', loadCommentsHandler); // Добавляем обработчик на кнопку загрузки доп. комментариев
+  }
+
+  // Если все комментарии загружены - скрыть кнопку загрузки
+  if (isAllCommentsLoaded(comments.length)) {
+    changeLoadCommentsBtnState(false);
+  }
+
+  updateCommentsCounter(); // Обновляем счетчик комментариев
+};
+
+const setFullPhotoData = (currentImg) => {
+  const {url, description, likes, comments} = currentImg;
+
+  fullPhotoContainer.src = url;
+  fullPhotoDescription.textContent = description;
+  likesCountContainer.textContent = likes || 0;
+  commentsCounter.textContent = comments.length || 0;
+
+  initComments(comments);
+};
 
 function thumbnailClickHandler(evt) {
   const targetParent = evt.target.closest('.picture');
@@ -57,60 +113,6 @@ function thumbnailClickHandler(evt) {
 
   setFullPhotoData(currentImgData);
   openFullPhoto(); // Открываем модальное окно
-}
-
-function removeThumbnailClickHandler() {
-  photosContainer.removeEventListener('click', thumbnailClickHandler);
-}
-
-function getCurrentThumbnailData(target) {
-  const curImgId = parseInt(target.dataset.imgId, 10);
-  const currentImgData = !galleryFiltered ? photosData[curImgId] : photosData.find((image) => image.id === curImgId);
-
-  return currentImgData;
-}
-
-function setFullPhotoData(currentImg) {
-  const {url, description, likes, comments} = currentImg;
-
-  fullPhotoContainer.src = url;
-  fullPhotoDescription.textContent = description;
-  likesCountContainer.textContent = likes || 0;
-  commentsCounter.textContent = comments.length || 0;
-
-  initComments(comments);
-}
-
-function initComments(comments) {
-  commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
-
-  if (comments.length > 0) { // Отрисовываем комментарии
-    renderComments = getCommentsRenderer(comments, commentsContainer, COMMENTS_PER_PAGE);
-
-    renderComments();
-    showLoadCommentsBtn();
-
-    loadMoreCommentsBtn.addEventListener('click', renderComments); // Добавляем обработчик на кнопку загрузки доп. комментариев
-  }
-
-  // Если все комментарии загружены - скрыть кнопку загрузки
-  if (isAllCommentsLoaded(comments.length)) {
-    hideLoadCommentsBtn();
-  }
-
-  updateCommentsCounter(); // Обновляем счетчик комментариев
-}
-
-function removeLoadCommentsHandler() {
-  loadMoreCommentsBtn.removeEventListener('click', renderComments);
-}
-
-function showLoadCommentsBtn() {
-  loadMoreCommentsBtn.classList.remove('hidden');
-}
-
-function hideLoadCommentsBtn() {
-  loadMoreCommentsBtn.classList.add('hidden');
 }
 
 export {setGalleryData, renderGallery, removeThumbnailClickHandler, removeLoadCommentsHandler};
