@@ -1,5 +1,5 @@
 import {isEscapeKey} from './utils.js';
-import {removeLoadCommentsHandler} from './gallery.js';
+import {removeCommentsLoadHandler} from './gallery.js';
 
 const fullPhotoContainer = document.querySelector('.big-picture');
 const closeFullPhotoBtn = document.querySelector('.big-picture__cancel');
@@ -9,28 +9,28 @@ const openFullPhoto = () => {
   document.body.classList.add('modal-open'); // Запрещаем прокрутку body
   fullPhotoContainer.classList.remove('hidden'); // Открываем попап с фото
 
-  document.addEventListener('keydown', keyDownHandler);
-  closeFullPhotoBtn.addEventListener('click', closeFullPhotoHandler);
+  document.addEventListener('keydown', documentKeyDownHandler);
+  closeFullPhotoBtn.addEventListener('click', fullPhotoCloseHandler);
 };
 
 const closeFullPhoto = () => {
   fullPhotoContainer.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
-  document.removeEventListener('keydown', keyDownHandler);
-  closeFullPhotoBtn.removeEventListener('click', closeFullPhotoHandler);
+  document.removeEventListener('keydown', documentKeyDownHandler);
+  closeFullPhotoBtn.removeEventListener('click', fullPhotoCloseHandler);
 
   // Удаляем обработчик с кнопки загрузки комментариев
-  removeLoadCommentsHandler();
+  removeCommentsLoadHandler();
 };
 
-function keyDownHandler(evt) {
+function documentKeyDownHandler(evt) {
   if(isEscapeKey(evt)) {
     closeFullPhoto();
   }
 }
 
-function closeFullPhotoHandler() {
+function fullPhotoCloseHandler() {
   closeFullPhoto();
 }
 

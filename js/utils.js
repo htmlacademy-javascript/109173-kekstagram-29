@@ -4,7 +4,17 @@ const EXTENTIONS = ['jpg', 'jpeg', 'png'];
 const DEBOUNCE_TIMEOUT = 500;
 const THROTTLE_DELAY = 1000;
 
-const MESSAGE_PROPERTIES = {
+// Параметры уведомлений
+const NOTIFICATION_SHOW_TIMER = 5000;
+const NOTIFICATION_CONTAINER_CLASS = 'system-notification';
+const NOTIFICATION_BASE_CLASS = 'system-notification__message';
+const NotificationClass = {
+  ERROR: 'system-notification__message--error',
+  SUCCESS: 'system-notification__message--success'
+};
+
+// Параметры сообщений
+const MessageProperties = {
   ERROR: {
     ID: '#error',
     CLASS: '.error',
@@ -17,16 +27,6 @@ const MESSAGE_PROPERTIES = {
   }
 };
 
-// Параметры уведомлений
-const NOTIFICATION_SHOW_TIMER = 5000;
-const NOTIFICATION_CONTAINER_CLASS = 'system-notification';
-const NOTIFICATION_BASE_CLASS = 'system-notification__message';
-const NotificationClass = {
-  ERROR: 'system-notification__message--error',
-  SUCCESS: 'system-notification__message--success'
-};
-
-// Параметры сообщений
 const MessageType = {
   ERROR: 'ERROR',
   SUCCESS: 'SUCCESS'
@@ -57,7 +57,7 @@ const getRandomInt = (min, max) => {
 const getUniqIdGenerator = (min = 0, max = 10) => {
   let currentId = min;
 
-  return function () {
+  return () => {
     if (min < max) {
       return currentId++;
     }
@@ -108,41 +108,40 @@ const getRandUniqElemsFromArr = (arr, elemsCount = 1) => {
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const removeMessage = () => {
-  document.querySelector(MESSAGE_PROPERTIES.ERROR.CLASS)?.remove();
-  document.querySelector(MESSAGE_PROPERTIES.SUCCESS.CLASS)?.remove();
+  document.querySelector(MessageProperties.ERROR.CLASS)?.remove();
+  document.querySelector(MessageProperties.SUCCESS.CLASS)?.remove();
 };
 
-const closeMessageKeyDownHandler = (evt) => {
+const messageCloseKeyDownHandler = (evt) => {
   // Закрываем сообщение только при нажатии ESC
   if(isEscapeKey(evt)) {
     removeMessage();
-    document.removeEventListener('keydown', closeMessageKeyDownHandler);
+    document.removeEventListener('keydown', messageCloseKeyDownHandler);
   }
 };
 
-const closeMessageClickHandler = (evt) => {
+const messageCloseClickHandler = (evt) => {
   const target = evt.target;
   const triggers = ['success', 'success__button', 'error', 'error__button'];
 
   // Закрываем сообщение при клике по соответствующему классу
   if(triggers.includes(target.className)) {
     removeMessage();
-    document.removeEventListener('keydown', closeMessageClickHandler);
   }
 };
 
 const createMessage = (messageText, messageType = MessageType.SUCCESS) => {
   // Параметры контейнера сообщения
-  const templateContainerSelector = MESSAGE_PROPERTIES[messageType].ID;
-  const messageContainerSelector = MESSAGE_PROPERTIES[messageType].CLASS;
-  const messageTitleSelector = MESSAGE_PROPERTIES[messageType].TITLE;
+  const templateContainerSelector = MessageProperties[messageType].ID;
+  const messageContainerSelector = MessageProperties[messageType].CLASS;
+  const messageTitleSelector = MessageProperties[messageType].TITLE;
 
   // Создаем сообщение
   const messageTmpl = document.querySelector(templateContainerSelector).content;
   const message = messageTmpl.cloneNode(true);
   message.querySelector(messageTitleSelector).textContent = messageText;
-  message.querySelector(messageContainerSelector).addEventListener('click', closeMessageClickHandler);
-  document.addEventListener('keydown', closeMessageKeyDownHandler);
+  message.querySelector(messageContainerSelector).addEventListener('click', messageCloseClickHandler);
+  document.addEventListener('keydown', messageCloseKeyDownHandler);
 
   return message;
 };

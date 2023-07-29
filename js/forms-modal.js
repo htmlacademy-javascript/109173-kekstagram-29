@@ -1,7 +1,7 @@
 import {isEscapeKey} from './utils.js';
 import {
   changeImgScale,
-  changeEffectHandler,
+  changeEffectHandler as effectChangeHandler,
   resetImgEditor
 } from './img-editor.js';
 
@@ -36,13 +36,13 @@ const closeImgEditor = () => {
   changeBodyScrollState(); // Возвращаем body возможность скролла
 
   // Удаляем все подвешенные обработчики
-  document.removeEventListener('keydown', keyDownHandler);
-  closeImgEditorBtn.removeEventListener('click', closeImgEditorHandler);
+  document.removeEventListener('keydown', documentKeyDownHandler);
+  closeImgEditorBtn.removeEventListener('click', imgEditorCloseHandler);
 
-  scaleBiggerBtn.removeEventListener('click', changeImgScaleHandler);
-  scaleSmallerBtn.removeEventListener('click', changeImgScaleHandler);
+  scaleBiggerBtn.removeEventListener('click', imgResizeHandler);
+  scaleSmallerBtn.removeEventListener('click', imgResizeHandler);
 
-  imgEffectsContainer.removeEventListener('click', changeEffectHandler);
+  imgEffectsContainer.removeEventListener('click', effectChangeHandler);
   resetImgEditor();
 };
 
@@ -51,18 +51,18 @@ const openImgEditor = () => {
   imgEditorContainer.classList.remove('hidden');
   changeBodyScrollState(false); // Отключаем скролл на body, добавляя спец. класс
 
-  document.addEventListener('keydown', keyDownHandler);
-  closeImgEditorBtn.addEventListener('click', closeImgEditorHandler);
+  document.addEventListener('keydown', documentKeyDownHandler);
+  closeImgEditorBtn.addEventListener('click', imgEditorCloseHandler);
 
   // Работа с размером изображения
-  scaleBiggerBtn.addEventListener('click', changeImgScaleHandler);
-  scaleSmallerBtn.addEventListener('click', changeImgScaleHandler);
+  scaleBiggerBtn.addEventListener('click', imgResizeHandler);
+  scaleSmallerBtn.addEventListener('click', imgResizeHandler);
 
   // Наложение фильтров
-  imgEffectsContainer.addEventListener('click', changeEffectHandler);
+  imgEffectsContainer.addEventListener('click', effectChangeHandler);
 };
 
-function keyDownHandler(evt) {
+function documentKeyDownHandler(evt) {
   const target = evt.target;
   /* Запрещаем закрытие редактора изображений при фокусе на определенных элементах
   (поле вовода хэш-тегов и комментария при добавлении фотографии), а также
@@ -79,11 +79,11 @@ function keyDownHandler(evt) {
   }
 }
 
-function closeImgEditorHandler() {
+function imgEditorCloseHandler() {
   closeImgEditor();
 }
 
-function changeImgScaleHandler(evt) {
+function imgResizeHandler(evt) {
   changeImgScale(evt);
 }
 

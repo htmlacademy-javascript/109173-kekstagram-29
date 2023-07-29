@@ -42,9 +42,9 @@ const getCommentsRenderer = (comments, container, commentsCount = comments.lengt
   const commentsArr = comments.slice(startIndex, startIndex + commentsCount);
   const commentsList = document.createDocumentFragment();
 
-  for (let i = 0; i < commentsArr.length; i++) { // Собираем нужное кол.-во комментариев в коллекцию
-    commentsList.append(getComment(commentsArr[i]));
-  }
+  commentsArr.forEach((comment) => { // Собираем нужное кол.-во комментариев в коллекцию
+    commentsList.append(getComment(comment));
+  });
 
   container.append(commentsList); // Добавляем собранные комментарии в DOM
 

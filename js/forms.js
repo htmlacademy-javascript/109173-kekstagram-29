@@ -65,7 +65,7 @@ const changeSendBtnState = (btnBlocked = false) => {
   submitFormBtn.textContent = SubmitBtnText.BASE;
 };
 
-const submitFormHandler = (evt) => {
+const formSubmitHandler = (evt) => {
   evt.preventDefault();
 
   const targetForm = evt.target;
@@ -139,7 +139,7 @@ const setFormValidators = () => {
 };
 
 const removeFormValidators = () => {
-  uploadImgForm.removeEventListener('submit', submitFormHandler);
+  uploadImgForm.removeEventListener('submit', formSubmitHandler);
 
   if (!pristine) {
     return;
@@ -149,20 +149,20 @@ const removeFormValidators = () => {
   pristine.destroy();
 };
 
-const uploadFileHandler = (evt) => {
+const fileUploadHandler = (evt) => {
   const target = evt.target;
   const choosedFile = target.files[0];
 
   // Если загружен файл валидного типа
   if (isValidFileType(choosedFile)) {
     setFormValidators(); // Устанавливаем валидаторы на формуsetFormValidators(); // Устанавливаем валидаторы на форму
-    uploadImgForm.addEventListener('submit', submitFormHandler); // Устанавливаем обработчик на отправку
+    uploadImgForm.addEventListener('submit', formSubmitHandler); // Устанавливаем обработчик на отправку
     setImagePreview(choosedFile); // Загружаем изображение в модальное окно
     openImgEditor(evt); // Открываем редактор изображения
   }
 };
 
 // Обработка загрузки пользовательских изображений
-uploadImgInput.addEventListener('change', uploadFileHandler);
+uploadImgInput.addEventListener('change', fileUploadHandler);
 
 export {removeFormValidators};

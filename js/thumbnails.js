@@ -32,9 +32,9 @@ const removeThumbnails = () => {
     return;
   }
 
-  for (let i = 0; i < thumbnails.length; i++) {
-    thumbnails[i].remove();
-  }
+  thumbnails.forEach((thumbnail) => {
+    thumbnail.remove();
+  });
 
   // Удаляем обработчик события клика по миниатюрам
   removeThumbnailClickHandler();

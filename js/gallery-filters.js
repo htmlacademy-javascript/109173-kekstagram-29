@@ -32,7 +32,7 @@ const isActiveFilter = (target) => {
   return false;
 };
 
-const toogleBtnActiveClass = (target) => {
+const toggleBtnActiveClass = (target) => {
   document.querySelector(`.${FilterBtnClass.ACTIVE}`).classList.remove(FilterBtnClass.ACTIVE);
   target.classList.add(FilterBtnClass.ACTIVE);
 };
@@ -82,7 +82,7 @@ const initGalleryFilters = (settings) => {
     }
 
     // Сбрасываем предыдущую активную кнопку фильтра. Активируем текущую.
-    toogleBtnActiveClass(target);
+    toggleBtnActiveClass(target);
 
     // Меняем фильтр
     const filterID = target.id;
