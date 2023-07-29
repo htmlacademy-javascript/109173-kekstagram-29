@@ -1,5 +1,5 @@
 import {isEscapeKey} from './utils.js';
-import {removeLoadCommentsHandler} from './gallery.js';
+import {removeCommentsLoadHandler} from './gallery.js';
 
 const fullPhotoContainer = document.querySelector('.big-picture');
 const closeFullPhotoBtn = document.querySelector('.big-picture__cancel');
@@ -21,7 +21,7 @@ const closeFullPhoto = () => {
   closeFullPhotoBtn.removeEventListener('click', fullPhotoCloseHandler);
 
   // Удаляем обработчик с кнопки загрузки комментариев
-  removeLoadCommentsHandler();
+  removeCommentsLoadHandler();
 };
 
 function documentKeyDownHandler(evt) {

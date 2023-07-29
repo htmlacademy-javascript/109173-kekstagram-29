@@ -65,7 +65,7 @@ const changeLoadCommentsBtnState = (btnShowed = true) => {
 
 const commentsLoadHandler = () => renderComments();
 
-const removeLoadCommentsHandler = () => loadMoreCommentsBtn.removeEventListener('click', commentsLoadHandler);
+const removeCommentsLoadHandler = () => loadMoreCommentsBtn.removeEventListener('click', commentsLoadHandler);
 
 const initComments = (comments) => {
   commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
@@ -115,4 +115,4 @@ function thumbnailClickHandler(evt) {
   openFullPhoto(); // Открываем модальное окно
 }
 
-export {setGalleryData, renderGallery, removeThumbnailClickHandler, removeLoadCommentsHandler};
+export {setGalleryData, renderGallery, removeThumbnailClickHandler, removeCommentsLoadHandler};

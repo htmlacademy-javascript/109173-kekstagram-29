@@ -39,8 +39,8 @@ const closeImgEditor = () => {
   document.removeEventListener('keydown', documentKeyDownHandler);
   closeImgEditorBtn.removeEventListener('click', imgEditorCloseHandler);
 
-  scaleBiggerBtn.removeEventListener('click', imgChangeScaleHandler);
-  scaleSmallerBtn.removeEventListener('click', imgChangeScaleHandler);
+  scaleBiggerBtn.removeEventListener('click', imgResizeHandler);
+  scaleSmallerBtn.removeEventListener('click', imgResizeHandler);
 
   imgEffectsContainer.removeEventListener('click', effectChangeHandler);
   resetImgEditor();
@@ -55,8 +55,8 @@ const openImgEditor = () => {
   closeImgEditorBtn.addEventListener('click', imgEditorCloseHandler);
 
   // Работа с размером изображения
-  scaleBiggerBtn.addEventListener('click', imgChangeScaleHandler);
-  scaleSmallerBtn.addEventListener('click', imgChangeScaleHandler);
+  scaleBiggerBtn.addEventListener('click', imgResizeHandler);
+  scaleSmallerBtn.addEventListener('click', imgResizeHandler);
 
   // Наложение фильтров
   imgEffectsContainer.addEventListener('click', effectChangeHandler);
@@ -83,7 +83,7 @@ function imgEditorCloseHandler() {
   closeImgEditor();
 }
 
-function imgChangeScaleHandler(evt) {
+function imgResizeHandler(evt) {
   changeImgScale(evt);
 }
 
