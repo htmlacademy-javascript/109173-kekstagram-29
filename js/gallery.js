@@ -63,9 +63,9 @@ const changeLoadCommentsBtnState = (btnShowed = true) => {
   loadMoreCommentsBtn.classList.add('hidden');
 };
 
-const loadCommentsHandler = () => renderComments();
+const commentsLoadHandler = () => renderComments();
 
-const removeLoadCommentsHandler = () => loadMoreCommentsBtn.removeEventListener('click', loadCommentsHandler);
+const removeLoadCommentsHandler = () => loadMoreCommentsBtn.removeEventListener('click', commentsLoadHandler);
 
 const initComments = (comments) => {
   commentsContainer.innerHTML = ''; // Очищаем от старых комментариев
@@ -76,7 +76,7 @@ const initComments = (comments) => {
     renderComments();
     changeLoadCommentsBtnState();
 
-    loadMoreCommentsBtn.addEventListener('click', loadCommentsHandler); // Добавляем обработчик на кнопку загрузки доп. комментариев
+    loadMoreCommentsBtn.addEventListener('click', commentsLoadHandler); // Добавляем обработчик на кнопку загрузки доп. комментариев
   }
 
   // Если все комментарии загружены - скрыть кнопку загрузки
